@@ -1,0 +1,11 @@
+[user]
+	email = zhilu@std.uestc.edu.cn
+	name = Zhi Lu
+[core]
+	editor = vim
+[alias]
+	st = status -sb
+[include]
+	# GitAlias[bf49008]: https://github.com/GitAlias/gitalias
+	path = ~/.gitalias.txt
+
