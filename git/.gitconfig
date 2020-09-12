@@ -7,5 +7,5 @@
 	st = status -sb
 [include]
 	# GitAlias[bf49008]: https://github.com/GitAlias/gitalias
-	path = ~/.gitalias.txt
+	path = ~/.gitalias/gitalias.txt
 
