@@ -307,16 +307,10 @@ bind C-a send-prefix
 # shortcut for synchronize-panes toggle
 bind C-s set-window-option synchronize-panes
 
+# split current window with | and -
+bind | split-window -h
+bind - split-window -v
+
 # status left/right content:
 tmux_conf_theme_status_left=' ❐ #S '
 tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #(curl http://wttr.in/chengdu\?format\=1) , %R , %d %b | #{username}#{root} | #{hostname} '
-
-# status left style
-tmux_conf_theme_status_left_fg='#000000,#e4e4e4,#e4e4e4'  # black, white , white
-tmux_conf_theme_status_left_bg='#4fcc8c,#ff00af,#00afff'  # emerald, pink, white blue
-tmux_conf_theme_status_left_attr='bold,none,none'
-
-# status right style
-tmux_conf_theme_status_right_fg='#8a8a8a,#e4e4e4,#000000' # light gray, white, black
-tmux_conf_theme_status_right_bg='#080808,#fd7366,#e4e4e4' # dark gray, bittersweet, white
-tmux_conf_theme_status_right_attr='none,none,bold'
