@@ -3,9 +3,9 @@
 	name = Zhi Lu
 [core]
 	editor = vim
+	excludesfile = ~/.gitignore_global
 [alias]
 	st = status -sb
 [include]
-	# GitAlias[bf49008]: https://github.com/GitAlias/gitalias
 	path = ~/.gitalias/gitalias.txt
 
