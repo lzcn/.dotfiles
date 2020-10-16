@@ -177,6 +177,7 @@ zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Comma
 zinit wait lucid for \
     as"completion" \
           OMZP::docker/_docker \
+    as"completion" \
           OMZP::fd/_fd
 
 # HOMEBRE shellenv
