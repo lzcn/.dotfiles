@@ -230,14 +230,14 @@ alias tls='tmux list-sessions'
 alias tlw='tmux list-windows'
 alias tkss='tmux kill-session -t'
 
-# aliases
+# aliases for colorls
 alias cls='colorls'
 alias cll='colorls -l'
 alias cla='colorls -lAh'
-alias watch-gpu='watch -n 0.1 nvidia-smi'
 
-# TODO: better alias
-alias csmi='LD_LIBRARY_PATH="/usr/local/zeromq-4.1.0/dist/lib:$LD_LIBRARY_PATH" $HOME/go/src/cluster-smi/cluster-smi -p'
+# aliases for gpu
+alias watch-gpu='watch -n 0.1 nvidia-smi'
+alias csmi='cluster-smi -p'
 
 ## Handy Tools
 
