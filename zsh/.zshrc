@@ -154,7 +154,7 @@ zinit load zdharma/fast-syntax-highlighting
 zinit ice wait lucid blockf atpull'zinit creinstall -q .'
 zinit load zsh-users/zsh-completions
 
-## Plugins from Oy My Zsh
+## Plugins from Oy My Zsh and Prezto
 zinit wait lucid for \
     OMZ::plugins/autojump/autojump.plugin.zsh \
     OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh \
@@ -166,8 +166,8 @@ zinit wait lucid for \
     OMZ::plugins/fasd/fasd.plugin.zsh \
     OMZ::plugins/gitignore/gitignore.plugin.zsh \
     OMZ::plugins/history/history.plugin.zsh \
-    OMZ::plugins/tmux/tmux.plugin.zsh \
-    OMZ::plugins/screen/screen.plugin.zsh
+    PZT::modules/utility/init.zsh \
+    PZT::modules/spectrum/init.zsh \
 
 ## Completion for Zinit
 
@@ -221,6 +221,14 @@ preexec() {
 export PATH="$HOME/bin:$PATH"
 # TODO: check before export
 export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
+
+# aliases for tmux
+alias ta='tmux attach -t'
+alias tad='tmux attach -d -t'
+alias ts='tmux new-session -s'
+alias tls='tmux list-sessions'
+alias tlw='tmux list-windows'
+alias tkss='tmux kill-session -t'
 
 # aliases
 alias cls='colorls'
