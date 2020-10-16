@@ -1,25 +1,3 @@
-### Variables
-
-# HOMEBRE_PREFIX
-if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
-  HOMEBREW_PREFIX=$HOME/.linuxbrew
-elif [[ -f $HOME/../linuxbrew/.linuxbrew/bin/brew ]]; then
-  HOMEBREW_PREFIX=$HOME/../linuxbrew/.linuxbrew
-elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
-elif [[ -f /usr/local/bin/brew ]]; then
-  HOMEBREW_PREFIX=/usr/local
-fi
-
-CONDA_PREFIX=$HOME/miniconda
-
-# for conda
-export PATH="$CONDA_PREFIX/bin:$PATH"
-# for rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-
-### Added from ohmyzsh's template
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -120,8 +98,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-### End of ohmyzsh template
-
 ## Zinit
 # - To update Zinit, issue zinit self-update
 # - To update all plugins, issue zinit update
@@ -151,79 +127,68 @@ autoload -Uz _zinit
 zplugin light mroth/evalcache
 
 # about: rbenv init with Zinit
-zinit wait lucid for htlsne/zplugin-rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+zinit ice wait lucid
+zinit load htlsne/zplugin-rbenv
 
 # about: conda init with Zinit
-zinit wait lucid for lzcn/zplugin-conda-init
+CONDA_PREFIX=$HOME/miniconda
+zinit ice wait lucid
+zinit load lzcn/zplugin-conda-init
 
 # about: multi-word, syntax highlighted history searching for Zsh
 #
 # usage: Ctrl-R
-zinit wait lucid for zdharma/history-search-multi-word
+zinit ice wait lucid
+zinit load zdharma/history-search-multi-word
 
 # about: fish-like autosuggestions for Zsh
 zinit ice wait lucid atload'_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
+zinit load zsh-users/zsh-autosuggestions
 
 # about: syntax-highlighting for Zsh
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
-zinit light zdharma/fast-syntax-highlighting
+zinit load zdharma/fast-syntax-highlighting
 
 # about: additional completion definitions for Zsh
 zinit ice wait lucid blockf atpull'zinit creinstall -q .'
-zinit light zsh-users/zsh-completions
+zinit load zsh-users/zsh-completions
 
-
+## Plugins from Oy My Zsh
 zinit wait lucid for \
-    PZT::modules/helper/init.zsh \
-    PZT::modules/history/init.zsh \
-    PZT::modules/utility/init.zsh \
-    PZT::modules/spectrum/init.zsh \
-    OMZ::plugins/colorize/colorize.plugin.zsh \
-    OMZ::plugins/history/history.plugin.zsh \
     OMZ::plugins/autojump/autojump.plugin.zsh \
+    OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh \
+    OMZ::plugins/colorize/colorize.plugin.zsh \
     OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
-    OMZ::plugins/compleat/compleat.plugin.zsh
-    # OMZ::plugins/tmux/tmux.plugin.zsh
-    # OMZ::plugins/screen/screen.plugin.zsh
-
-# zinit light denysdovhan/spaceship-prompt
+    OMZ::plugins/cp/cp.plugin.zsh \
+    OMZ::plugins/dirhistory/dirhistory.plugin.zsh \
+    OMZ::plugins/extract/extract.plugin.zsh \
+    OMZ::plugins/fasd/fasd.plugin.zsh \
+    OMZ::plugins/gitignore/gitignore.plugin.zsh \
+    OMZ::plugins/history/history.plugin.zsh \
+    OMZ::plugins/tmux/tmux.plugin.zsh \
+    OMZ::plugins/screen/screen.plugin.zsh
 
 ## Completion for Zinit
 
 zinit ice as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
 
-zinit ice as"completion"
-zinit snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
+zinit wait lucid for \
+    as"completion" \
+          OMZP::docker/_docker \
+          OMZP::fd/_fd
 
-
-_evalcache $HOMEBREW_PREFIX/bin/brew shellenv
-
-
-# colorls aliases
-alias cls='colorls'
-alias cll='colorls -l'
-alias cla='colorls -lAh'
-alias watch-gpu='watch -n 0.1 nvidia-smi'
-alias csmi='LD_LIBRARY_PATH="/usr/local/zeromq-4.1.0/dist/lib:$LD_LIBRARY_PATH" cluster-smi -p'
-
-# ALIASES for tmux
-alias ta='tmux attach -t'
-alias tad='tmux attach -d -t'
-alias ts='tmux new-session -s'
-alias tls='tmux list-sessions'
-alias tlw='tmux list-windows'
-# alias tksv='tmux kill-server'
-alias tkss='tmux kill-session -t'
-
-# ALIASES for ssh
-alias s1='ssh gpu01'
-alias s2='ssh gpu02'
-alias s3='ssh gpu03'
-alias s4='ssh gpu04'
-alias s5='ssh gpu05'
-
+# HOMEBRE shellenv
+if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
+  _evalcache $HOME/.linuxbrew/bin/brew shellenv
+elif [[ -f $HOME/../linuxbrew/.linuxbrew/bin/brew ]]; then
+  _evalcache $HOME/../linuxbrew/.linuxbrew/bin/brew shellenv
+elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  _evalcache /home/linuxbrew/.linuxbrew/bin/brew shellenv
+elif [[ -f /usr/local/bin/brew ]]; then
+  _evalcache /usr/local/bin/brew shellenv
+fi
 
 # function for activate/deactivate conda env
 sra() {
@@ -240,18 +205,6 @@ srd() {
   unset _LD_LIBRARY_PATH
 }
 
-# go-to workspace
-fashion() {
-  sra ignite
-  cd ~/FashionNet
-}
-
-export PYTHONIOENCODING=utf-8
-export PATH="$HOME/bin:$PATH"
-export PATH="$HOME/go/src/cluster-smi:$PATH"
-export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
-
-
 # Conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
 
@@ -264,9 +217,20 @@ preexec() {
     HOST="${OLDHOST}"
 }
 
+export PATH="$HOME/bin:$PATH"
+# TODO: check before export
+export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
 
-## Handy tools
+# aliases
+alias cls='colorls'
+alias cll='colorls -l'
+alias cla='colorls -lAh'
+alias watch-gpu='watch -n 0.1 nvidia-smi'
+
+# TODO: better alias
+alias csmi='LD_LIBRARY_PATH="/usr/local/zeromq-4.1.0/dist/lib:$LD_LIBRARY_PATH" $HOME/go/src/cluster-smi/cluster-smi -p'
+
+## Handy Tools
 
 # autojump configuration - add this to ~/.zshrc
 [[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
-# autoload -U compinit && compinit -u
