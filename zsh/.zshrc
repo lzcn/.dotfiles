@@ -13,6 +13,11 @@ fi
 
 CONDA_PREFIX=$HOME/miniconda
 
+# for conda
+export PATH="$CONDA_PREFIX/bin:$PATH"
+# for rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+
 ### Added from ohmyzsh's template
 
 # If you come from bash you might have to change your $PATH.
@@ -85,7 +90,7 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=()
 
 source $ZSH/oh-my-zsh.sh
 
@@ -117,6 +122,11 @@ source $ZSH/oh-my-zsh.sh
 
 ### End of ohmyzsh template
 
+## Zinit
+# - To update Zinit, issue zinit self-update
+# - To update all plugins, issue zinit update
+# - To update only a single plugin, issue zinit update NAME
+
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
@@ -130,3 +140,133 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
+
+## Plugins for Zinit
+
+# about: cache the output of an initialization command to speed up startup
+#
+# usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
+#        with `_evalcache hub alias -s` in setup
+#        to clear cache use `_evalcache_clear`
+zplugin light mroth/evalcache
+
+# about: rbenv init with Zinit
+zinit wait lucid for htlsne/zplugin-rbenv
+
+# about: conda init with Zinit
+zinit wait lucid for lzcn/zplugin-conda-init
+
+# about: multi-word, syntax highlighted history searching for Zsh
+#
+# usage: Ctrl-R
+zinit wait lucid for zdharma/history-search-multi-word
+
+# about: fish-like autosuggestions for Zsh
+zinit ice wait lucid atload'_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
+
+# about: syntax-highlighting for Zsh
+zinit ice wait lucid atinit"zicompinit; zicdreplay"
+zinit light zdharma/fast-syntax-highlighting
+
+# about: additional completion definitions for Zsh
+zinit ice wait lucid blockf atpull'zinit creinstall -q .'
+zinit light zsh-users/zsh-completions
+
+
+zinit wait lucid for \
+    PZT::modules/helper/init.zsh \
+    PZT::modules/history/init.zsh \
+    PZT::modules/utility/init.zsh \
+    PZT::modules/spectrum/init.zsh \
+    OMZ::plugins/colorize/colorize.plugin.zsh \
+    OMZ::plugins/history/history.plugin.zsh \
+    OMZ::plugins/autojump/autojump.plugin.zsh \
+    OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
+    OMZ::plugins/compleat/compleat.plugin.zsh
+    # OMZ::plugins/tmux/tmux.plugin.zsh
+    # OMZ::plugins/screen/screen.plugin.zsh
+
+# zinit light denysdovhan/spaceship-prompt
+
+## Completion for Zinit
+
+zinit ice as"completion"
+zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
+
+zinit ice as"completion"
+zinit snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
+
+
+_evalcache $HOMEBREW_PREFIX/bin/brew shellenv
+
+
+# colorls aliases
+alias cls='colorls'
+alias cll='colorls -l'
+alias cla='colorls -lAh'
+alias watch-gpu='watch -n 0.1 nvidia-smi'
+alias csmi='LD_LIBRARY_PATH="/usr/local/zeromq-4.1.0/dist/lib:$LD_LIBRARY_PATH" cluster-smi -p'
+
+# ALIASES for tmux
+alias ta='tmux attach -t'
+alias tad='tmux attach -d -t'
+alias ts='tmux new-session -s'
+alias tls='tmux list-sessions'
+alias tlw='tmux list-windows'
+# alias tksv='tmux kill-server'
+alias tkss='tmux kill-session -t'
+
+# ALIASES for ssh
+alias s1='ssh gpu01'
+alias s2='ssh gpu02'
+alias s3='ssh gpu03'
+alias s4='ssh gpu04'
+alias s5='ssh gpu05'
+
+
+# function for activate/deactivate conda env
+sra() {
+  conda activate $1
+  if [ -z "$_LD_LIBRARY_PATH" ]
+  then
+    export _LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+  fi
+  export LD_LIBRARY_PATH="$CONDA_PREFIX/envs/$1/lib:$LD_LIBRARY_PATH"
+}
+srd() {
+  conda deactivate
+  export LD_LIBRARY_PATH=$_LD_LIBRARY_PATH
+  unset _LD_LIBRARY_PATH
+}
+
+# go-to workspace
+fashion() {
+  sra ignite
+  cd ~/FashionNet
+}
+
+export PYTHONIOENCODING=utf-8
+export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/go/src/cluster-smi:$PATH"
+export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
+
+
+# Conda clobbers HOST, so we save the real hostname into another variable.
+HOSTNAME="$(hostname)"
+
+precmd() {
+    OLDHOST="${HOST}"
+    HOST="${HOSTNAME}"
+}
+
+preexec() {
+    HOST="${OLDHOST}"
+}
+
+
+## Handy tools
+
+# autojump configuration - add this to ~/.zshrc
+[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
+# autoload -U compinit && compinit -u
