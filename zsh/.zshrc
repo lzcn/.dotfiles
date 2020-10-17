@@ -161,7 +161,9 @@ zinit wait lucid for \
     OMZ::plugins/colorize/colorize.plugin.zsh \
     OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
     OMZ::plugins/cp/cp.plugin.zsh \
+    OMZ::plugins/dircycle/dircycle.plugin.zsh \
     OMZ::plugins/dirhistory/dirhistory.plugin.zsh \
+    OMZ::plugins/dotenv/dotenv.plugin.zsh \
     OMZ::plugins/extract/extract.plugin.zsh \
     OMZ::plugins/fasd/fasd.plugin.zsh \
     OMZ::plugins/gitignore/gitignore.plugin.zsh \
