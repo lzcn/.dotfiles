@@ -4,8 +4,8 @@
 [core]
 	editor = vim
 	excludesfile = ~/.gitignore_global
-[alias]
-	st = status -sb
 [include]
 	path = ~/.gitalias/gitalias.txt
-
+[alias]
+	st = status -sb
+	unstage = restore --staged
