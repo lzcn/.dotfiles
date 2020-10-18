@@ -173,6 +173,8 @@ zinit wait lucid for \
 
 ## Completion for Zinit
 
+zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
+
 zinit ice as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
 
