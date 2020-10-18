@@ -1,3 +1,93 @@
+## Zinit
+# - To update Zinit, issue zinit self-update
+# - To update all plugins, issue zinit update
+# - To update only a single plugin, issue zinit update NAME
+
+### Added by Zinit's installer
+if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
+
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit's installer chunk
+
+## Plugins for Zinit
+
+# about: cache the output of an initialization command to speed up startup
+#
+# usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
+#        with `_evalcache hub alias -s` in setup
+#        to clear cache use `_evalcache_clear`
+zplugin light mroth/evalcache
+
+# about: rbenv init with Zinit
+export PATH="$HOME/.rbenv/bin:$PATH"
+zinit ice wait lucid
+zinit load htlsne/zplugin-rbenv
+
+# about: conda init with Zinit
+CONDA_PREFIX=$HOME/miniconda
+zinit ice wait lucid
+zinit load lzcn/zplugin-conda-init
+
+# about: multi-word, syntax highlighted history searching for Zsh
+#
+# usage: Ctrl-R
+zinit ice wait lucid
+zinit load zdharma/history-search-multi-word
+
+# about: fish-like autosuggestions for Zsh
+zinit ice wait lucid atload'_zsh_autosuggest_start'
+zinit load zsh-users/zsh-autosuggestions
+
+# about: syntax-highlighting for Zsh
+zinit ice wait lucid atinit"zicompinit; zicdreplay"
+zinit load zdharma/fast-syntax-highlighting
+
+# about: additional completion definitions for Zsh
+zinit ice wait lucid blockf atpull'zinit creinstall -q .'
+zinit load zsh-users/zsh-completions
+
+## Plugins from Oy My Zsh and Prezto
+zinit wait lucid for \
+    OMZ::plugins/autojump/autojump.plugin.zsh \
+    OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh \
+    OMZ::plugins/colorize/colorize.plugin.zsh \
+    OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
+    OMZ::plugins/cp/cp.plugin.zsh \
+    OMZ::plugins/dircycle/dircycle.plugin.zsh \
+    OMZ::plugins/dirhistory/dirhistory.plugin.zsh \
+    OMZ::plugins/dotenv/dotenv.plugin.zsh \
+    OMZ::plugins/extract/extract.plugin.zsh \
+    OMZ::plugins/fasd/fasd.plugin.zsh \
+    OMZ::plugins/gitignore/gitignore.plugin.zsh \
+    OMZ::plugins/history/history.plugin.zsh \
+    PZT::modules/utility/init.zsh \
+    PZT::modules/spectrum/init.zsh \
+
+## Completion for Zinit
+
+zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
+
+zinit ice as"completion"
+zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
+
+zinit ice as"completion"
+zinit snippet https://github.com/esc/conda-zsh-completion/blob/master/_conda
+
+zinit wait lucid for \
+    as"completion" \
+          OMZP::docker/_docker \
+    as"completion" \
+          OMZP::fd/_fd
+
+## Oh My Zsh
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -98,94 +188,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-## Zinit
-# - To update Zinit, issue zinit self-update
-# - To update all plugins, issue zinit update
-# - To update only a single plugin, issue zinit update NAME
-
-### Added by Zinit's installer
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
-fi
-
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-### End of Zinit's installer chunk
-
-## Plugins for Zinit
-
-# about: cache the output of an initialization command to speed up startup
-#
-# usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
-#        with `_evalcache hub alias -s` in setup
-#        to clear cache use `_evalcache_clear`
-zplugin light mroth/evalcache
-
-# about: rbenv init with Zinit
-export PATH="$HOME/.rbenv/bin:$PATH"
-zinit ice wait lucid
-zinit load htlsne/zplugin-rbenv
-
-# about: conda init with Zinit
-CONDA_PREFIX=$HOME/miniconda
-zinit ice wait lucid
-zinit load lzcn/zplugin-conda-init
-
-# about: multi-word, syntax highlighted history searching for Zsh
-#
-# usage: Ctrl-R
-zinit ice wait lucid
-zinit load zdharma/history-search-multi-word
-
-# about: fish-like autosuggestions for Zsh
-zinit ice wait lucid atload'_zsh_autosuggest_start'
-zinit load zsh-users/zsh-autosuggestions
-
-# about: syntax-highlighting for Zsh
-zinit ice wait lucid atinit"zicompinit; zicdreplay"
-zinit load zdharma/fast-syntax-highlighting
-
-# about: additional completion definitions for Zsh
-zinit ice wait lucid blockf atpull'zinit creinstall -q .'
-zinit load zsh-users/zsh-completions
-
-## Plugins from Oy My Zsh and Prezto
-zinit wait lucid for \
-    OMZ::plugins/autojump/autojump.plugin.zsh \
-    OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh \
-    OMZ::plugins/colorize/colorize.plugin.zsh \
-    OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
-    OMZ::plugins/cp/cp.plugin.zsh \
-    OMZ::plugins/dircycle/dircycle.plugin.zsh \
-    OMZ::plugins/dirhistory/dirhistory.plugin.zsh \
-    OMZ::plugins/dotenv/dotenv.plugin.zsh \
-    OMZ::plugins/extract/extract.plugin.zsh \
-    OMZ::plugins/fasd/fasd.plugin.zsh \
-    OMZ::plugins/gitignore/gitignore.plugin.zsh \
-    OMZ::plugins/history/history.plugin.zsh \
-    PZT::modules/utility/init.zsh \
-    PZT::modules/spectrum/init.zsh \
-
-## Completion for Zinit
-
-zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
-
-zinit ice as"completion"
-zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
-
-zinit ice as"completion"
-zinit snippet https://github.com/esc/conda-zsh-completion/blob/master/_conda
-
-zinit wait lucid for \
-    as"completion" \
-          OMZP::docker/_docker \
-    as"completion" \
-          OMZP::fd/_fd
+## End of Oh My Zsh
 
 # HOMEBRE shellenv
 if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
@@ -250,3 +253,5 @@ alias csmi='cluster-smi -p'
 
 # autojump configuration - add this to ~/.zshrc
 [[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
