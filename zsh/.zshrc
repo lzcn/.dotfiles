@@ -176,6 +176,9 @@ zinit wait lucid for \
 zinit ice as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
 
+zinit ice as"completion"
+zinit snippet https://github.com/esc/conda-zsh-completion/blob/master/_conda
+
 zinit wait lucid for \
     as"completion" \
           OMZP::docker/_docker \
