@@ -175,5 +175,6 @@ alias srd='conda deactivate'
 
 ## Handy Tools
 
-# autojump configuration - add this to ~/.zshrc
-[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
+# autojump configuration to source
+zinit ice wait lucid
+zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
