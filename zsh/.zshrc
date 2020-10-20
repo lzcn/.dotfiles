@@ -1,10 +1,3 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 ## Zinit
 # - To update Zinit, issue zinit self-update
 # - To update all plugins, issue zinit update
@@ -86,37 +79,36 @@ zinit load zsh-users/zsh-completions
 
 ## Plugins from Oy My Zsh and Prezto
 zinit wait lucid for \
-    OMZ::plugins/autojump/autojump.plugin.zsh \
-    OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh \
-    OMZ::plugins/colorize/colorize.plugin.zsh \
-    OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
-    OMZ::plugins/cp/cp.plugin.zsh \
-    OMZ::plugins/dircycle/dircycle.plugin.zsh \
-    OMZ::plugins/dirhistory/dirhistory.plugin.zsh \
-    OMZ::plugins/dotenv/dotenv.plugin.zsh \
-    OMZ::plugins/extract/extract.plugin.zsh \
-    OMZ::plugins/fasd/fasd.plugin.zsh \
-    OMZ::plugins/gitignore/gitignore.plugin.zsh \
-    OMZ::plugins/history/history.plugin.zsh \
-    PZT::modules/utility/init.zsh \
-    PZT::modules/spectrum/init.zsh
+    OMZP::autojump \
+    OMZP::colored-man-pages \
+    OMZP::colorize \
+    OMZP::command-not-found \
+    OMZP::cp \
+    OMZP::dircycle \
+    OMZP::dirhistory \
+    OMZP::dotenv \
+    OMZP::extract \
+    OMZP::fasd \
+    OMZP::gitignore \
+    OMZP::history \
+    PZTM::utility \
+    PZTM::spectrum
 
 ## Completion for Zinit
 
 zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
 
-zinit ice as"completion"
+zinit ice wait lucid as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
 
-zinit ice as"completion"
+zinit ice wait lucid as"completion"
 zinit snippet https://github.com/esc/conda-zsh-completion/blob/master/_conda
 
-zinit wait lucid for \
-    as"completion" \
-          OMZP::docker/_docker \
-    as"completion" \
-          OMZP::fd/_fd
+zinit ice wait lucid as"completion"
+zinit snippet OMZP::fd/_fd
 
+zinit ice wait lucid as"completion"
+zinit snippet OMZP::docker/_docker
 
 ## Oh My Zsh
 [ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
