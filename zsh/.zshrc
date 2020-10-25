@@ -177,3 +177,5 @@ alias srd='conda deactivate'
 # autojump configuration to source
 zinit ice wait lucid
 zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
+
+setopt INC_APPEND_HISTORY
