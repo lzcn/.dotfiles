@@ -377,4 +377,7 @@ bind - split-window -v
 
 # status left/right content:
 tmux_conf_theme_status_left=" ❐ #S "
-tmux_conf_theme_status_right="#{prefix}#{pairing}#{synchronized}, #(curl http://wttr.in\?format\=1) , %R , %d %b | #{username}#{root} | #{hostname} "
+tmux_conf_theme_status_right="#{prefix}#{pairing}#{synchronized} , #(curl http://wttr.in\?format\=1) , %R , %d %b | #{username}#{root} | #{hostname} "
+
+# synchronized indicator
+tmux_conf_theme_synchronized="🖇"
