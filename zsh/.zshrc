@@ -52,8 +52,10 @@ fi
 # conda init
 if [[ -f $HOME/miniconda/bin/conda ]]; then
   _evalcache $HOME/miniconda/bin/conda shell.zsh hook
+  export PATH="$HOME/miniconda/bin:$PATH"
 elif [[ -f $HOME/anaconda/bin/conda ]]; then
   _evalcache $HOME/anaconda/bin/conda shell.zsh hook
+  export PATH="$HOME/anaconda/bin:$PATH"
 fi
 
 # about: rbenv init with Zinit
