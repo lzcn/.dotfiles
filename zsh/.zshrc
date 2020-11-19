@@ -27,7 +27,6 @@ autoload -Uz _zinit
 ## Theme
 
 zplugin ice depth=1; zplugin light romkatv/powerlevel10k
-[ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
 
 ## Plugins for Zinit
 
@@ -52,21 +51,14 @@ fi
 # conda init
 if [[ -f $HOME/miniconda/bin/conda ]]; then
   _evalcache $HOME/miniconda/bin/conda shell.zsh hook
-  export PATH="$HOME/miniconda/bin:$PATH"
 elif [[ -f $HOME/anaconda/bin/conda ]]; then
   _evalcache $HOME/anaconda/bin/conda shell.zsh hook
-  export PATH="$HOME/anaconda/bin:$PATH"
 fi
 
 # about: rbenv init with Zinit
 export PATH="$HOME/.rbenv/bin:$PATH"
 zinit ice wait lucid
 zinit load htlsne/zplugin-rbenv
-
-# about: conda init with Zinit
-# Z_INIT_CONDA_PREFIX=$HOME/miniconda
-# zinit ice wait lucid
-# zinit load lzcn/zplugin-conda-init
 
 # about: multi-word, syntax highlighted history searching for Zsh
 #
@@ -122,21 +114,6 @@ zinit snippet OMZP::docker/_docker
 ## Oh My Zsh
 [ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
 
-# function for activate/deactivate conda env
-# sra() {
-#   conda activate $1
-#   if [ -z "$_LD_LIBRARY_PATH" ]
-#   then
-#     export _LD_LIBRARY_PATH=$LD_LIBRARY_PATH
-#   fi
-#   export LD_LIBRARY_PATH="$CONDA_PREFIX/envs/$1/lib:$LD_LIBRARY_PATH"
-# }
-# srd() {
-#   conda deactivate
-#   export LD_LIBRARY_PATH=$_LD_LIBRARY_PATH
-#   unset _LD_LIBRARY_PATH
-# }
-
 # Conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
 
@@ -166,8 +143,7 @@ alias cls='colorls'
 alias cll='colorls -l'
 alias cla='colorls -lAh'
 
-# aliases for gpu
-alias watch-gpu='watch -n 0.1 nvidia-smi'
+# aliases for cluster-smi
 alias csmi='cluster-smi -p'
 
 # aliases for conda
@@ -180,4 +156,4 @@ alias srd='conda deactivate'
 zinit ice wait lucid
 zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
 
-setopt INC_APPEND_HISTORY
+[ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
