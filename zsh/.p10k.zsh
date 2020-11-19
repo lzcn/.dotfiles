@@ -31,7 +31,7 @@
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    # os_icon                 # os identifier
+    # os_icon               # os identifier
     dir                     # current directory
     context                 # user@hostname
     vcs                     # git status
@@ -90,9 +90,9 @@
     midnight_commander      # midnight commander shell (https://midnight-commander.org/)
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
     # vpn_ip                # virtual private network indicator
-    load                    # CPU load
-    disk_usage              # disk usage
-    ram                     # free RAM
+    # load                  # CPU load
+    # disk_usage            # disk usage
+    # ram                   # free RAM
     todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
     timewarrior             # timewarrior tracking status (https://timewarrior.net/)
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
@@ -101,9 +101,9 @@
     newline
     # ip                    # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
-    proxy                 # system-wide http/https/ftp proxy
-    battery               # internal battery
-    wifi                  # wifi speed
+    proxy                   # system-wide http/https/ftp proxy
+    battery                 # internal battery
+    wifi                    # wifi speed
     # example               # example user-defined segment (see prompt_example function below)
   )
 
@@ -111,7 +111,7 @@
   typeset -g POWERLEVEL9K_MODE=nerdfont-complete
   # When set to `moderate`, some icons will have an extra space after them. This is meant to avoid
   # icon overlap when using non-monospace fonts. When set to `none`, spaces are not added.
-  typeset -g POWERLEVEL9K_ICON_PADDING=moderate
+  typeset -g POWERLEVEL9K_ICON_PADDING=none
 
   # Basic style options that define the overall look of your prompt. You probably don't want to
   # change them.
