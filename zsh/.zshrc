@@ -25,7 +25,7 @@ autoload -Uz _zinit
 ### End of Zinit's installer chunk
 
 ## Theme
-
+[ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
 zplugin ice depth=1; zplugin light romkatv/powerlevel10k
 
 ## Plugins for Zinit
@@ -155,5 +155,3 @@ alias srd='conda deactivate'
 # autojump configuration to source
 zinit ice wait lucid
 zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
-
-[ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
