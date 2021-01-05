@@ -97,7 +97,7 @@ zinit wait lucid for \
 
 ## Completion for Zinit
 
-zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
+# zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
 
 zinit ice wait lucid as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
@@ -150,8 +150,13 @@ alias csmi='cluster-smi -p'
 alias sra='conda activate'
 alias srd='conda deactivate'
 
+# aliases for rm
+alias rm='echo "Please use trash-put."; false'
+
 ## Handy Tools
 
 # autojump configuration to source
 zinit ice wait lucid
 zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
