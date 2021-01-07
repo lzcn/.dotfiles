@@ -159,4 +159,4 @@ alias rm='echo "Please use trash-put."; false'
 zinit ice wait lucid
 zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
