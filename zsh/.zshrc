@@ -1,6 +1,4 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -24,61 +22,57 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
 
-## Theme
-[ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
-zplugin ice depth=1; zplugin light romkatv/powerlevel10k
+## --- Plugins ---
 
-## Plugins for Zinit
+# about: syntax-highlighting for Zsh
+zinit ice wait lucid atinit"zicompinit; zicdreplay"
+zinit light zdharma/fast-syntax-highlighting
+
+# about: fish-like autosuggestions for Zsh
+zinit ice wait lucid atload'_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
+
+# about: additional completion definitions for Zsh
+zinit ice wait lucid blockf atpull'zinit creinstall -q .'
+zinit light zsh-users/zsh-completions
+
+# about: multi-word, syntax highlighted history searching for Zsh
+#
+# usage: Ctrl-R
+zinit ice wait lucid
+zinit light zdharma/history-search-multi-word
+
+## --- Programs ---
+
+# about: junegunn/fzf-bin
+zinit ice wait lucid from"gh-r" as"program"
+zinit light junegunn/fzf-bin
+
+# aoubt: sharkdp/fd
+zinit ice wait lucid as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit light sharkdp/fd
+
+# atbout: sharkdp/bat
+zinit ice wait lucid as"command" from"gh-r" mv"bat* -> bat" pick"bat/bat"
+zinit light sharkdp/bat
+
+# anout: ogham/exa, replacement for ls
+zinit ice wait lucid wait"2" lucid from"gh-r" as"program" mv"exa* -> exa"
+zinit light ogham/exa
 
 # about: cache the output of an initialization command to speed up startup
 #
 # usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
 #        with `_evalcache hub alias -s` in setup
 #        to clear cache use `_evalcache_clear`
-zplugin light mroth/evalcache
-
-# homebrew init
-if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
-  _evalcache $HOME/.linuxbrew/bin/brew shellenv
-elif [[ -f $HOME/../linuxbrew/.linuxbrew/bin/brew ]]; then
-  _evalcache $HOME/../linuxbrew/.linuxbrew/bin/brew shellenv
-elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  _evalcache /home/linuxbrew/.linuxbrew/bin/brew shellenv
-elif [[ -f /usr/local/bin/brew ]]; then
-  _evalcache /usr/local/bin/brew shellenv
-fi
-
-# conda init
-if [[ -f $HOME/miniconda/bin/conda ]]; then
-  _evalcache $HOME/miniconda/bin/conda shell.zsh hook
-elif [[ -f $HOME/anaconda/bin/conda ]]; then
-  _evalcache $HOME/anaconda/bin/conda shell.zsh hook
-fi
+zinit light mroth/evalcache
 
 # about: rbenv init with Zinit
 export PATH="$HOME/.rbenv/bin:$PATH"
 zinit ice wait lucid
 zinit load htlsne/zplugin-rbenv
 
-# about: multi-word, syntax highlighted history searching for Zsh
-#
-# usage: Ctrl-R
-zinit ice wait lucid
-zinit load zdharma/history-search-multi-word
-
-# about: fish-like autosuggestions for Zsh
-zinit ice wait lucid atload'_zsh_autosuggest_start'
-zinit load zsh-users/zsh-autosuggestions
-
-# about: syntax-highlighting for Zsh
-zinit ice wait lucid atinit"zicompinit; zicdreplay"
-zinit load zdharma/fast-syntax-highlighting
-
-# about: additional completion definitions for Zsh
-zinit ice wait lucid blockf atpull'zinit creinstall -q .'
-zinit load zsh-users/zsh-completions
-
-## Plugins from Oy My Zsh and Prezto
+# plugins from Oy My Zsh
 zinit wait lucid for \
     OMZP::autojump \
     OMZP::colored-man-pages \
@@ -92,12 +86,28 @@ zinit wait lucid for \
     OMZP::fasd \
     OMZP::gitignore \
     OMZP::history \
+    OMZP::wd
+
+# plugins from Prezto
+zinit wait lucid for \
     PZTM::utility \
     PZTM::spectrum
 
-## Completion for Zinit
+## --- Snippets ---
 
-# zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
+# git aliases that used by Oh My ZSH
+zinit wait lucid for \
+        OMZL::git.zsh \
+  atload"unalias grv" \
+        OMZP::git
+
+# autojump configuration to source
+zinit ice wait lucid
+zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
+
+## --- Completion ---
+
+zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
 
 zinit ice wait lucid as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
@@ -111,10 +121,53 @@ zinit snippet OMZP::fd/_fd
 zinit ice wait lucid as"completion"
 zinit snippet OMZP::docker/_docker
 
-## Oh My Zsh
-[ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
+## --- Scripts ---
 
-# Conda clobbers HOST, so we save the real hostname into another variable.
+# about: a collection of extension:color mappings
+# ogham/exa also uses the definitions
+zinit ice wait"0c" lucid reset \
+    atclone"local P=${${(M)OSTYPE:#*darwin*}:+g}
+            \${P}sed -i \
+            '/DIR/c\DIR 38;5;63;1' LS_COLORS; \
+            \${P}dircolors -b LS_COLORS > c.zsh" \
+    atpull'%atclone' pick"c.zsh" nocompile'!' \
+    atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+zinit light trapd00r/LS_COLORS
+
+
+## --- Oh My Zsh ---
+if [[ ! -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}Oh My Zsh%F{220} Framework (%F{33}ohmyzsh/ohmyzsh%F{220})…%f"
+    command sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
+    --unattended --keep-zshrc && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
+
+export ZSH=$HOME/.oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+
+## --- Customization ---
+
+# homebrew init with _evalcache
+if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
+  _evalcache $HOME/.linuxbrew/bin/brew shellenv
+elif [[ -f $HOME/../linuxbrew/.linuxbrew/bin/brew ]]; then
+  _evalcache $HOME/../linuxbrew/.linuxbrew/bin/brew shellenv
+elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  _evalcache /home/linuxbrew/.linuxbrew/bin/brew shellenv
+elif [[ -f /usr/local/bin/brew ]]; then
+  _evalcache /usr/local/bin/brew shellenv
+fi
+
+# conda init with _evalcache
+if [[ -f $HOME/miniconda/bin/conda ]]; then
+  _evalcache $HOME/miniconda/bin/conda shell.zsh hook
+elif [[ -f $HOME/anaconda/bin/conda ]]; then
+  _evalcache $HOME/anaconda/bin/conda shell.zsh hook
+fi
+
+# conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
 
 precmd() {
@@ -144,19 +197,15 @@ alias cll='colorls -l'
 alias cla='colorls -lAh'
 
 # aliases for cluster-smi
-alias csmi='cluster-smi -p'
+alias csmi='cluster-smi'
 
 # aliases for conda
 alias sra='conda activate'
 alias srd='conda deactivate'
 
-# aliases for rm
-alias rm='echo "Please use trash-put."; false'
+## --- Theme ---
 
-## Handy Tools
-
-# autojump configuration to source
-zinit ice wait lucid
-zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
-
-# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# about: powerlevel10k theme
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
