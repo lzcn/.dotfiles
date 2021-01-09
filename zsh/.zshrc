@@ -42,24 +42,6 @@ zinit light zsh-users/zsh-completions
 zinit ice wait lucid
 zinit light zdharma/history-search-multi-word
 
-## --- Programs ---
-
-# about: junegunn/fzf-bin
-zinit ice wait lucid from"gh-r" as"program"
-zinit light junegunn/fzf-bin
-
-# aoubt: sharkdp/fd
-zinit ice wait lucid as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
-zinit light sharkdp/fd
-
-# atbout: sharkdp/bat
-zinit ice wait lucid as"command" from"gh-r" mv"bat* -> bat" pick"bat/bat"
-zinit light sharkdp/bat
-
-# anout: ogham/exa, replacement for ls
-zinit ice wait lucid wait"2" lucid from"gh-r" as"program" mv"exa* -> exa"
-zinit light ogham/exa
-
 # about: cache the output of an initialization command to speed up startup
 #
 # usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
