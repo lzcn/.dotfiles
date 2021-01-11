@@ -67,8 +67,7 @@ zinit wait lucid for \
     OMZP::extract \
     OMZP::fasd \
     OMZP::gitignore \
-    OMZP::history \
-    OMZP::wd
+    OMZP::history
 
 # plugins from Prezto
 zinit wait lucid for \
@@ -116,6 +115,11 @@ zinit ice wait"0c" lucid reset \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 zinit light trapd00r/LS_COLORS
 
+# about: 
+zplugin ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
+  atload="wd() { . wd.sh }" \
+  atpull'!git reset --hard'
+zplugin light mfaerevaag/wd
 
 ## --- Oh My Zsh ---
 if [[ ! -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
