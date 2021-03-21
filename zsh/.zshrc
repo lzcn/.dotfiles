@@ -57,6 +57,7 @@ zinit load htlsne/zplugin-rbenv
 # plugins from Oy My Zsh
 zinit wait lucid for \
     OMZP::autojump \
+    OMZP::brew \
     OMZP::colored-man-pages \
     OMZP::colorize \
     OMZP::command-not-found \
@@ -105,7 +106,6 @@ zinit snippet OMZP::docker/_docker
 ## --- Scripts ---
 
 # about: a collection of extension:color mappings
-# ogham/exa also uses the definitions
 zinit ice wait"0c" lucid reset \
     atclone"local P=${${(M)OSTYPE:#*darwin*}:+g}
             \${P}sed -i \
@@ -115,7 +115,7 @@ zinit ice wait"0c" lucid reset \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 zinit light trapd00r/LS_COLORS
 
-# about: 
+# about: an alternative to the cd
 zplugin ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
   atload="wd() { . wd.sh }" \
   atpull'!git reset --hard'
