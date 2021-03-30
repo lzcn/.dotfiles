@@ -89,7 +89,7 @@ zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
 
 ## --- Completion ---
 
-zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
+# zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
 
 zinit ice wait lucid as"completion"
 zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
