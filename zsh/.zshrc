@@ -166,8 +166,6 @@ preexec() {
 }
 
 export PATH="$HOME/bin:$PATH"
-# TODO: check before export
-export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
 
 # aliases for tmux
 alias ta='tmux attach -t'
