@@ -38,7 +38,7 @@ zinit light zsh-users/zsh-completions
 
 # about: multi-word, syntax highlighted history searching for Zsh
 #
-# usage: Ctrl-R
+# usage: ctrl-r
 zinit ice wait lucid
 zinit light zdharma/history-search-multi-word
 
@@ -67,6 +67,7 @@ zinit wait lucid for \
     OMZP::dotenv \
     OMZP::extract \
     OMZP::fasd \
+    OMZP::rsync \
     OMZP::gitignore \
     OMZP::history
 
