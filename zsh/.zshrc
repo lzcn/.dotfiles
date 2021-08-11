@@ -138,21 +138,25 @@ source $ZSH/oh-my-zsh.sh
 
 # homebrew init with _evalcache
 if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
-  _evalcache $HOME/.linuxbrew/bin/brew shellenv
+  HOMEBREW_PREFIX=$HOME/.linuxbrew/bin
 elif [[ -f $HOME/../linuxbrew/.linuxbrew/bin/brew ]]; then
-  _evalcache $HOME/../linuxbrew/.linuxbrew/bin/brew shellenv
+  HOMEBREW_PREFIX=$HOME/../linuxbrew/.linuxbrew/bin
 elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  _evalcache /home/linuxbrew/.linuxbrew/bin/brew shellenv
+  HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew/bin
 elif [[ -f /usr/local/bin/brew ]]; then
-  _evalcache /usr/local/bin/brew shellenv
+  HOMEBREW_PREFIX=/usr/local/bin
 fi
+_evalcache $HOMEBREW_PREFIX/brew shellenv
 
 # conda init with _evalcache
 if [[ -f $HOME/miniconda/bin/conda ]]; then
-  _evalcache $HOME/miniconda/bin/conda shell.zsh hook
+  CONDA_EXE=$HOME/miniconda/bin/conda
 elif [[ -f $HOME/anaconda/bin/conda ]]; then
-  _evalcache $HOME/anaconda/bin/conda shell.zsh hook
+  CONDA_EXE=$HOME/anaconda/bin/conda
+elif [[ -f /usr/local/Caskroom/miniconda/base/bin/conda ]]; then
+  CONDA_EXE=/usr/local/Caskroom/miniconda/base/bin/conda
 fi
+_evalcache $CONDA_EXE shell.zsh hook
 
 # conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
