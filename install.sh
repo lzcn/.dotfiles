@@ -80,7 +80,7 @@ setup_git() {
     symlink $HOME/.git-commit-template $DOTFILES/git/.git-commit-template
 }
 
-setup_brew() {
+install_homebrew() {
     title "Installing Homebrew"
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
@@ -111,7 +111,9 @@ setup_shell() {
     fi
 
     info "Setup dotfiles"
+    symlink $HOME/.zshenv $DOTFILES/zsh/.zshenv
     symlink $HOME/.zshrc $DOTFILES/zsh/.zshrc
+    symlink $HOME/.p10k.zsh $DOTFILES/zsh/.p10k.zsh
 
 }
 
@@ -121,9 +123,17 @@ setup_tmux() {
     symlink $HOME/.tmux.conf.local $DOTFILES/tmux/.tmux.conf.local
 }
 
+setup_flake() {
+    title "Configuring flake"
+    symlink $HOME/.config/flake8 $DOTFILES/config/flake8
+}
+
 case "$1" in
 homebrew)
-    setup_brew
+    install_homebrew
+    ;;
+flake)
+    setup_flake
     ;;
 git)
     setup_git
@@ -135,7 +145,7 @@ tmux)
     setup_tmux
     ;;
 all)
-    setup_brew
+    setup_flake
     setup_git
     setup_shell
     setup_tmux
