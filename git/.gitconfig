@@ -5,7 +5,7 @@
 	editor = vim
 	excludesfile = ~/.gitignore_global
 [include]
-	path = ~/.gitalias/gitalias.txt
+	path = ~/.gitalias
 [alias]
 	st = status -sb
 	unstage = restore --staged
@@ -15,4 +15,4 @@
 	process = git-lfs filter-process
 	required = true
 [commit]
-	template = /share2/home/zhi/.git-commit-template
+	template = ~/.git-commit-template
