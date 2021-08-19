@@ -150,13 +150,13 @@ _evalcache $HOMEBREW_PREFIX/brew shellenv
 
 # conda init with _evalcache
 if [[ -f $HOME/miniconda/bin/conda ]]; then
-  CONDA_EXE=$HOME/miniconda/bin/conda
+  CONDA_PREFIX=$HOME/miniconda/bin
 elif [[ -f $HOME/anaconda/bin/conda ]]; then
-  CONDA_EXE=$HOME/anaconda/bin/conda
+  CONDA_PREFIX=$HOME/anaconda/bin
 elif [[ -f /usr/local/Caskroom/miniconda/base/bin/conda ]]; then
-  CONDA_EXE=/usr/local/Caskroom/miniconda/base/bin/conda
+  CONDA_PREFIX=/usr/local/Caskroom/miniconda/base/bin
 fi
-_evalcache $CONDA_EXE shell.zsh hook
+_evalcache $CONDA_PREFIX/conda shell.zsh hook
 
 # conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
