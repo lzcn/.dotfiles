@@ -3,6 +3,52 @@ DOTFILES="$(pwd)"
 
 source $DOTFILES/utils.sh
 
+setup_brew() {
+    brew install \
+        bat \
+        git \
+        ncdu \
+        node \
+        tldr
+    if is_linux; then
+        brew install zsh
+    fi
+    if is_osx; then
+        brew install \
+            anki \
+            apparency \
+            atext \
+            blueutil \
+            calibre \
+            clash-for-windows \
+            iina \
+            jabref \
+            karabiner-elements \
+            kindle \
+            latexit \
+            macfuse \
+            mactex \
+            mathpix-snipping-tool \
+            microsoft-auto-update \
+            microsoft-remote-desktop \
+            miniconda \
+            pdf-expert \
+            qlcolorcode \
+            qlimagesize \
+            qlmarkdown \
+            qlstephen \
+            qlvideo \
+            quicklook-json \
+            quicklookase \
+            suspicious-package \
+            synergy \
+            tencent-lemon \
+            texstudio \
+            xpra \
+            xquartz
+    fi
+}
+
 setup_git() {
     title "Configuring Git"
     symlink $HOME/.gitalias $DOTFILES/git/.gitalias/gitalias.txt
@@ -31,6 +77,9 @@ setup_flake() {
 }
 
 case "$1" in
+brew)
+    setup_brew
+    ;;
 flake)
     setup_flake
     ;;
@@ -50,7 +99,7 @@ all)
     setup_tmux
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {flake|git|shell|tmux|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {brew|flake|git|shell|tmux|all}\n"
     exit 1
     ;;
 esac
