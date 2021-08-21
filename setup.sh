@@ -3,6 +3,35 @@ DOTFILES="$(pwd)"
 
 source $DOTFILES/utils.sh
 
+setup_env() {
+    if ! check_string_in_file HOMEBREW_PREFIX ~/.zshenv; then
+        info 'Setup the $HOMEBREW_PREFIX or Skip (N)'
+        read HOMEBREW_PREFIX
+        while ! ([[ "$HOMEBREW_PREFIX" =~ ^[Nn]$ ]] || command_exists "$HOMEBREW_PREFIX/bin/brew"); do
+            warning "$HOMEBREW_PREFIX/bin/brew not found"
+            info 'Setup the $HOMEBREW_PREFIX or Skip (N)'
+            read HOMEBREW_PREFIX
+        done
+        if command_exists "$HOMEBREW_PREFIX/bin/brew"; then
+            info 'Added $HOMEBREW_PREFIX to .zshenv'
+            append_string_in_file "\nexport HOMEBREW_PREFIX=$HOMEBREW_PREFIX" ~/.zshenv
+        fi
+    fi
+    if ! check_string_in_file CONdDA_PREFIX ~/.zshenv; then
+        info 'Setup the $CONDA_PREFIX  or Skip (N)'
+        read CONDA_PREFIX
+        while ! ([[ "$CONDA_PREFIX" =~ ^[Nn]$ ]] || command_exists "$CONDA_PREFIX/bin/conda"); do
+            warning "$CONDA_PREFIX/bin/conda not found"
+            info 'Setup the $CONDA_PREFIX or Skip (N)'
+            read CONDA_PREFIX
+        done
+        if command_exists "$CONDA_PREFIX/bin/conda"; then
+            info 'Added $CONDA_PREFIX to .zshenv'
+            append_string_in_file "\nexport CONDA_PREFIX=$CONDA_PREFIX" ~/.zshenv
+        fi
+    fi
+}
+
 setup_brew() {
     brew install \
         bat \
@@ -57,9 +86,9 @@ setup_git() {
     symlink $HOME/.git-commit-template $DOTFILES/git/.git-commit-template
 }
 
-setup_shell() {
-    title "Configuring Shell"
-    symlink $HOME/.zshenv $DOTFILES/zsh/.zshenv
+setup_zsh() {
+    title "Configuring Zsh"
+    # symlink $HOME/.zshenv $DOTFILES/zsh/.zshenv
     symlink $HOME/.zshrc $DOTFILES/zsh/.zshrc
     symlink $HOME/.p10k.zsh $DOTFILES/zsh/.p10k.zsh
 
@@ -80,26 +109,29 @@ case "$1" in
 brew)
     setup_brew
     ;;
+env)
+    setup_env
+    ;;
 flake)
     setup_flake
     ;;
 git)
     setup_git
     ;;
-shell)
-    setup_shell
-    ;;
 tmux)
     setup_tmux
+    ;;
+zsh)
+    setup_zsh
     ;;
 all)
     setup_flake
     setup_git
-    setup_shell
+    setup_zsh
     setup_tmux
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {brew|flake|git|shell|tmux|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {brew|env|flake|git|tmux|zsh|all}\n"
     exit 1
     ;;
 esac
