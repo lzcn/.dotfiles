@@ -15,11 +15,22 @@ git submodule update --init --recursive
 ```
 
 2. install dependencies
+
 ```bash
 ./install.sh -h
 ```
 
 3. setup dotfiles
+
+3.1 manully add env to `~/.zshenv` or run `./setup.sh env`
+
+```
+export HOMEBREW_PREFIX=
+export CONDA_PREFIX=
+```
+
+3.2 setup dotfiles
+
 ```bash
 ./setup.sh -h
 ```

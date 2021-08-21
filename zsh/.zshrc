@@ -137,26 +137,10 @@ source $ZSH/oh-my-zsh.sh
 ## --- Customization ---
 
 # homebrew init with _evalcache
-if [[ -f $HOME/.linuxbrew/bin/brew ]]; then
-  HOMEBREW_PREFIX=$HOME/.linuxbrew/bin
-elif [[ -f $HOME/../linuxbrew/.linuxbrew/bin/brew ]]; then
-  HOMEBREW_PREFIX=$HOME/../linuxbrew/.linuxbrew/bin
-elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew/bin
-elif [[ -f /usr/local/bin/brew ]]; then
-  HOMEBREW_PREFIX=/usr/local/bin
-fi
-_evalcache $HOMEBREW_PREFIX/brew shellenv
+[[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
 
 # conda init with _evalcache
-if [[ -f $HOME/miniconda/bin/conda ]]; then
-  CONDA_PREFIX=$HOME/miniconda/bin
-elif [[ -f $HOME/anaconda/bin/conda ]]; then
-  CONDA_PREFIX=$HOME/anaconda/bin
-elif [[ -f /usr/local/Caskroom/miniconda/base/bin/conda ]]; then
-  CONDA_PREFIX=/usr/local/Caskroom/miniconda/base/bin
-fi
-_evalcache $CONDA_PREFIX/conda shell.zsh hook
+[[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
 
 # conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"

@@ -68,3 +68,15 @@ command_exists() {
     local command="$1"
     command -v "$command" &>/dev/null
 }
+
+check_string_in_file() {
+    string=$1
+    filename=$2
+    grep -qF $string $2 &>/dev/null
+}
+
+append_string_in_file() {
+    string=$1
+    filename=$2
+    echo -e "$string" >> $filename
+}
