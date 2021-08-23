@@ -17,7 +17,7 @@ setup_env() {
             append_string_in_file "\nexport HOMEBREW_PREFIX=$HOMEBREW_PREFIX" ~/.zshenv
         fi
     fi
-    if ! check_string_in_file CONdDA_PREFIX ~/.zshenv; then
+    if ! check_string_in_file CONDA_PREFIX ~/.zshenv; then
         info 'Setup the $CONDA_PREFIX  or Skip (N)'
         read CONDA_PREFIX
         while ! ([[ "$CONDA_PREFIX" =~ ^[Nn]$ ]] || command_exists "$CONDA_PREFIX/bin/conda"); do
