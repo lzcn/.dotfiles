@@ -3,12 +3,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-## Zinit
+## --- Zinit ---
 # - To update Zinit, issue zinit self-update
 # - To update all plugins, issue zinit update
-# - To update only a single plugin, issue zinit update NAME
-
-### Added by Zinit's installer
+# - To update only a single plugin, issue zinit update <plugin>
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
@@ -20,7 +18,16 @@ fi
 source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-### End of Zinit's installer chunk
+
+## --- Oh My Zsh ---
+[[ ! -d $HOME/.oh-my-zsh ]] || export ZSH=$HOME/.oh-my-zsh && source $ZSH/oh-my-zsh.sh
+
+## --- Theme ---
+
+# about: powerlevel10k theme
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ## --- Plugins ---
 
@@ -49,11 +56,6 @@ zinit light zdharma/history-search-multi-word
 #        to clear cache use `_evalcache_clear`
 zinit light mroth/evalcache
 
-# about: rbenv init with Zinit
-export PATH="$HOME/.rbenv/bin:$PATH"
-zinit ice wait lucid
-zinit load htlsne/zplugin-rbenv
-
 # plugins from Oy My Zsh
 zinit wait lucid for \
     OMZP::autojump \
@@ -78,61 +80,17 @@ zinit wait lucid for \
 
 ## --- Snippets ---
 
-# git aliases that used by Oh My ZSH
-zinit wait lucid for \
-        OMZL::git.zsh \
-  atload"unalias grv" \
-        OMZP::git
-
-# autojump configuration to source
-zinit ice wait lucid
-zinit snippet https://github.com/wting/autojump/blob/master/bin/autojump.zsh
 
 ## --- Completion ---
 
-# zinit snippet https://github.com/ThiefMaster/zsh-config/blob/master/zshrc.d/completion.zsh
-
-zinit ice wait lucid as"completion"
-zinit snippet https://github.com/zsh-users/zsh/blob/master/Completion/Unix/Command/_tmux
-
-zinit ice wait lucid as"completion"
-zinit snippet https://github.com/esc/conda-zsh-completion/blob/master/_conda
-
-zinit ice wait lucid as"completion"
-zinit snippet OMZP::fd/_fd
-
-zinit ice wait lucid as"completion"
-zinit snippet OMZP::docker/_docker
 
 ## --- Scripts ---
-
-# about: a collection of extension:color mappings
-zinit ice wait"0c" lucid reset \
-    atclone"local P=${${(M)OSTYPE:#*darwin*}:+g}
-            \${P}sed -i \
-            '/DIR/c\DIR 38;5;63;1' LS_COLORS; \
-            \${P}dircolors -b LS_COLORS > c.zsh" \
-    atpull'%atclone' pick"c.zsh" nocompile'!' \
-    atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
-zinit light trapd00r/LS_COLORS
 
 # about: an alternative to the cd
 zplugin ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
   atload="wd() { . wd.sh }" \
   atpull'!git reset --hard'
 zplugin light mfaerevaag/wd
-
-## --- Oh My Zsh ---
-if [[ ! -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}Oh My Zsh%F{220} Framework (%F{33}ohmyzsh/ohmyzsh%F{220})…%f"
-    command sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
-    --unattended --keep-zshrc && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
-fi
-
-export ZSH=$HOME/.oh-my-zsh
-source $ZSH/oh-my-zsh.sh
 
 ## --- Customization ---
 
@@ -141,6 +99,10 @@ source $ZSH/oh-my-zsh.sh
 
 # conda init with _evalcache
 [[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
+
+# rbenv init with _evalcache
+[[ ! -f $HOME/.rbenv/bin ]] ||  export PATH="$HOME/.rbenv/bin:$PATH"
+! command -v "rbenv" &>/dev/null  || _evalcache rbenv init -
 
 # conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
@@ -154,6 +116,7 @@ preexec() {
     HOST="${OLDHOST}"
 }
 
+# path
 export PATH="$HOME/bin:$PATH"
 
 # aliases for tmux
@@ -175,10 +138,3 @@ alias csmi='cluster-smi'
 # aliases for conda
 alias sra='conda activate'
 alias srd='conda deactivate'
-
-## --- Theme ---
-
-# about: powerlevel10k theme
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
