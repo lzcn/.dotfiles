@@ -4,6 +4,10 @@ DOTFILES="$(pwd)"
 source $DOTFILES/utils.sh
 
 setup_env() {
+    # Setup environment variables
+    if ! check_string_in_file PATH=$DOTFILES/bin ~/.zshenv; then
+        append_string_in_file "\nexport PATH=$DOTFILES/bin:\$PATH" ~/.zshenv
+    fi
     if ! check_string_in_file HOMEBREW_PREFIX ~/.zshenv; then
         info 'Setup the $HOMEBREW_PREFIX or Skip (N)'
         read HOMEBREW_PREFIX
