@@ -58,11 +58,13 @@ zinit light mroth/evalcache
 
 # plugins from Oy My Zsh
 zinit wait lucid for \
+    OMZP::autojump \
     OMZP::brew \
     OMZP::colored-man-pages \
     OMZP::colorize \
     OMZP::command-not-found \
     OMZP::cp \
+    OMZP::dotenv \
     OMZP::dircycle \
     OMZP::dirhistory \
     OMZP::extract \
