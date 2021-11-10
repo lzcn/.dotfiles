@@ -11,11 +11,7 @@ install_homebrew() {
 install_zinit() {
     title "Installing Zinit"
     if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-        info "Installing DHARMA Initiative Plugin Manager zdharma/zinit…"
-        command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-        command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" &&
-            info "Installation successful." ||
-            info "The clone has failed."
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/master/doc/install.sh)"
     else
         info "Found Zinit installed."
     fi
