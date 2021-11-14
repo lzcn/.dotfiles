@@ -5,7 +5,11 @@ source $DOTFILES/utils.sh
 
 install_homebrew() {
     title "Installing Homebrew"
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if command_exists brew; then
+        success "Homebrew already installed"
+    else
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
 }
 
 install_zinit() {
@@ -13,20 +17,16 @@ install_zinit() {
     if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/master/doc/install.sh)"
     else
-        info "Found Zinit installed."
+        success "Zinit already installed."
     fi
 }
 
 install_ohmyzsh() {
-    title "Installing Oh-My-Zsh ..."
+    title "Installing Oh-My-Zsh"
     if [[ ! -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
-        info "Installing Oh My Zsh Framework ohmyzsh/ohmyzsh…"
-        command sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
-            --unattended --keep-zshrc &&
-            info "Installation successful." ||
-            info "The clone has failed."
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     else
-        info "Found Oh-My-Zsh installed."
+        success "Oh-My-Zsh already installed."
     fi
 
 }
