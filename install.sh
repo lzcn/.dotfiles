@@ -14,8 +14,8 @@ install_homebrew() {
 
 install_zinit() {
     title "Installing Zinit"
-    if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/master/doc/install.sh)"
+    if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+        sh -c "$(curl -fsSL https://git.io/zinit-install)"
     else
         success "Zinit already installed."
     fi
