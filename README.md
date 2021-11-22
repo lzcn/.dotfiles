@@ -44,13 +44,3 @@ This repository contains my personal configuration files, scripts for better ter
         ./setup.sh -h
         Usage: setup.sh {brew|env|flake|git|tmux|zsh|all}
         ```
-
-## Zsh configuration
-
-I use `oh-my-zsh` as the zsh framework. To speed up the load of configurations, I use `zinit` to manage the plugins. If you use the [powerlevel10k](https://github.com/romkatv/powerlevel10k) theme and enale the instant prompt (Zsh>=5.4), you might not need the `zinit`. `zsh` is the default shell for MacOS but not for Linux. Some `Linux` distributions only support an older version of `zsh` if installed from the official package maneger. If you do not have the permission to change the default shell or you do want to manually install the newest version of `zsh`. You can install zsh with homebew and enable the local installed `zsh` under the `bash` shell by adding the following lines at the top of `.bash_profile` or `.bashrc`:
-```
-if [[ -f /path/to/zsh  ]]; then
-  export SHELL=/path/to/zsh
-  exec /path/to/zsh -l
-fi
-```
