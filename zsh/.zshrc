@@ -118,7 +118,7 @@ zplugin light mfaerevaag/wd
 
 # rbenv init with _evalcache
 [[ ! -d $HOME/.rbenv/bin ]] ||  export PATH="$HOME/.rbenv/bin:$PATH"
-! command -v "rbenv" &>/dev/null  || _evalcache rbenv init -
+[[ ! (( $+commands[rbenv] )) ]]  || _evalcache rbenv init -
 
 # conda clobbers HOST, so we save the real hostname into another variable.
 HOSTNAME="$(hostname)"
