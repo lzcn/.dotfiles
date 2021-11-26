@@ -31,9 +31,8 @@ zinit light-mode for \
 ### End of Zinit's installer chunk
 
 ## --- Oh My Zsh ---
-if 	[[ "$OSTYPE" == linux* ]] && [[ -d $HOME/.oh-my-zsh ]]; then
-    export ZSH=$HOME/.oh-my-zsh && source $ZSH/oh-my-zsh.sh
-fi
+[[ ! -d $HOME/.oh-my-zsh ]] || export ZSH=$HOME/.oh-my-zsh && source $ZSH/oh-my-zsh.sh
+
 ## --- Theme ---
 
 # about: powerlevel10k theme
