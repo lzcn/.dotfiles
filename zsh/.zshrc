@@ -67,9 +67,20 @@ zinit light zdharma-continuum/history-search-multi-word
 #        to clear cache use `_evalcache_clear`
 zinit light mroth/evalcache
 
+# homebrew init with _evalcache
+[[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
+
+# conda init with _evalcache
+[[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
+
+# if rbenv is installed, initialize it
+(( ! $+commands[rbenv] )) || _evalcache rbenv init -
+
+# load autojump plugin if installed
+(( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
+
 # plugins from Oy My Zsh
 zinit wait lucid for \
-    OMZP::autojump \
     OMZP::brew \
     OMZP::colored-man-pages \
     OMZP::colorize \
@@ -94,9 +105,6 @@ zinit wait lucid for \
     PZTM::command-not-found \
     PZTM::spectrum
 
-## --- Snippets ---
-
-
 ## --- Completion ---
 
 
@@ -108,29 +116,7 @@ zplugin ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
   atpull'!git reset --hard'
 zplugin light mfaerevaag/wd
 
-## --- Customization ---
-
-# homebrew init with _evalcache
-[[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
-
-# conda init with _evalcache
-[[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
-
-# rbenv init with _evalcache
-[[ ! -d $HOME/.rbenv/bin ]] ||  export PATH="$HOME/.rbenv/bin:$PATH"
-[[ ! (( $+commands[rbenv] )) ]]  || _evalcache rbenv init -
-
-# conda clobbers HOST, so we save the real hostname into another variable.
-HOSTNAME="$(hostname)"
-
-precmd() {
-    OLDHOST="${HOST}"
-    HOST="${HOSTNAME}"
-}
-
-preexec() {
-    HOST="${OLDHOST}"
-}
+## --- Aliases ---
 
 # aliases for tmux
 alias ta='tmux attach -t'
@@ -152,18 +138,17 @@ alias csmi='cluster-smi'
 alias sra='conda activate'
 alias srd='conda deactivate'
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
+## --- Others ---
+
+# conda clobbers HOST, so we save the real hostname into another variable.
+HOSTNAME="$(hostname)"
+
+precmd() {
+    OLDHOST="${HOST}"
+    HOST="${HOSTNAME}"
+}
+
+preexec() {
+    HOST="${OLDHOST}"
+}
