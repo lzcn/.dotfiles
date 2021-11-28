@@ -12,6 +12,12 @@ install_homebrew() {
     fi
 }
 
+install_submodules() {
+    title "Installing submodules"
+    git submodule update --init --recursive
+    success "Submodules installed"
+}
+
 install_zinit() {
     title "Installing Zinit"
     if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
@@ -44,6 +50,7 @@ zinit)
 all)
     install_homebrew
     install_ohmyzsh
+    install_submodules
     install_zinit
     ;;
 *)
