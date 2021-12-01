@@ -37,48 +37,11 @@ setup_env() {
 }
 
 setup_brew() {
-    brew install \
-        bat \
-        git \
-        ncdu \
-        node \
-        tldr
+    brew install bat git ncdu node tldr
     if is_linux; then
         brew install zsh
-    fi
-    if is_osx; then
-        brew install \
-            anki \
-            apparency \
-            atext \
-            blueutil \
-            calibre \
-            clash-for-windows \
-            iina \
-            jabref \
-            karabiner-elements \
-            kindle \
-            latexit \
-            macfuse \
-            mactex \
-            mathpix-snipping-tool \
-            microsoft-auto-update \
-            microsoft-remote-desktop \
-            miniconda \
-            pdf-expert \
-            qlcolorcode \
-            qlimagesize \
-            qlmarkdown \
-            qlstephen \
-            qlvideo \
-            quicklook-json \
-            quicklookase \
-            suspicious-package \
-            synergy \
-            tencent-lemon \
-            texstudio \
-            xpra \
-            xquartz
+    elif is_osx; then
+        brew install apparency blueutil mactex qlcolorcode qlimagesize qlmarkdown qlstephen qlvideo quicklook-json quicklookase suspicious-package
     fi
 }
 
