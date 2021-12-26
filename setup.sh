@@ -61,6 +61,12 @@ setup_zsh() {
 
 }
 
+setup_nvim() {
+    title "Configuring Neo-Vim"
+    symlink $HOME/.config/nvim/init.vim $DOTFILES/nvim/init.vim
+
+}
+
 setup_tmux() {
     title "Configuring Tmux"
     symlink $HOME/.tmux.conf $DOTFILES/tmux/.tmux/.tmux.conf
@@ -84,6 +90,9 @@ flake)
     ;;
 git)
     setup_git
+    ;;
+nvim)
+    setup_nvim
     ;;
 tmux)
     setup_tmux
