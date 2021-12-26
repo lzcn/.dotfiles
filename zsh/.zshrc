@@ -157,3 +157,5 @@ precmd() {
 preexec() {
     HOST="${OLDHOST}"
 }
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
