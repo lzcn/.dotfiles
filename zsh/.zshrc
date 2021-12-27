@@ -143,6 +143,8 @@ alias csmi='cluster-smi'
 alias sra='conda activate'
 alias srd='conda deactivate'
 
+# use neo-vim
+alias vim='nvim'
 
 ## --- Others ---
 
