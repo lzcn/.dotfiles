@@ -96,7 +96,18 @@ endfunction
 
 
 let mapleader=","
+" terminal mode
+tnoremap <Esc> <C-\><C-n>
+nnoremap S :w<CR>
+" normal mode
+nnoremap Q :q<CR>
+nnoremap R :source $MYVIMRC<CR>
+" NERDTree
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
+
+" insert mode
+inoremap jk <Esc>
+
