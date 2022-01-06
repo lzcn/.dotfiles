@@ -65,7 +65,6 @@ return packer.startup(function(use)
   -- Simple plugins can be specified as strings
   use '9mm/vim-closer'
   use 'github/copilot.vim'
-
   use "lazytanuki/nvim-mapper"
   use "ThePrimeagen/refactoring.nvim"
   
@@ -93,6 +92,7 @@ return packer.startup(function(use)
 
   -- Telescope
   use "nvim-telescope/telescope.nvim"
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   -- Treesitter
   use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }

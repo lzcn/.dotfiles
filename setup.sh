@@ -37,7 +37,7 @@ setup_env() {
 }
 
 setup_brew() {
-    brew install bat git ncdu node tldr
+    brew install bat git ncdu node tldr zsh fd ripgrep
     if is_linux; then
         brew install zsh
     elif is_osx; then
