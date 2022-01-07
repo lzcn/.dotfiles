@@ -61,9 +61,9 @@ setup_zsh() {
 
 }
 
-setup_nvim() {
-    title "Configuring Neo-Vim"
-    symlink $HOME/.config/nvim $DOTFILES/nvim
+setup_lvim() {
+    title "Configuring Lunar Vim"
+    symlink $HOME/.config/lvim $DOTFILES/lvim
 
 }
 
@@ -91,8 +91,8 @@ flake)
 git)
     setup_git
     ;;
-nvim)
-    setup_nvim
+lvim)
+    setup_lvim
     ;;
 tmux)
     setup_tmux
@@ -103,6 +103,7 @@ zsh)
 all)
     setup_flake
     setup_git
+    setup_lvim
     setup_zsh
     setup_tmux
     ;;
