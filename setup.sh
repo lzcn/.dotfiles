@@ -36,6 +36,11 @@ setup_env() {
     fi
 }
 
+setup_alacritty() {
+    title "Configuring Alacritty"
+    symlink $HOME/.config/alacritty $DOTFILES/config/alacritty
+}
+
 setup_brew() {
     brew install bat git ncdu node tldr zsh fd ripgrep
     if is_linux; then
@@ -79,6 +84,9 @@ setup_flake() {
 }
 
 case "$1" in
+alacritty)
+    setup_alacritty
+    ;;
 brew)
     setup_brew
     ;;
@@ -101,6 +109,7 @@ zsh)
     setup_zsh
     ;;
 all)
+    setup_alacritty
     setup_flake
     setup_git
     setup_lvim
