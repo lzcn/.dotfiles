@@ -11,7 +11,7 @@ window:
 scrolling:
   history: 10000
   multiplier: 3
-ackground_opacity: 0.9
+background_opacity: 0.9
 
 # Fonts settings
 font:
@@ -43,12 +43,6 @@ colors:
     background: '#282a36'
     foreground: '#f8f8f2'
     bright_foreground: '#ffffff'
-  cursor:
-    text: CellBackground
-    cursor: CellForeground
-  vi_mode_cursor:
-    text: CellBackground
-    cursor: CellForeground
   search:
     matches:
       foreground: '#44475a'
@@ -66,9 +60,6 @@ colors:
     end:
       foreground: '#f1fa8c'
       background: '#282a36'
-  line_indicator:
-    foreground: None
-    background: None
   selection:
     text: CellForeground
     background: '#44475a'
