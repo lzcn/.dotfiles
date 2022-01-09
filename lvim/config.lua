@@ -13,7 +13,7 @@ lvim.format_on_save = true
 lvim.colorscheme = "dracula"
 lvim.lsp.diagnostics.virtual_text = false
 lvim.transparent_window = true
-
+vim.opt.timeoutlen = 400
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
 -- add your own keymapping
