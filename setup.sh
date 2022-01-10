@@ -81,6 +81,7 @@ setup_zsh() {
 setup_lvim() {
     title "Configuring Lunar Vim"
     symlink $HOME/.config/lvim $DOTFILES/lvim
+    symlink $HOME/.local/share/lunarvim/lvim/lua/lv-user-config $DOTFILES/lvim/user
 
 }
 

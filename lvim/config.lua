@@ -15,17 +15,17 @@ lvim.lsp.diagnostics.virtual_text = false
 lvim.transparent_window = true
 vim.opt.timeoutlen = 400
 -- lualine configurations
-require("lvim.user.lualine")
+require("lv-user-config.lualine")
 -- toggleterm configurations
-require("lvim.user.toggleterm")
+require("lv-user-config.toggleterm")
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
-require("lvim.user.keymaps")
+require("lv-user-config.keymaps")
 -- telescope
-require("lvim.user.telescope")
+require("lv-user-config.telescope")
 
 -- Use which-key to add extra bindings with the leader-key prefix
-require("lvim.user.whichkey")
+require("lv-user-config.whichkey")
 -- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 -- lvim.builtin.which_key.mappings["t"] = {
 --   name = "+Trouble",
