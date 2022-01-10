@@ -10,7 +10,7 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "dracula"
+lvim.colorscheme = "onedarker"
 lvim.lsp.diagnostics.virtual_text = false
 lvim.transparent_window = true
 vim.opt.timeoutlen = 400
