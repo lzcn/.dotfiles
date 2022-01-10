@@ -42,7 +42,19 @@ setup_alacritty() {
 }
 
 setup_brew() {
-    brew install bat git ncdu node tldr zsh fd ripgrep
+    brew install \
+      autojump \
+      bat \
+      fd \
+      fzf \
+      git \
+      lazygit \
+      ncdu \
+      node \
+      ripgrep \
+      codespell \
+      tldr \
+      zsh 
     if is_linux; then
         brew install zsh
     elif is_osx; then
