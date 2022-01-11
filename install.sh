@@ -3,11 +3,14 @@ DOTFILES="$(pwd)"
 
 source $DOTFILES/utils.sh
 
-install_nvim() {
-    # install vim-plugin
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-
+install_lvim() {
+    # install lunarvim
+    title "Installing LunarVim"
+    if command_exists lvim; then
+      success "LunarVim already installed"
+    else
+      bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)
+    fi
 }
 
 install_homebrew() {
@@ -45,6 +48,9 @@ install_ohmyzsh() {
 }
 
 case "$1" in
+lvim)
+    install_lvim
+    ;;
 homebrew)
     install_homebrew
     ;;
@@ -61,7 +67,7 @@ all)
     install_zinit
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {homebrew|ohmyzsh|zinit|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {livm|homebrew|ohmyzsh|zinit|all}\n"
     exit 1
     ;;
 esac
