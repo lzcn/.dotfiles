@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 COLOR_BLUE="\033[1;34m"
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_GREEN="\033[1;32m"
@@ -57,11 +58,11 @@ symlink() {
 }
 
 is_osx() {
-    [ $(uname) == "Darwin" ]
+    [ "$(uname)" == "Darwin" ]
 }
 
 is_linux() {
-    [ $(uname) == "Linux" ]
+    [ "$(uname)" == "Linux" ]
 }
 
 command_exists() {
@@ -78,5 +79,5 @@ check_string_in_file() {
 append_string_in_file() {
     string=$1
     filename=$2
-    echo -e "$string" >> $filename
+    echo "$string" >> $filename
 }
