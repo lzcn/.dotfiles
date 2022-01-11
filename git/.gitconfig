@@ -9,6 +9,7 @@
 [alias]
 	st = status -sb
 	unstage = restore --staged
+  get = !git fetch --prune && git pull --rebase && git submodule update --init --recursive
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
