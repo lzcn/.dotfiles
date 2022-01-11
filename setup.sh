@@ -55,22 +55,8 @@ setup_alacritty() {
 }
 
 setup_brew() {
-    brew install \
-      autojump \
-      bat \
-      fd \
-      fzf \
-      git \
-      lazygit \
-      ncdu \
-      node \
-      ripgrep \
-      codespell \
-      tldr \
-      zsh 
-    if is_linux; then
-        brew install zsh
-    elif is_osx; then
+    xargs brew install < brew.txt
+    if is_osx; then
         brew install apparency blueutil mactex qlcolorcode qlimagesize qlmarkdown qlstephen qlvideo quicklook-json quicklookase suspicious-package
     fi
 }

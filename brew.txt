@@ -1,0 +1,16 @@
+autojump
+bat
+codespell
+fd
+fzf
+git
+lazygit
+ncdu
+node
+node
+rbenv
+ripgrep
+stow
+tldr
+tmux
+zsh
