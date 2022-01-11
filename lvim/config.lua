@@ -10,13 +10,14 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = false
-lvim.colorscheme = "dracula"
-lvim.lsp.diagnostics.virtual_text = false
+lvim.colorscheme = "onedarker"
 -- lvim.transparent_window = true
 vim.opt.timeoutlen = 500
+vim.opt.relativenumber = true
 
 -- lualine configurations
 require("lv-user-config.lualine")
+
 -- toggleterm configurations
 require("lv-user-config.toggleterm")
 
@@ -36,6 +37,11 @@ lvim.builtin.notify.active = false
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
+
+-- gitsigns
+lvim.builtin.gitsigns.opts.numhl = true
+lvim.builtin.gitsigns.opts.signs.delete.text = "▎"
+lvim.builtin.gitsigns.opts.signs.topdelete.text = "▎"
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -59,6 +65,7 @@ lvim.builtin.treesitter.highlight.enabled = true
 
 -- ---@usage disable automatic installation of servers
 -- lvim.lsp.automatic_servers_installation = false
+lvim.lsp.diagnostics.virtual_text = false
 
 -- ---@usage Select which servers should be configured manually. Requires `:LvimCacheRest` to take effect.
 -- See the full default list `:lua print(vim.inspect(lvim.lsp.override))`
