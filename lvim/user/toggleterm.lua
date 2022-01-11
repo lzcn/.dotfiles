@@ -1,8 +1,9 @@
-local ok, _ = pcall(require, "toggleterm")
-if not ok then
-  print("Plugin: toggleterm not loaded")
-end
-
+-- local ok, _ = pcall(require, "toggleterm")
+-- if not ok then
+--   print("toggleterm not loaded")
+--   return
+-- end
+--
 
 
 function _G.set_terminal_keymaps()
@@ -18,7 +19,13 @@ end
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
 lvim.builtin.terminal.open_mapping = [[<C-\>]]
-local Terminal = require("toggleterm.terminal").Terminal
+local terminal_status, terminal = pcall(require, "toggleterm.terminal")
+if not terminal_status then
+  print("toggleterm.terminal not loaded")
+  return
+end
+
+local Terminal = terminal.Terminal
 
 -- useful cmds
 local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
