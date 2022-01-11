@@ -3,6 +3,11 @@ DOTFILES="$(pwd)"
 
 source $DOTFILES/utils.sh
 
+install_cargo() {
+  titile "Installing Cargo"
+  curl https://sh.rustup.rs -sSf | sh
+}
+
 install_lvim() {
     # install lunarvim
     title "Installing LunarVim"
@@ -48,6 +53,9 @@ install_ohmyzsh() {
 }
 
 case "$1" in
+cargo)
+    install_cargo
+    ;;
 lvim)
     install_lvim
     ;;
@@ -67,7 +75,7 @@ all)
     install_zinit
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {livm|homebrew|ohmyzsh|zinit|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {cargo|livm|homebrew|ohmyzsh|zinit|all}\n"
     exit 1
     ;;
 esac
