@@ -57,6 +57,10 @@ symlink() {
     fi
 }
 
+is_darwin() {
+    [[ "$OSTYPE" == "darwin"* ]]
+}
+
 is_osx() {
     [ "$(uname)" == "Darwin" ]
 }
