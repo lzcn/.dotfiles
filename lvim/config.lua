@@ -10,10 +10,10 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "onedarker"
+lvim.colorscheme = "dracula"
 lvim.lsp.diagnostics.virtual_text = false
 lvim.transparent_window = true
-vim.opt.timeoutlen = 400
+vim.opt.timeoutlen = 500
 -- lualine configurations
 require("lv-user-config.lualine")
 -- toggleterm configurations
@@ -40,7 +40,7 @@ require("lv-user-config.whichkey")
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.dashboard.active = true
-lvim.builtin.notify.active = false
+lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
@@ -123,6 +123,7 @@ linters.setup {
 lvim.plugins = {
     {"folke/tokyonight.nvim"},
     {'dracula/vim', as = 'dracula'},
+    {'github/copilot.vim'},
     {
       "folke/trouble.nvim",
       cmd = "TroubleToggle",
@@ -153,10 +154,6 @@ lvim.plugins = {
         "Gedit"
       },
       ft = {"fugitive"}
-    },
-    {
-      "nvim-treesitter/playground",
-      event = "BufRead",
     },
     {
       "nvim-telescope/telescope-fzy-native.nvim",
