@@ -4,34 +4,47 @@ DOTFILES="$(pwd)"
 source $DOTFILES/utils.sh
 
 setup_env() {
-    # Setup environment variables
-    if ! check_string_in_file PATH=$DOTFILES/bin ~/.zshenv; then
-        append_string_in_file "\nexport PATH=$DOTFILES/bin:\$PATH" ~/.zshenv
+    # add bin to PATH
+    if check_string_in_file PATH=$DOTFILES/bin ~/.zshenv; then
+        success "Found $DOTFILES/bin in PATH"
+    else
+        append_string_in_file "export PATH=$DOTFILES/bin:\$PATH" ~/.zshenv
     fi
-    if ! check_string_in_file HOMEBREW_PREFIX ~/.zshenv; then
-        info 'Setup the $HOMEBREW_PREFIX or Skip (N)'
-        read HOMEBREW_PREFIX
+    # setup brew
+    if check_string_in_file HOMEBREW_PREFIX ~/.zshenv && command_exists brew; then
+        success "Found brew in $HOMEBREW_PREFIX/bin"
+    else
+        info 'Setup $HOMEBREW_PREFIX/bin/brew' 
+        read -e -p 'Enter the path or Skip (N): ' HOMEBREW_PREFIX
         while ! ([[ "$HOMEBREW_PREFIX" =~ ^[Nn]$ ]] || command_exists "$HOMEBREW_PREFIX/bin/brew"); do
             warning "$HOMEBREW_PREFIX/bin/brew not found"
-            info 'Setup the $HOMEBREW_PREFIX or Skip (N)'
-            read HOMEBREW_PREFIX
+            read -e -p 'Enter the path or Skip (N): ' HOMEBREW_PREFIX
         done
         if command_exists "$HOMEBREW_PREFIX/bin/brew"; then
             info 'Added $HOMEBREW_PREFIX to .zshenv'
-            append_string_in_file "\nexport HOMEBREW_PREFIX=$HOMEBREW_PREFIX" ~/.zshenv
+            append_string_in_file "export HOMEBREW_PREFIX=$HOMEBREW_PREFIX" ~/.zshenv
+        fi
+        if [[ "$HOMEBREW_PREFIX" =~ ^[Nn]$ ]]; then
+          info "Skip"
         fi
     fi
-    if ! check_string_in_file CONDA_PREFIX ~/.zshenv; then
+    # setup conda
+    if check_string_in_file CONDA_PREFIX ~/.zshenv && command_exists conda; then
+        success "Found conda in $CONDA_PREFIX/bin"
+    else
         info 'Setup the $CONDA_PREFIX  or Skip (N)'
-        read CONDA_PREFIX
+        read -e -p 'Enter the path or Skip (N): ' CONDA_PREFIX
         while ! ([[ "$CONDA_PREFIX" =~ ^[Nn]$ ]] || command_exists "$CONDA_PREFIX/bin/conda"); do
             warning "$CONDA_PREFIX/bin/conda not found"
             info 'Setup the $CONDA_PREFIX or Skip (N)'
-            read CONDA_PREFIX
+            read -e -p 'Enter the path or Skip (N): ' CONDA_PREFIX
         done
         if command_exists "$CONDA_PREFIX/bin/conda"; then
             info 'Added $CONDA_PREFIX to .zshenv'
-            append_string_in_file "\nexport CONDA_PREFIX=$CONDA_PREFIX" ~/.zshenv
+            append_string_in_file "export CONDA_PREFIX=$CONDA_PREFIX" ~/.zshenv
+        fi
+        if [[ "$CONDA_PREFIX" =~ ^[Nn]$ ]]; then
+          info "Skip"
         fi
     fi
 }
