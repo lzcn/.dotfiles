@@ -1,3 +1,4 @@
+lvim.builtin.which_key.vmappings["p"] = { '"_dP', "Replace" }
 lvim.builtin.which_key.mappings["q"] = { "<cmd>q<CR>", "Quit" }
 -- telescope.lua
 lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
