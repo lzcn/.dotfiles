@@ -10,9 +10,9 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = false
-lvim.colorscheme = "onedarker"
+lvim.colorscheme = "onedark"
 -- lvim.transparent_window = true
-vim.opt.timeoutlen = 500
+-- vim.opt.timeoutlen = 500
 vim.opt.relativenumber = true
 
 -- lualine configurations

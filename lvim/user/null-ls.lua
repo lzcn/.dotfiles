@@ -1,7 +1,7 @@
 local formatters = require("lvim.lsp.null-ls.formatters")
 formatters.setup({
 	{ command = "isort", filetypes = { "python" } },
-	{ command = "black", extra_args = { "-l", "120" }, filetypes = { "python" } },
+	{ command = "black", filetypes = { "python" } },
 	{ command = "stylua", filetypes = { "lua" } },
 	{
 		command = "prettier",
