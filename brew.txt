@@ -13,6 +13,7 @@ node
 node
 rbenv
 ripgrep
+shellcheck
 stow
 stylua
 tldr
