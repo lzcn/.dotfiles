@@ -1,5 +1,6 @@
 lvim.builtin.which_key.vmappings["p"] = { '"_dP', "Replace" }
 lvim.builtin.which_key.mappings["q"] = { "<cmd>q<CR>", "Quit" }
+
 -- telescope.lua
 lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 
@@ -16,6 +17,7 @@ lvim.builtin.which_key.mappings["t"] = {
 	v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "vertical" },
 }
 
+-- trouble
 lvim.builtin.which_key.mappings["T"] = {
 	name = "+Trouble",
 	r = { "<cmd>Trouble lsp_references<cr>", "References" },
@@ -26,6 +28,7 @@ lvim.builtin.which_key.mappings["T"] = {
 	w = { "<cmd>Trouble lsp_workspace_diagnostics<cr>", "Diagnostics" },
 }
 
+-- sessions
 lvim.builtin.which_key.mappings["S"] = {
 	name = "Session",
 	c = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },
