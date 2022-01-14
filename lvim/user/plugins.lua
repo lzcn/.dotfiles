@@ -2,7 +2,8 @@ lvim.plugins = {
 	-- for colorscheme
 	{ "folke/tokyonight.nvim" },
 	{ "joshdick/onedark.vim" },
-	{ "dracula/vim", as = "dracula" },
+	-- { "dracula/vim", as = "dracula" },
+	{ "Mofiqul/dracula.nvim" },
 	{ "p00f/nvim-ts-rainbow" },
 
 	-- copilot
