@@ -5,13 +5,13 @@ window:
    lines: 38
   padding:
    x: 4
-   y: 30
+   y: 4
   dynamic_padding: true # false
-  decorations: transparent # none, full, transparent, buttonless
+  decorations: buttonless # none, full, transparent, buttonless
 scrolling:
   history: 10000
   multiplier: 3
-background_opacity: 0.9
+background_opacity: 1.0
 
 # Fonts settings
 font:
