@@ -57,7 +57,7 @@ setup_alacritty() {
 setup_brew() {
     xargs brew install < brew.txt
     if is_osx; then
-        brew install apparency blueutil mactex qlcolorcode qlimagesize qlmarkdown qlstephen qlvideo quicklook-json quicklookase suspicious-package
+        xargs brew install < cask.txt
     fi
 }
 

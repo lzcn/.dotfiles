@@ -9,7 +9,7 @@ git
 lazygit
 isort
 ncdu
-node
+neovim
 node
 rbenv
 ripgrep
