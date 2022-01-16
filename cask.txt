@@ -1,0 +1,11 @@
+apparency
+blueutil
+mactex
+qlcolorcode
+qlimagesize
+qlmarkdown
+qlstephen
+qlvideo
+quicklook-json
+quicklookase
+suspicious-package
