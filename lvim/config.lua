@@ -58,6 +58,7 @@ lvim.builtin.gitsigns.opts.signs.changedelete = "│"
 -- treesitter
 lvim.builtin.treesitter.ensure_installed = { "lua", "vim" }
 lvim.builtin.treesitter.highlight.enabled = true
+lvim.builtin.treesitter.rainbow.enable = true
 
 -- generic LSP settings
 lvim.lsp.automatic_servers_installation = true

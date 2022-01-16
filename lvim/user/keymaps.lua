@@ -12,6 +12,7 @@ lvim.keys.insert_mode["<C-k>"] = "<Up>"
 lvim.keys.insert_mode["<C-j>"] = "<Down>"
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
+lvim.keys.insert_mode["jj"] = false
 
 -- visual mode
 lvim.keys.visual_mode["p"] = '"_dP'
