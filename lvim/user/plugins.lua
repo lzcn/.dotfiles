@@ -2,7 +2,6 @@ lvim.plugins = {
 	-- for colorscheme
 	{ "folke/tokyonight.nvim" },
 	{ "joshdick/onedark.vim" },
-	-- { "dracula/vim", as = "dracula" },
 	{ "Mofiqul/dracula.nvim" },
 	{ "p00f/nvim-ts-rainbow" },
 
@@ -15,7 +14,6 @@ lvim.plugins = {
 	-- json scheme
 	{ "b0o/SchemaStore.nvim" },
 
-	{ "nvim-telescope/telescope-fzy-native.nvim", run = "make", event = "BufRead" },
 	{
 		"nvim-telescope/telescope-project.nvim",
 		event = "BufWinEnter",
