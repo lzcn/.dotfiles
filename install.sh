@@ -4,8 +4,14 @@ DOTFILES="$(pwd)"
 source $DOTFILES/utils.sh
 
 install_cargo() {
-  titile "Installing Cargo"
+  title "Installing Cargo"
   curl https://sh.rustup.rs -sSf | sh
+}
+
+install_nvchad() {
+  title "Installing Nvchad"
+  git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+  nvim +'hi NormalFloat guibg=#1e222a' +PackerSync
 }
 
 install_lvim() {

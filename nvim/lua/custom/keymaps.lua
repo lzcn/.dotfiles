@@ -1,17 +1,8 @@
-
+local keymap = require("core.utils").map
 local opts = { noremap = true, silent = true }
-
 local term_opts = { silent = true }
 
--- local cmd_opts = { expr = true, norema = true }
-
--- Shorten function name
-local keymap = vim.api.nvim_set_keymap
-
---Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+-- keymap("n", "<leader>cc", ":Telescope <CR>")
 
 -- Modes
 --   normal_mode = "n",
@@ -27,16 +18,17 @@ keymap("n", "<C-q>", ":q<CR>", opts)
 keymap("n", "<C-s>", ":w<CR>", opts)
 
 -- Better window navigation
-keymap("n", "<C-h>", "<C-w>h", opts)
-keymap("n", "<C-j>", "<C-w>j", opts)
-keymap("n", "<C-k>", "<C-w>k", opts)
-keymap("n", "<C-l>", "<C-w>l", opts)
+-- keymap("n", "<C-h>", "<C-w>h", opts)
+-- keymap("n", "<C-j>", "<C-w>j", opts)
+-- keymap("n", "<C-k>", "<C-w>k", opts)
+-- keymap("n", "<C-l>", "<C-w>l", opts)
 
 -- Resize with arrows
 keymap("n", "<C-Down>", ":resize +2<CR>", opts)
 keymap("n", "<C-Up>", ":resize -2<CR>", opts)
 keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
+
 -- Resize with arrows (MacOS)
 keymap("n", "<A-Down>", ":resize +2<CR>", opts)
 keymap("n", "<A-Up>", ":resize -2<CR>", opts)
@@ -48,8 +40,8 @@ keymap("n", "<S-l>", ":bnext<CR>", opts)
 keymap("n", "<S-h>", ":bprevious<CR>", opts)
 
 -- Move the current line/block up and down
-keymap("n", "<A-j>", ":m .+1<CR>==", opts)
-keymap("n", "<A-k>", ":m .-2<CR>==", opts)
+keymap("n", "<A-j>", ":m .+1<CR>==<Esc>", opts)
+keymap("n", "<A-k>", ":m .-2<CR>==<Esc>", opts)
 
 -- Insert --
 -- Press jk fast to enter
@@ -91,6 +83,17 @@ keymap("t", "<C-j>", "<C-\\><C-N><C-w>j", term_opts)
 keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
 keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
 
--- Command --
--- keymap("c", "<C-j>", 'pumvisible() ? "\\<C-n>" : "\\<C-j>"', cmd_opts)
--- keymap("c", "<C-k>", 'pumvisible() ? "\\<C-n>" : "\\<C-k>"', cmd_opts)
+-- Normal --
+-- Better window navigation
+keymap("n", "<C-Up>", ":resize -2<CR>", opts)
+keymap("n", "<C-Down>", ":resize +2<CR>", opts)
+keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
+keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
+
+-- Navigate buffers
+keymap("n", "<S-l>", ":bnext<CR>", opts)
+keymap("n", "<S-h>", ":bprevious<CR>", opts)
+
+-- Move text up and down
+keymap("n", "<A-j>", ":m .+1<CR>==gi", opts)
+keymap("n", "<A-k>", ":m .-2<CR>==gi", opts)
