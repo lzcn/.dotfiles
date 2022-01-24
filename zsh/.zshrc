@@ -165,11 +165,11 @@ preexec() {
 }
 
 git-set-mirror () {
-    git config --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"                                                                                                                     866 Mbps
+    git config --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
 }
 
 git-unset-mirror () {
-    git config --unset --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"                                                                                                                     866 Mbps
+    git config --unset --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
 }
 
 [[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
