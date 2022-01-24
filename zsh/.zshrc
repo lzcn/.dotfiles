@@ -38,6 +38,9 @@ if [[ -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
     source $ZSH/oh-my-zsh.sh
 fi
 
+## --- Envs ---
+export PATH="$HOME/.local/bin":$PATH
+
 ## --- Theme ---
 
 # about: powerlevel10k theme
@@ -143,8 +146,9 @@ alias csmi='cluster-smi'
 alias sra='conda activate'
 alias srd='conda deactivate'
 
-# use neo-vim
-alias vim='nvim'
+# use neo-vim or lvim
+(( ! $+commands[nvim] )) || alias vim='nvim'
+(( ! $+commands[nvim] )) || (( ! $+commands[lvim] )) || alias vim='lvim'
 
 ## --- Others ---
 
@@ -160,7 +164,12 @@ preexec() {
     HOST="${OLDHOST}"
 }
 
+git-set-mirror () {
+    git config --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"                                                                                                                     866 Mbps
+}
+
+git-unset-mirror () {
+    git config --unset --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"                                                                                                                     866 Mbps
+}
+
 [[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
-
-export PATH="$HOME/.local/bin":$PATH
-

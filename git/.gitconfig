@@ -17,5 +17,3 @@
 	required = true
 [commit]
 	template = ~/.git-commit-template
-[url "https://hub.fastgit.org/"]
-	insteadOf = https://github.com/
