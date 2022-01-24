@@ -29,7 +29,7 @@ This repository contains my personal configuration files, scripts for better ter
 
 3.  setup dotfiles
 
-    3.1 manully add the path to `~/.zshenv` or run `./setup.sh env` for `brew` and `conda`
+    3.1 manually add the path to `~/.zshenv` or run `./setup.sh env` for `brew` and `conda`
 
         ```
         # for $HOMEBREW_PREFIX/brew
