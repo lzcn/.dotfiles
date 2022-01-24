@@ -6,12 +6,12 @@ window:
   padding:
     x: 4
     y: 4
+  opacity: 1.0
   dynamic_padding: true # false
   decorations: buttonless # none, full, transparent, buttonless
 scrolling:
   history: 10000
   multiplier: 3
-background_opacity: 1.0
 
 # Fonts settings
 font:
