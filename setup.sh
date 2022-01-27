@@ -51,7 +51,7 @@ setup_env() {
 
 setup_alacritty() {
     title "Configuring Alacritty"
-    stown alacritty
+    symlink $HOME/.config/alacritty $DOTFILES/alacritty
 }
 
 setup_brew() {
@@ -63,17 +63,25 @@ setup_brew() {
 
 setup_git() {
     title "Configuring Git"
-    stown git
+    symlink $HOME/.gitalias.txt $DOTFILES/git/.gitalias/gitalias.txt
+    symlink $HOME/.gitconfig $DOTFILES/git/.gitconfig
+    symlink $HOME/.gitignore_global $DOTFILES/git/.gitignore_global
+    symlink $HOME/.git-commit-template $DOTFILES/git/.git-commit-template
 }
 
 setup_zsh() {
     title "Configuring Zsh"
-    stown zsh
+    symlink $HOME/.zshrc $DOTFILES/zsh/.zshrc
+    symlink $HOME/.p10k.zsh $DOTFILES/zsh/.p10k.zsh
+
 }
 
 setup_nvim() {
-    title "Configuring Lunar Vim & NvChad"
-    stow nvim
+    title "Configuring Lunar Vim"
+    symlink $HOME/.config/lvim $DOTFILES/lvim
+    symlink $HOME/.local/share/lunarvim/lvim/lua/lv-user-config $DOTFILES/lvim/user
+    symlink $HOME/.config/nvim/lua/custom $DOTFILES/nvim/custom
+
 }
 
 setup_tmux() {
@@ -84,7 +92,7 @@ setup_tmux() {
 
 setup_flake() {
     title "Configuring flake"
-    stow flake8
+    symlink $HOME/.config/flake8 $DOTFILES/flake8/flake8
 }
 
 case "$1" in
@@ -104,7 +112,7 @@ git)
     setup_git
     ;;
 lvim)
-    setup_lvim
+    setup_nvim
     ;;
 tmux)
     setup_tmux
@@ -116,7 +124,7 @@ all)
     setup_alacritty
     setup_flake
     setup_git
-    setup_lvim
+    setup_nvim
     setup_zsh
     setup_tmux
     ;;
