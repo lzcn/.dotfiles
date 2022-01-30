@@ -35,6 +35,7 @@
     vcs                     # git status
     anaconda                # conda environment (https://conda.io/)
     # =========================[ Line #2 ]=========================
+    example                 # example user-defined segment (see prompt_example function below)
     newline                 # \n
     prompt_char             # prompt symbol
   )
@@ -102,7 +103,6 @@
     proxy                   # system-wide http/https/ftp proxy
     battery                 # internal battery
     wifi                    # wifi speed
-    # example               # example user-defined segment (see prompt_example function below)
   )
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
@@ -1540,7 +1540,9 @@
   #
   # Type `p10k help segment` for documentation and a more sophisticated example.
   function prompt_example() {
-    p10k segment -f 208 -i '⭐' -t 'hello, %n'
+    if [[ "${P10K_EXAMPLE}" ]]; then
+      p10k segment -f 208 -t "${P10K_EXAMPLE}"
+    fi
   }
 
   # User-defined prompt segments may optionally provide an instant_prompt_* function. Its job
