@@ -1,10 +1,3 @@
-
-local status_ok, _ = pcall(require, "toggleterm")
-if not status_ok then
-	print("toggleterm not loaded")
-	return
-end
-
 function _G.set_terminal_keymaps()
 	local opts = { noremap = true }
 	vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
