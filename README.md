@@ -4,10 +4,12 @@
 
 This repository contains my personal configuration files, scripts for better terminal experience, which includes:
 
+- Alacritty. Terminal app.
 - Git. Aliases and configurations for git are included.
 - Homebrew. Homebrew is a package manager for macOS and Linux.
 - Tmux. Tmux is a terminal multiplexer that allows you to run multiple programs in one terminal.
 - Zsh. Oh-my-zsh and Zinit are used for the zsh shell.
+- Nvim. LunarVim is used.
 - Scripts. Some scripts I use for my daily work.
 
 ## Installation
