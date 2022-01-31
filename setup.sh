@@ -55,9 +55,9 @@ setup_alacritty() {
 }
 
 setup_brew() {
-    xargs brew install < brew.txt
+    xargs brew install < ./brew/brew.txt
     if is_osx; then
-        xargs brew install < cask.txt
+        xargs brew install < ./brew/cask.txt
     fi
 }
 
@@ -111,7 +111,7 @@ flake)
 git)
     setup_git
     ;;
-lvim)
+nvim)
     setup_nvim
     ;;
 tmux)
@@ -121,7 +121,6 @@ zsh)
     setup_zsh
     ;;
 all)
-    setup_alacritty
     setup_flake
     setup_git
     setup_nvim
@@ -129,7 +128,7 @@ all)
     setup_tmux
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {brew|env|flake|git|tmux|zsh|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {alacritty|brew|env|flake|git|nvim|tmux|zsh|all}\n"
     exit 1
     ;;
 esac

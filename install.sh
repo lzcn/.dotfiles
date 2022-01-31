@@ -11,11 +11,9 @@ install_cargo() {
 install_nvchad() {
   title "Installing Nvchad"
   git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
-  nvim +'hi NormalFloat guibg=#1e222a' +PackerSync
 }
 
 install_lvim() {
-    # install lunarvim
     title "Installing LunarVim"
     if command_exists lvim; then
       success "LunarVim already installed"
@@ -65,11 +63,17 @@ cargo)
 lvim)
     install_lvim
     ;;
+nvchad)
+    install_nvchad
+    ;;
 homebrew)
     install_homebrew
     ;;
 ohmyzsh)
     install_ohmyzsh
+    ;;
+submodules)
+    install_submodules
     ;;
 zinit)
     install_zinit
@@ -81,7 +85,7 @@ all)
     install_zinit
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {cargo|livm|homebrew|ohmyzsh|zinit|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {cargo|livm|nvchad|homebrew|ohmyzsh|submodules|zinit|all}\n"
     exit 1
     ;;
 esac
