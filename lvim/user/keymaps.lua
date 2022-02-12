@@ -8,8 +8,8 @@ lvim.keys.normal_mode["<C-q>"] = ":q<cr>"
 -- disable H and L and use Tab to navigate buffer
 lvim.keys.normal_mode["<S-l>"] = false
 lvim.keys.normal_mode["<S-h>"] = false
-lvim.keys.normal_mode["<Tab>"] = ":BufferNext<CR>"
-lvim.keys.normal_mode["<S-Tab>"] = ":BufferPrevious<CR>"
+lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 
 -- insert mode --
 -- navigation within insert mode

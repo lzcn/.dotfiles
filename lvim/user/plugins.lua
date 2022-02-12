@@ -11,9 +11,6 @@ lvim.plugins = {
 	-- diagnostics
 	{ "folke/trouble.nvim", cmd = "TroubleToggle" },
 
-	-- json scheme
-	{ "b0o/SchemaStore.nvim" },
-
 	{
 		"nvim-telescope/telescope-project.nvim",
 		event = "BufWinEnter",
