@@ -67,3 +67,6 @@ lvim.lsp.diagnostics.virtual_text = false
 
 -- null-ls configurations
 require("lv-user-config.null-ls")
+
+-- copilot
+vim.g.copilot_no_tab_map = true
