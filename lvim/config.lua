@@ -7,6 +7,8 @@ require("lv-user-config.plugins")
 -- lualine configurations
 require("lv-user-config.lualine")
 
+-- toggleterm
+lvim.builtin.terminal.active = true
 -- toggleterm configurations
 require("lv-user-config.terminal")
 
@@ -32,11 +34,10 @@ lvim.builtin.dashboard.custom_header = {
 -- notify
 lvim.builtin.notify.active = false
 
--- toggleterm
-lvim.builtin.terminal.active = true
+-- buffline
+lvim.builtin.bufferline.active = true
 
 -- nvimtree
-lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.icons.git = {
 	deleted = "",
 	ignored = "◌",
@@ -56,7 +57,7 @@ lvim.builtin.gitsigns.opts.signs.topdelete.text = "│"
 lvim.builtin.gitsigns.opts.signs.changedelete = "│"
 
 -- treesitter
-lvim.builtin.treesitter.ensure_installed = { "lua", "vim" }
+lvim.builtin.treesitter.ensure_installed = { "lua", "vim", "python", "bash", "yaml", "css", "typescript" }
 lvim.builtin.treesitter.highlight.enabled = true
 lvim.builtin.treesitter.rainbow.enable = true
 
