@@ -36,6 +36,7 @@ lvim.builtin.notify.active = false
 
 -- buffline
 lvim.builtin.bufferline.active = true
+lvim.builtin.bufferline.options.always_show_bufferline = true
 
 -- nvimtree
 lvim.builtin.nvimtree.icons.git = {
