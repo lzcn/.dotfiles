@@ -52,16 +52,15 @@ lvim.builtin.nvimtree.icons.git = {
 }
 
 -- gitsigns
-lvim.builtin.gitsigns.opts.numhl = false
-lvim.builtin.gitsigns.opts.signs.add.text = "│"
-lvim.builtin.gitsigns.opts.signs.change.text = "│"
-lvim.builtin.gitsigns.opts.signs.delete.text = "│"
-lvim.builtin.gitsigns.opts.signs.topdelete.text = "│"
-lvim.builtin.gitsigns.opts.signs.changedelete = "│"
+-- lvim.builtin.gitsigns.opts.numhl = false
+-- lvim.builtin.gitsigns.opts.signs.add.text = "│"
+-- lvim.builtin.gitsigns.opts.signs.change.text = "│"
+-- lvim.builtin.gitsigns.opts.signs.delete.text = "│"
+-- lvim.builtin.gitsigns.opts.signs.topdelete.text = "│"
+-- lvim.builtin.gitsigns.opts.signs.changedelete = "│"
 
 -- treesitter
-lvim.builtin.treesitter.ensure_installed = { "lua", "vim", "python", "bash", "yaml", "css", "typescript" }
-lvim.builtin.treesitter.highlight.enabled = true
+lvim.builtin.treesitter.ensure_installed = "maintained"
 lvim.builtin.treesitter.rainbow.enable = true
 
 -- generic LSP settings
