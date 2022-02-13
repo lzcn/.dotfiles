@@ -73,3 +73,6 @@ require("lv-user-config.null-ls")
 
 -- copilot
 vim.g.copilot_no_tab_map = true
+
+-- pydocstring
+vim.g.pydocstring_formatter = "google"
