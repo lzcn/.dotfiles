@@ -1,11 +1,7 @@
 lvim.leader = "space"
 
 -- normal mode --
-lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-lvim.keys.normal_mode["<C-q>"] = ":q<cr>"
-
--- Navigate buffers
--- disable H and L and use Tab to navigate buffer
+-- navigate buffers use Tab to navigate buffer instead H/L
 lvim.keys.normal_mode["<S-l>"] = false
 lvim.keys.normal_mode["<S-h>"] = false
 lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
@@ -26,3 +22,6 @@ lvim.keys.insert_mode["kj"] = false
 
 -- visual mode
 lvim.keys.visual_mode["p"] = '"_dP'
+
+-- terminal mode
+lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
