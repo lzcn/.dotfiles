@@ -60,7 +60,20 @@ lvim.builtin.nvimtree.icons.git = {
 -- lvim.builtin.gitsigns.opts.signs.changedelete = "│"
 
 -- treesitter
-lvim.builtin.treesitter.ensure_installed = "maintained"
+lvim.builtin.treesitter.ensure_installed = {
+	"bash",
+	"c",
+	"javascript",
+	"json",
+	"lua",
+	"python",
+	"typescript",
+	"tsx",
+	"css",
+	"rust",
+	"java",
+	"yaml",
+}
 lvim.builtin.treesitter.rainbow.enable = true
 
 -- generic LSP settings
