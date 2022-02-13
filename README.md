@@ -1,7 +1,5 @@
 # Personal dotfiles.
 
-![](asserts/example.png)
-
 This repository contains my personal configuration files, scripts for better terminal experience, which includes:
 
 - Alacritty. Terminal app.
@@ -17,7 +15,7 @@ This repository contains my personal configuration files, scripts for better ter
 1.  clone the repository with its sub-modules into `.dotfiles`.
 
     ```bash
-    git clone https://www.github.com/lzcn/dotfiles.git .dotfiles
+    git clone https://www.github.com/lzcn/.dotfiles.git
     cd .dotfiles
     git submodule update --init --recursive
     ```
@@ -26,7 +24,6 @@ This repository contains my personal configuration files, scripts for better ter
 
     ```bash
     ./install.sh -h
-    Usage: install.sh {homebrew|ohmyzsh|zinit|all}
     ```
 
 3.  setup dotfiles
@@ -44,5 +41,4 @@ This repository contains my personal configuration files, scripts for better ter
 
         ```bash
         ./setup.sh -h
-        Usage: setup.sh {brew|env|flake|git|tmux|zsh|all}
         ```
