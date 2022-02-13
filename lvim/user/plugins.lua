@@ -5,6 +5,8 @@ lvim.plugins = {
 	{ "Mofiqul/dracula.nvim" },
 	{ "p00f/nvim-ts-rainbow" },
 
+	{ "heavenshell/vim-pydocstring", run = "make install", ft = { "python" } },
+
 	-- copilot
 	{ "github/copilot.vim" },
 
