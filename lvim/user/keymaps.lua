@@ -1,6 +1,8 @@
 lvim.leader = "space"
 
 -- normal mode --
+-- disable q for quit
+lvim.keys.normal_mode["q"] = ""
 -- navigate buffers use Tab to navigate buffer instead H/L
 lvim.keys.normal_mode["<S-l>"] = false
 lvim.keys.normal_mode["<S-h>"] = false
