@@ -7,6 +7,13 @@ lvim.plugins = {
 
 	{ "heavenshell/vim-pydocstring", run = "make install", ft = { "python" } },
 
+	{
+		"numToStr/Navigator.nvim",
+		config = function()
+			require("Navigator").setup()
+		end,
+	},
+
 	-- copilot
 	{ "github/copilot.vim" },
 
