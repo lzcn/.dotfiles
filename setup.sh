@@ -69,6 +69,11 @@ setup_git() {
     symlink $HOME/.git-commit-template $DOTFILES/git/.git-commit-template
 }
 
+setup_pip() {
+   title "Installing Python packages"
+   pip install -r $DOTFILES/pip/packages.txt
+}
+
 setup_zsh() {
     title "Configuring Zsh"
     symlink $HOME/.zshrc $DOTFILES/zsh/.zshrc
@@ -110,6 +115,9 @@ flake)
     ;;
 git)
     setup_git
+    ;;
+pip)
+    setup_pip
     ;;
 nvim)
     setup_nvim
