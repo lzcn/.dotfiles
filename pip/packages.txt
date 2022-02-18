@@ -1,2 +1,3 @@
+Pygments
 neovim
 trash-cli

@@ -1,42 +1,12 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Powerlevel10k instant prompt. 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 ## --- Zinit ---
-# - To update Zinit, issue zinit self-update
-# - To update all plugins, issue zinit update
-# - To update only a single plugin, issue zinit update <plugin>
-### Added by Zinit's installer
-if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "%F{33} %F{34}Installation successful.%f%b" || \
-        print -P "%F{160} The clone has failed.%f%b"
-fi
-
 source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit light-mode for \
-    zdharma-continuum/z-a-rust \
-    zdharma-continuum/z-a-as-monitor \
-    zdharma-continuum/z-a-patch-dl \
-    zdharma-continuum/z-a-bin-gem-node
-
-### End of Zinit's installer chunk
-
-## --- Oh My Zsh ---
-if [[ -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
-    export ZSH=$HOME/.oh-my-zsh
-    # disable automatic updates
-    zstyle ':omz:update' mode disabled  
-    source $ZSH/oh-my-zsh.sh
-fi
 
 ## --- Envs ---
 export PATH="$HOME/.local/bin":$PATH
@@ -81,40 +51,41 @@ zinit light mroth/evalcache
 # conda init with _evalcache
 [[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
 
-# if rbenv is installed, initialize it
+# rbenv init with _evalcache_clear
 (( ! $+commands[rbenv] )) || _evalcache rbenv init -
 
 # load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
+## --- Oh My Zsh ---
+# if [[ -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
+#     export ZSH=$HOME/.oh-my-zsh
+#     # disable automatic updates
+#     zstyle ':omz:update' mode disabled  
+#     source $ZSH/oh-my-zsh.sh
+# fi
+
+zinit snippet OMZL::history.zsh
+zinit snippet OMZL::termsupport.zsh
+
 # plugins from Oy My Zsh
+# TODO: move necessary aliases to zshrc 
 zinit wait lucid for \
     OMZP::brew \
     OMZP::colored-man-pages \
     OMZP::colorize \
     OMZP::command-not-found \
-    OMZP::cp \
     OMZP::dotenv \
-    OMZP::dircycle \
     OMZP::dirhistory \
     OMZP::extract \
-    OMZP::fasd \
-    OMZP::rsync \
-    OMZP::gitignore \
-    OMZP::history
+    OMZP::rsync
 
-# plugins from Prezto
-# relative order is important
+# plugins from Prezto: relative order is important
+# TODO: move necessary parts to zshrc
 zinit snippet PZT::modules/helper
 zinit snippet PZT::modules/gnu-utility
 zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
-zinit wait lucid for \
-    PZTM::command-not-found \
-    PZTM::spectrum
-
-## --- Completion ---
-
 
 ## --- Scripts ---
 
@@ -140,7 +111,7 @@ alias cll='colorls -l'
 alias cla='colorls -lAh'
 
 # aliases for cluster-smi
-alias csmi='cluster-smi'
+(( ! $+commands[cluster-smi] )) || alias csmi='cluster-smi'
 
 # aliases for conda
 alias sra='conda activate'
