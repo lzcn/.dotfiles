@@ -117,23 +117,11 @@ alias cla='colorls -lAh'
 alias sra='conda activate'
 alias srd='conda deactivate'
 
-# use neo-vim or lvim
+# use nvim or lvim for vim
 (( ! $+commands[nvim] )) || alias vim='nvim'
 (( ! $+commands[nvim] )) || (( ! $+commands[lvim] )) || alias vim='lvim'
 
 ## --- Others ---
-
-# conda clobbers HOST, so we save the real hostname into another variable.
-HOSTNAME="$(hostname)"
-
-precmd() {
-    OLDHOST="${HOST}"
-    HOST="${HOSTNAME}"
-}
-
-preexec() {
-    HOST="${OLDHOST}"
-}
 
 git-set-mirror () {
     git config --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
@@ -143,4 +131,5 @@ git-unset-mirror () {
     git config --unset --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
 }
 
+# fzf stuff
 [[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
