@@ -28,6 +28,9 @@ lvim.plugins = {
 		end,
 	},
 
+	-- better navigation
+	{ "andymass/vim-matchup" },
+	{ "kevinhwang91/nvim-bqf", ft = "qf" },
 	-- smooth scroll
 	{
 		"karb94/neoscroll.nvim",
@@ -90,6 +93,74 @@ lvim.plugins = {
 				css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
 				mode = "background", -- Set the display mode
 			})
+		end,
+	},
+
+	-- markdown preview
+	{
+		"npxbr/glow.nvim",
+		ft = { "markdown" },
+	},
+
+	{
+		"iamcco/markdown-preview.nvim",
+		run = "cd app && npm install",
+		ft = "markdown",
+		config = function()
+			vim.g.mkdp_auto_start = 1
+		end,
+	},
+	-- todo comments
+	{
+		"folke/todo-comments.nvim",
+		event = "BufRead",
+		config = function()
+			require("todo-comments").setup()
+		end,
+	},
+
+	-- mappings to delete, change and add surroundings
+	{
+		"tpope/vim-surround",
+		keys = { "c", "d", "y" },
+	},
+
+	-- underlines the word under the cursor
+	{
+		"itchyny/vim-cursorword",
+		event = { "BufEnter", "BufNewFile" },
+		config = function()
+			vim.api.nvim_command("augroup user_plugin_cursorword")
+			vim.api.nvim_command("autocmd!")
+			vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
+			vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
+			vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
+			vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
+			vim.api.nvim_command("augroup END")
+		end,
+	},
+
+	-- previewing goto definition calls
+	{
+		"rmagatti/goto-preview",
+		config = function()
+			require("goto-preview").setup({
+				width = 120, -- Width of the floating window
+				height = 25, -- Height of the floating window
+				default_mappings = false, -- Bind default mappings
+				debug = false, -- Print debug information
+				opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully transparent.
+				post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook.
+			})
+		end,
+	},
+
+	-- hint signature when you type
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "BufRead",
+		config = function()
+			require("lsp_signature").setup()
 		end,
 	},
 }
