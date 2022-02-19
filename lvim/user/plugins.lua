@@ -96,11 +96,11 @@ lvim.plugins = {
 		end,
 	},
 
+	-- sphinx
+	{ "stsewd/sphinx.nvim", ft = { "rst" } },
+
 	-- markdown preview
-	{
-		"npxbr/glow.nvim",
-		ft = { "markdown" },
-	},
+	{ "npxbr/glow.nvim", ft = { "markdown" } },
 
 	{
 		"iamcco/markdown-preview.nvim",

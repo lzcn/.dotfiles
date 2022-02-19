@@ -88,3 +88,4 @@ vim.g.copilot_no_tab_map = true
 
 -- pydocstring
 vim.g.pydocstring_formatter = "google"
+lvim.keys.normal_mode["<c-_>"] = "<Plug>(pydocstring)"
