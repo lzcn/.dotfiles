@@ -117,6 +117,8 @@ alias srd='conda deactivate'
 (( ! $+commands[nvim] )) || alias vim='nvim'
 (( ! $+commands[nvim] )) || (( ! $+commands[lvim] )) || alias vim='lvim'
 
+alias ls="ls --color=auto"
+
 ## --- Others ---
 
 git-set-mirror () {
