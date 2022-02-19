@@ -57,15 +57,10 @@ zinit light mroth/evalcache
 # load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
-## --- Oh My Zsh ---
-# if [[ -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
-#     export ZSH=$HOME/.oh-my-zsh
-#     # disable automatic updates
-#     zstyle ':omz:update' mode disabled  
-#     source $ZSH/oh-my-zsh.sh
-# fi
-
+# lib from Oy My Zsh
+zinit snippet OMZL::key-bindings.zsh
 zinit snippet OMZL::completion.zsh
+zinit snippet OMZL::spectrum.zsh
 zinit snippet OMZL::history.zsh
 zinit snippet OMZL::termsupport.zsh
 
