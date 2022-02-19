@@ -7,7 +7,10 @@ lvim.keys.normal_mode["<S-h>"] = false
 lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 
--- Navigator
+-- pydocstring
+lvim.keys.normal_mode["<c-_>"] = "<Plug>(pydocstring)"
+
+-- navigator
 lvim.keys.normal_mode["<C-a>h"] = "<CMD>lua require('Navigator').left()<CR>"
 lvim.keys.normal_mode["<C-a>k"] = "<CMD>lua require('Navigator').up()<CR>"
 lvim.keys.normal_mode["<C-a>l"] = "<CMD>lua require('Navigator').right()<CR>"
