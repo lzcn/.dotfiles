@@ -65,6 +65,7 @@ zinit light mroth/evalcache
 #     source $ZSH/oh-my-zsh.sh
 # fi
 
+zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::history.zsh
 zinit snippet OMZL::termsupport.zsh
 
