@@ -8,6 +8,10 @@ lvim.builtin.which_key.mappings["q"] = { "<cmd>q<CR>", "Quit" }
 lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent Files" }
 
+-- search
+lvim.builtin.which_key.mappings["s"]["t"] = { "<cmd>TodoTelescope<CR>", "Find Todo" }
+lvim.builtin.which_key.mappings["s"]["w"] = { "<cmd>Telescope live_grep<CR>", "Words" }
+
 -- trouble
 lvim.builtin.which_key.mappings["t"] = {
 	name = "+Trouble",

@@ -82,10 +82,3 @@ lvim.lsp.diagnostics.virtual_text = false
 
 -- null-ls configurations
 require("lv-user-config.null-ls")
-
--- copilot
-vim.g.copilot_no_tab_map = true
-
--- pydocstring
-vim.g.pydocstring_formatter = "google"
-lvim.keys.normal_mode["<c-_>"] = "<Plug>(pydocstring)"
