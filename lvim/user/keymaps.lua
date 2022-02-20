@@ -1,4 +1,5 @@
 lvim.leader = "space"
+vim.g.maplocalleader = "\\"
 
 -- normal mode --
 -- navigate buffers use Tab to navigate buffer instead H/L
@@ -7,8 +8,16 @@ lvim.keys.normal_mode["<S-h>"] = false
 lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 
+-- magama.nvim
+lvim.keys.visual_mode["<LocalLeader>r"] = ":<C-u>MagmaEvaluateVisual<CR>"
+-- lvim.keys.normal_mode["<Localleader>r"] = ":MagmaEvaluateOperator<CR>"
+lvim.keys.normal_mode["<Localleader>rr"] = ":MagmaEvaluateLine<CR>"
+lvim.keys.normal_mode["<LocalLeader>rc"] = ":MagmaReevaluateCell<CR>"
+lvim.keys.normal_mode["<LocalLeader>rd"] = ":MagmaDelete<CR>"
+lvim.keys.normal_mode["<LocalLeader>ro"] = ":MagmaShowOutput<CR>"
+
 -- pydocstring
-lvim.keys.normal_mode["<c-_>"] = "<Plug>(pydocstring)"
+lvim.keys.normal_mode["<C-_>"] = "<Plug>(pydocstring)"
 
 -- navigator
 lvim.keys.normal_mode["<C-a>h"] = "<CMD>lua require('Navigator').left()<CR>"
