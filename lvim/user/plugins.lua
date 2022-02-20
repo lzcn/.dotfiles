@@ -15,6 +15,9 @@ lvim.plugins = {
 		end,
 	},
 
+	-- jupyter
+	{ "dccsillag/magma-nvim", run = ":UpdateRemotePlugins" },
+
 	-- navigate within tmux
 	{
 		"numToStr/Navigator.nvim",
