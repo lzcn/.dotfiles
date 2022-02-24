@@ -4,6 +4,10 @@ lvim.plugins = {
 	{ "joshdick/onedark.vim" },
 	{ "Mofiqul/dracula.nvim" },
 	{ "p00f/nvim-ts-rainbow" },
+	{
+		"folke/lsp-colors.nvim",
+		event = "BufRead",
+	},
 
 	-- pydocstring
 	{
@@ -16,7 +20,7 @@ lvim.plugins = {
 	},
 
 	-- jupyter
-	{ "dccsillag/magma-nvim", run = ":UpdateRemotePlugins" },
+	{ "dccsillag/magma-nvim", run = ":UpdateRemotePlugins", ft = { "python" } },
 
 	-- navigate within tmux
 	{
@@ -48,6 +52,13 @@ lvim.plugins = {
 	-- better navigation
 	{ "andymass/vim-matchup" },
 	{ "kevinhwang91/nvim-bqf", ft = "qf" },
+	-- peeks lines
+	{
+		"nacro90/numb.nvim",
+		config = function()
+			require("numb").setup()
+		end,
+	},
 	-- smooth scroll
 	{
 		"karb94/neoscroll.nvim",

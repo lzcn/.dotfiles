@@ -33,6 +33,7 @@ lvim.builtin.dashboard.custom_header = {
 	" ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
 	" ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
 }
+
 -- notify
 lvim.builtin.notify.active = false
 
@@ -52,12 +53,8 @@ lvim.builtin.nvimtree.icons.git = {
 }
 
 -- gitsigns
--- lvim.builtin.gitsigns.opts.numhl = false
--- lvim.builtin.gitsigns.opts.signs.add.text = "│"
--- lvim.builtin.gitsigns.opts.signs.change.text = "│"
--- lvim.builtin.gitsigns.opts.signs.delete.text = "│"
--- lvim.builtin.gitsigns.opts.signs.topdelete.text = "│"
--- lvim.builtin.gitsigns.opts.signs.changedelete = "│"
+lvim.builtin.gitsigns.opts.signs.delete.text = "▎"
+lvim.builtin.gitsigns.opts.signs.topdelete.text = "▎"
 
 -- treesitter
 lvim.builtin.treesitter.ensure_installed = {
