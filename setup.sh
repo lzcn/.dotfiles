@@ -85,7 +85,6 @@ setup_nvim() {
     title "Configuring Lunar Vim"
     symlink $HOME/.config/lvim $DOTFILES/lvim
     symlink $HOME/.local/share/lunarvim/lvim/lua/lv-user-config $DOTFILES/lvim/user
-    symlink $HOME/.config/nvim/lua/custom $DOTFILES/nvim/custom
 
 }
 
