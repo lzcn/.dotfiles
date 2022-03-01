@@ -128,17 +128,15 @@ zsh)
     setup_zsh
     ;;
 all)
+    setup_env
     setup_flake
     setup_git
     setup_nvim
-    setup_zsh
     setup_tmux
+    setup_zsh
     ;;
 *)
     echo -e $"\nUsage: $(basename "$0") {alacritty|brew|env|flake|git|nvim|tmux|zsh|all}\n"
     exit 1
     ;;
 esac
-
-echo -e
-success "Done."

@@ -80,7 +80,6 @@ zinit)
     ;;
 all)
     install_homebrew
-    install_ohmyzsh
     install_submodules
     install_zinit
     ;;
@@ -90,5 +89,3 @@ all)
     ;;
 esac
 
-echo -e
-success "Done."
