@@ -427,6 +427,8 @@ set -g @forecast-format 1
 # -- override ------------------------------------------------------------------
 # for keeping the original local file unchanged and up to date
 
+set -g default-terminal "xterm-256color"
+
 # replace C-b by C-a instead of using both prefixes
 set -gu prefix2
 unbind C-a
