@@ -20,6 +20,12 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 ## --- Plugins ---
 
+# about: vim-mode for zsh
+zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
+# configuration for vim-mode
+ZVM_VI_EDITOR=lvim
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+
 # about: syntax-highlighting for Zsh
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
 zinit light zdharma-continuum/fast-syntax-highlighting
@@ -57,6 +63,9 @@ zinit light mroth/evalcache
 # load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
+# atuin init 
+(( ! $+commands[atuin] )) || zinit light ellie/atuin
+
 # lib from Oy My Zsh
 zinit snippet OMZL::key-bindings.zsh
 zinit snippet OMZL::completion.zsh
@@ -74,6 +83,7 @@ zinit wait lucid for \
     OMZP::dotenv \
     OMZP::dirhistory \
     OMZP::extract \
+    OMZP::fzf \
     OMZP::rsync
 
 # plugins from Prezto: relative order is important
@@ -83,13 +93,16 @@ zinit snippet PZT::modules/gnu-utility
 zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
+## --- Completion ---
+zinit ice wait lucid
+zinit light esc/conda-zsh-completion
 ## --- Scripts ---
 
 # about: an alternative to the cd
-zplugin ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
+zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
   atload="wd() { . wd.sh }" \
   atpull'!git reset --hard'
-zplugin light mfaerevaag/wd
+zinit light mfaerevaag/wd
 
 ## --- Aliases ---
 
@@ -129,5 +142,3 @@ git-unset-mirror () {
     git config --unset --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
 }
 
-# fzf stuff
-[[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
