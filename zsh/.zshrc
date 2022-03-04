@@ -63,10 +63,11 @@ zinit light mroth/evalcache
 # load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
-# atuin init 
-(( ! $+commands[atuin] )) || zinit light ellie/atuin
+# atuin init TODO: fix key-bindings to use atuin
+# (( ! $+commands[atuin] )) || _evalcache atuin init zsh 
 
 # lib from Oy My Zsh
+zinit ice wait lucid
 zinit snippet OMZL::key-bindings.zsh
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
@@ -94,8 +95,10 @@ zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
 ## --- Completion ---
+
 zinit ice wait lucid
 zinit light esc/conda-zsh-completion
+
 ## --- Scripts ---
 
 # about: an alternative to the cd
@@ -134,11 +137,12 @@ alias ls="ls --color=auto"
 
 ## --- Others ---
 
-git-set-mirror () {
-    git config --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
+# git-mirror set/unset local/global
+git-mirror () {
+    if [[ $1 == "set" ]] then
+      opt="" 
+    else
+      opt="--unset"
+    fi
+    git config $opt --$2 url."https://hub.fastgit.org/".insteadOf "https://github.com/"
 }
-
-git-unset-mirror () {
-    git config --unset --local url."https://hub.fastgit.org/".insteadOf "https://github.com/"
-}
-
