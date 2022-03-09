@@ -144,5 +144,5 @@ git-mirror () {
     else
       opt="--unset"
     fi
-    git config $opt --$2 url."https://hub.fastgit.org/".insteadOf "https://github.com/"
+    git config $opt --$2 url."https://hub.fastgit.xyz/".insteadOf "https://github.com/"
 }
