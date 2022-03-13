@@ -349,7 +349,8 @@ bind C-a send-prefix
 #set -g status-position top
 
 # terminal-overrides
-set -g default-terminal "xterm-256color"
+set -g default-terminal "tmux-256color"
+set -ag terminal-overrides ",xterm-256color:RGB"
 
 # shortcut for synchronize-panes toggle
 bind C-s set-window-option synchronize-panes
