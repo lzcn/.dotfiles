@@ -1,4 +1,4 @@
-# Powerlevel10k instant prompt. 
+# Powerlevel10k instant prompt.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -21,10 +21,10 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 ## --- Plugins ---
 
 # about: vim-mode for zsh
-# zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
 # configuration for vim-mode
-# ZVM_VI_EDITOR=lvim
-# ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+ZVM_VI_EDITOR=lvim
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
 
 # about: syntax-highlighting for Zsh
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
@@ -64,11 +64,9 @@ zinit light mroth/evalcache
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
 # atuin init TODO: fix key-bindings to use atuin
-# (( ! $+commands[atuin] )) || _evalcache atuin init zsh 
+(( ! $+commands[atuin] )) || _evalcache atuin init zsh
 
 # lib from Oy My Zsh
-zinit ice wait lucid
-zinit snippet OMZL::key-bindings.zsh
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
 zinit snippet OMZL::history.zsh
@@ -106,6 +104,13 @@ zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
   atload="wd() { . wd.sh }" \
   atpull'!git reset --hard'
 zinit light mfaerevaag/wd
+
+## --- key-bindings ---
+
+bindkey -M viins '^[[A' up-line-or-search
+bindkey -M viins '^[[B' down-line-or-search
+bindkey -M viins '^l' forward-word
+bindkey -M viins '^h' backward-word
 
 ## --- Aliases ---
 
