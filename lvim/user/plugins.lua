@@ -59,14 +59,15 @@ lvim.plugins = {
 			require("numb").setup()
 		end,
 	},
+
 	-- smooth scroll
-	{
-		"karb94/neoscroll.nvim",
-		event = "WinScrolled",
-		config = function()
-			require("neoscroll").setup()
-		end,
-	},
+	-- {
+	-- 	"karb94/neoscroll.nvim",
+	-- 	event = "WinScrolled",
+	-- 	config = function()
+	-- 		require("neoscroll").setup()
+	-- 	end,
+	-- },
 
 	-- automatic session saver
 	{
