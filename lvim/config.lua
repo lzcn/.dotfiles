@@ -4,9 +4,6 @@ require("lv-user-config.options")
 -- additional plugins
 require("lv-user-config.plugins")
 
--- lualine configurations
-require("lv-user-config.lualine")
-
 -- toggleterm
 lvim.builtin.terminal.active = true
 lvim.builtin.terminal.execs[#lvim.builtin.terminal.execs + 1] = { "ipython", "<c-\\><c-p>", "iPython" }
@@ -24,7 +21,7 @@ require("lv-user-config.telescope")
 require("lv-user-config.whichkey")
 
 -- dashboard
-lvim.builtin.dashboard.active = true
+lvim.builtin.dashboard.active = false
 lvim.builtin.dashboard.custom_header = {
 	" ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
 	" ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
