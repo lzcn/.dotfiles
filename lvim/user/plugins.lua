@@ -36,12 +36,12 @@ lvim.plugins = {
 	{ "dccsillag/magma-nvim", run = ":UpdateRemotePlugins", ft = { "python" } },
 
 	-- navigate within tmux
-	{
-		"numToStr/Navigator.nvim",
-		config = function()
-			require("Navigator").setup()
-		end,
-	},
+	-- {
+	-- 	"numToStr/Navigator.nvim",
+	-- 	config = function()
+	-- 		require("Navigator").setup()
+	-- 	end,
+	-- },
 
 	-- copilot
 	{
