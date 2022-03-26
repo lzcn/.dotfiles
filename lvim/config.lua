@@ -1,5 +1,8 @@
 -- general options
-require("lv-user-config.options")
+lvim.colorscheme = "dracula"
+vim.opt.scrolloff = 0
+vim.opt.relativenumber = true
+vim.o.termguicolors = true
 
 -- additional plugins
 require("lv-user-config.plugins")
@@ -21,15 +24,20 @@ require("lv-user-config.telescope")
 require("lv-user-config.whichkey")
 
 -- dashboard
-lvim.builtin.dashboard.active = false
-lvim.builtin.dashboard.custom_header = {
+-- lvim.builtin.alpha.active = false
+lvim.builtin.alpha.dashboard.section.header.val = {
+	"                                                       ",
+	"                                                       ",
 	" ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
 	" ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
 	" ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
 	" ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
 	" ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
 	" ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
+	"                                                       ",
+	"                                                       ",
 }
+lvim.builtin.alpha.dashboard.section.footer.val = require("alpha.fortune")()
 
 -- notify
 lvim.builtin.notify.active = false
