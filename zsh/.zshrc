@@ -9,7 +9,7 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 ## --- Envs ---
-export PATH="$HOME/.local/bin":$PATH
+[[ ! -z $TMUX ]] || export PATH="$HOME/.local/bin":$PATH
 
 ## --- Theme ---
 
@@ -52,7 +52,7 @@ zinit light zdharma-continuum/history-search-multi-word
 zinit light mroth/evalcache
 
 # homebrew init with _evalcache
-[[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
+[[ ! -z $TMUX ]] || [[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
 
 # conda init with _evalcache
 [[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
@@ -61,7 +61,7 @@ zinit light mroth/evalcache
 (( ! $+commands[rbenv] )) || _evalcache rbenv init -
 
 # load autojump plugin if installed
-(( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
+[[ ! -z $TMUX ]] || (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
 # atuin init TODO: fix key-bindings to use atuin
 (( ! $+commands[atuin] )) || _evalcache atuin init zsh

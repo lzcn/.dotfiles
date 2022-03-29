@@ -8,7 +8,7 @@ setup_env() {
     if check_string_in_file PATH=$DOTFILES/bin ~/.zshenv; then
         success "Found $DOTFILES/bin in PATH"
     else
-        append_string_in_file "export PATH=$DOTFILES/bin:\$PATH" ~/.zshenv
+        append_string_in_file "[[ ! -z \$TMUX ]] || export PATH=$DOTFILES/bin:\$PATH" ~/.zshenv
     fi
     # setup brew
     if check_string_in_file HOMEBREW_PREFIX ~/.zshenv && command_exists brew; then
