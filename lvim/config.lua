@@ -52,6 +52,7 @@ lvim.builtin.lualine.options.theme = "dracula-nvim"
 vim.g.dracula_lualine_bg_color = "#282A3"
 
 -- nvimtree
+lvim.builtin.nvimtree.setup.actions.open_file.resize_window = false
 lvim.builtin.nvimtree.icons.git = {
 	deleted = "",
 	ignored = "◌",
