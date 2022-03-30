@@ -1,6 +1,6 @@
 -- general options
 lvim.colorscheme = "dracula"
-vim.opt.scrolloff = 0
+vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.o.termguicolors = true
 
@@ -45,6 +45,11 @@ lvim.builtin.notify.active = false
 -- buffline
 lvim.builtin.bufferline.active = true
 lvim.builtin.bufferline.options.always_show_bufferline = true
+
+-- lualine
+lvim.builtin.lualine.options.theme = "dracula-nvim"
+-- use the same color for buffer bg
+vim.g.dracula_lualine_bg_color = "#282A3"
 
 -- nvimtree
 lvim.builtin.nvimtree.icons.git = {
