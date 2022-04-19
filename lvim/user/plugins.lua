@@ -103,16 +103,8 @@ lvim.plugins = {
 	-- Utility --
 	-- copilot
 	{
-		"hrsh7th/cmp-copilot",
-		-- disable = not lvim.builtin.copilot.active,
-		config = function()
-			lvim.builtin.cmp.formatting.source_names["copilot"] = "(Cop)"
-			table.insert(lvim.builtin.cmp.sources, { name = "copilot" })
-		end,
-	},
-	{
 		"github/copilot.vim",
-		-- disable = not lvim.builtin.copilot.active,
+		disable = not lvim.sell_your_soul_to_devil,
 		config = function()
 			require("lv-user-config.copilot").config()
 		end,

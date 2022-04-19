@@ -10,7 +10,7 @@ lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 
 -- magama.nvim
 lvim.keys.visual_mode["<LocalLeader>r"] = ":<C-u>MagmaEvaluateVisual<CR>"
--- lvim.keys.normal_mode["<Localleader>r"] = ":MagmaEvaluateOperator<CR>"
+lvim.keys.normal_mode["<Localleader>r"] = ":MagmaEvaluateOperator<CR>"
 lvim.keys.normal_mode["<Localleader>rr"] = ":MagmaEvaluateLine<CR>"
 lvim.keys.normal_mode["<LocalLeader>rc"] = ":MagmaReevaluateCell<CR>"
 lvim.keys.normal_mode["<LocalLeader>rd"] = ":MagmaDelete<CR>"
@@ -28,12 +28,18 @@ lvim.keys.normal_mode["<C-a>p"] = "<CMD>lua require('Navigator').previous()<CR>"
 
 -- insert mode --
 -- navigation within insert mode
-lvim.keys.insert_mode["<C-h>"] = "<Left>"
+lvim.keys.insert_mode["<C-h>"] = "<left>"
 lvim.keys.insert_mode["<C-l>"] = "<Right>"
-lvim.keys.insert_mode["<C-k>"] = "<Up>"
-lvim.keys.insert_mode["<C-j>"] = "<Down>"
+lvim.keys.insert_mode["<C-k>"] = "<up>"
+lvim.keys.insert_mode["<C-j>"] = "<down>"
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
+
+-- Copilot
+lvim.keys.insert_mode["<C-v>"] = { [[copilot#Accept("\<CR>")]], { expr = true, script = true } }
+lvim.keys.insert_mode["<M-]>"] = { "<Plug>(copilot-next)", { silent = true } }
+lvim.keys.insert_mode["<M-[>"] = { "<Plug>(copilot-previous)", { silent = true } }
+lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
 
 -- disable jj and kj for <Esc>
 lvim.keys.insert_mode["jj"] = false
