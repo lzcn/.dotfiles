@@ -1,5 +1,6 @@
 -- general options
 lvim.colorscheme = "dracula"
+lvim.sell_your_soul_to_devil = true
 
 vim.opt.scrolloff = 5
 vim.opt.relativenumber = true

@@ -3,10 +3,6 @@ local M = {}
 
 M.config = function()
 	local cmp = require("cmp")
-	lvim.keys.insert_mode["<c-e>"] = { [[copilot#Accept("\<CR>")]], { expr = true, script = true } }
-	lvim.keys.insert_mode["<M-]>"] = { "<Plug>(copilot-next)", { silent = true } }
-	lvim.keys.insert_mode["<M-[>"] = { "<Plug>(copilot-previous)", { silent = true } }
-	lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
 	lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "c" })
 	lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "c" })
 	vim.g.copilot_assume_mapped = true
