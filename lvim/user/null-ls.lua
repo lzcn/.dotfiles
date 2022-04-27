@@ -3,7 +3,7 @@ formatters.setup({
 	{ command = "isort", filetypes = { "python" } },
 	{ command = "black", filetypes = { "python" } },
 	{ command = "stylua", filetypes = { "lua" } },
-	{ command = "prettier", filetypes = { "markdown", "typescript", "javascript" } },
+	{ command = "prettier", filetypes = { "markdown", "css", "typescript", "javascript" } },
 })
 
 local linters = require("lvim.lsp.null-ls.linters")
