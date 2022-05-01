@@ -35,12 +35,12 @@ lvim.keys.insert_mode["<C-j>"] = "<down>"
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
--- Copilot
-lvim.keys.insert_mode["<C-v>"] = { [[copilot#Accept("\<CR>")]], { expr = true, script = true } }
-lvim.keys.insert_mode["<M-]>"] = { "<Plug>(copilot-next)", { silent = true } }
-lvim.keys.insert_mode["<M-[>"] = { "<Plug>(copilot-previous)", { silent = true } }
-lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
-
+if lvim.sell_your_soul_to_devil then
+	lvim.keys.insert_mode["<C-v>"] = { [[copilot#Accept("\<CR>")]], { expr = true, script = true } }
+	lvim.keys.insert_mode["<M-]>"] = { "<Plug>(copilot-next)", { silent = true } }
+	lvim.keys.insert_mode["<M-[>"] = { "<Plug>(copilot-previous)", { silent = true } }
+	lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
+end
 -- disable jj and kj for <Esc>
 lvim.keys.insert_mode["jj"] = false
 lvim.keys.insert_mode["kj"] = false

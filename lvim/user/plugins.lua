@@ -109,6 +109,15 @@ lvim.plugins = {
 			require("lv-user-config.copilot").config()
 		end,
 	},
+	{
+		"abecodes/tabout.nvim",
+		disable = not lvim.sell_your_soul_to_devil,
+		wants = { "nvim-treesitter" },
+		after = { "nvim-cmp" },
+		config = function()
+			require("lv-user-config.tabout").config()
+		end,
+	},
 
 	-- automatic session saver
 	{
