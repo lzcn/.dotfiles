@@ -1,19 +1,10 @@
--- Modified from https://github.com/abzcoding/lvim/blob/main/lua/user/builtin.lua
+-- https://github.com/abzcoding/lvim/blob/main/lua/user/builtin.lua
 local M = {}
-
-M.config = function()
-	local cmp = require("cmp")
-	lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "c" })
-	lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "c" })
-	vim.g.copilot_assume_mapped = true
-	vim.g.copilot_no_tab_map = true
-	vim.g.copilot_tab_fallback = ""
-end
 
 function M.tab(fallback)
 	local methods = require("lvim.core.cmp").methods
-	local luasnip = require("luasnip")
 	local cmp = require("cmp")
+	local luasnip = require("luasnip")
 	local copilot_keys = vim.fn["copilot#Accept"]()
 	if cmp.visible() then
 		cmp.select_next_item()
@@ -51,6 +42,15 @@ function M.shift_tab(fallback)
 			methods.feedkeys("<Plug>(Tabout)", "")
 		end
 	end
+end
+
+M.config = function()
+	local cmp = require("cmp")
+	vim.g.copilot_no_tab_map = true
+	vim.g.copilot_assume_mapped = true
+	vim.g.copilot_tab_fallback = ""
+	lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "c" })
+	lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "c" })
 end
 
 return M
