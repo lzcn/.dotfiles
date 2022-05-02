@@ -107,10 +107,10 @@ zinit light mfaerevaag/wd
 
 ## --- key-bindings ---
 
-bindkey -M viins '^[[A' up-line-or-search
-bindkey -M viins '^[[B' down-line-or-search
-bindkey -M viins '^l' forward-word
-bindkey -M viins '^h' backward-word
+bindkey -M viins '^[p' up-line-or-search
+bindkey -M viins '^[n' down-line-or-search
+bindkey -M viins '^[f' forward-word
+bindkey -M viins '^[b' backward-word
 
 ## --- Aliases ---
 
