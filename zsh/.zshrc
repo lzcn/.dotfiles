@@ -63,9 +63,6 @@ zinit light mroth/evalcache
 # load autojump plugin if installed
 [[ ! -z $TMUX ]] || (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
-# atuin init TODO: fix key-bindings to use atuin
-(( ! $+commands[atuin] )) || _evalcache atuin init zsh
-
 # lib from Oy My Zsh
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
@@ -92,6 +89,9 @@ zinit snippet PZT::modules/gnu-utility
 zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
+# # atuin init
+zinit ice wait lucid
+zinit load ellie/atuin
 ## --- Completion ---
 
 zinit ice wait lucid

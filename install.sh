@@ -40,7 +40,7 @@ install_submodules() {
 install_zinit() {
     title "Installing Zinit"
     if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-        sh -c "$(curl -fsSL https://git.io/zinit-install)"
+        bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
     else
         success "Zinit already installed."
     fi
