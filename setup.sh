@@ -81,8 +81,8 @@ setup_zsh() {
 
 }
 
-setup_nvim() {
-    title "Configuring Lunar Vim"
+setup_lvim() {
+    title "Configuring LunarVim"
     symlink $HOME/.config/lvim $DOTFILES/lvim
     symlink $HOME/.local/share/lunarvim/lvim/lua/lv-user-config $DOTFILES/lvim/user
 
@@ -118,8 +118,8 @@ git)
 pip)
     setup_pip
     ;;
-nvim)
-    setup_nvim
+lvim)
+    setup_lvim
     ;;
 tmux)
     setup_tmux
@@ -128,6 +128,7 @@ zsh)
     setup_zsh
     ;;
 all)
+    setup_brew
     setup_env
     setup_flake
     setup_git
@@ -136,7 +137,7 @@ all)
     setup_zsh
     ;;
 *)
-    echo -e $"\nUsage: $(basename "$0") {alacritty|brew|env|flake|git|nvim|tmux|zsh|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {alacritty|brew|env|flake|git|lvim|tmux|zsh|all}\n"
     exit 1
     ;;
 esac
