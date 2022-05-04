@@ -35,8 +35,14 @@ lvim.keys.insert_mode["<C-j>"] = "<down>"
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
-if lvim.sell_your_soul_to_devil then
-	lvim.keys.insert_mode["<C-v>"] = { [[copilot#Accept("\<CR>")]], { expr = true, script = true } }
+if lvim.user.copilot.active then
+	local cmp = require("cmp")
+	local function t(str)
+		return vim.api.nvim_replace_termcodes(str, true, true, true)
+	end
+	lvim.builtin.cmp.mapping["<C-v>"] = cmp.mapping(function()
+		vim.api.nvim_feedkeys(vim.fn["copilot#Accept"](t("<Tab>")), "n", true)
+	end)
 	lvim.keys.insert_mode["<M-]>"] = { "<Plug>(copilot-next)", { silent = true } }
 	lvim.keys.insert_mode["<M-[>"] = { "<Plug>(copilot-previous)", { silent = true } }
 	lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }

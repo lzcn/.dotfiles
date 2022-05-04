@@ -1,10 +1,14 @@
 -- general options
 lvim.colorscheme = "dracula"
-lvim.sell_your_soul_to_devil = true
 
 vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.o.termguicolors = true
+
+lvim.user = {
+	copilot = { active = true },
+	lastplace = { active = true },
+}
 
 -- additional plugins
 require("lv-user-config.plugins")
