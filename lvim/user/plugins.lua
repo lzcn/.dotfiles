@@ -22,20 +22,48 @@ lvim.plugins = {
 	-- hitn signature when type
 	{
 		"ray-x/lsp_signature.nvim",
-		event = "BufRead",
 		config = function()
 			require("lsp_signature").setup()
 		end,
+		event = { "BufRead", "BufNew" },
 	},
 
 	-- Diagnostics --
-	{ "folke/trouble.nvim", cmd = "TroubleToggle" },
+	{
+		"folke/trouble.nvim",
+		config = function()
+			require("trouble").setup({
+				auto_open = true,
+				auto_close = true,
+				padding = false,
+				height = 10,
+				use_diagnostic_signs = true,
+			})
+		end,
+		cmd = "Trouble",
+	},
 	-- better quickfix window
-	{ "kevinhwang91/nvim-bqf", ft = "qf" },
+	{
+		"kevinhwang91/nvim-bqf",
+		config = function()
+			require("lv-user-config.bqf").config()
+		end,
+		event = "BufRead",
+		ft = "qf",
+	},
 
 	-- Navigation --
 	-- enhanced matchup
-	{ "andymass/vim-matchup" },
+	{
+		"andymass/vim-matchup",
+		event = "BufReadPost",
+		config = function()
+			vim.g.matchup_enabled = 1
+			vim.g.matchup_surround_enabled = 1
+			vim.g.matchup_matchparen_deferred = 1
+			vim.g.matchup_matchparen_offscreen = { method = "popup" }
+		end,
+	},
 	-- navigate within tmux panes
 	{
 		"numToStr/Navigator.nvim",
@@ -104,19 +132,19 @@ lvim.plugins = {
 	-- copilot
 	{
 		"github/copilot.vim",
-		disable = not lvim.sell_your_soul_to_devil,
 		config = function()
 			require("lv-user-config.copilot").config()
 		end,
+		disable = not lvim.user.copilot.active,
 	},
 	{
 		"abecodes/tabout.nvim",
-		disable = not lvim.sell_your_soul_to_devil,
 		wants = { "nvim-treesitter" },
 		after = { "nvim-cmp" },
 		config = function()
 			require("lv-user-config.tabout").config()
 		end,
+		disable = not lvim.user.copilot.active,
 	},
 
 	-- automatic session saver
@@ -131,29 +159,19 @@ lvim.plugins = {
 
 	-- open at last edited position
 	{
-		"ethanholz/nvim-lastplace",
-		event = "BufRead",
+		"vladdoster/remember.nvim",
 		config = function()
-			require("nvim-lastplace").setup({
-				lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
-				lastplace_ignore_filetype = {
-					"gitcommit",
-					"gitrebase",
-					"svn",
-					"hgcommit",
-				},
-				lastplace_open_folds = true,
-			})
+			require("remember").setup({})
 		end,
+		event = "BufWinEnter",
+		disable = not lvim.user.lastplace.active,
 	},
 
 	-- todo comments
 	{
 		"folke/todo-comments.nvim",
+		requires = "nvim-lua/plenary.nvim",
 		event = "BufRead",
-		config = function()
-			require("todo-comments").setup()
-		end,
 	},
 
 	-- delete, change and add surroundings
