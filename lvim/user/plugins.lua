@@ -78,14 +78,6 @@ lvim.plugins = {
 			require("numb").setup()
 		end,
 	},
-	-- open projects with telescope
-	{
-		"nvim-telescope/telescope-project.nvim",
-		event = "BufWinEnter",
-		setup = function()
-			vim.cmd([[packadd telescope.nvim]])
-		end,
-	},
 
 	-- Python --
 	-- pydocstring
