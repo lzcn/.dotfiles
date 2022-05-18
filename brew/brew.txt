@@ -15,6 +15,7 @@ node
 rbenv
 ripgrep
 shellcheck
+shfmt
 stylua
 tldr
 tmux

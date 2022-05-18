@@ -14,78 +14,77 @@ install_nvchad() {
 }
 
 install_lvim() {
-    title "Installing LunarVim"
-    if command_exists lvim; then
-      success "LunarVim already installed"
-    else
-      bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)
-    fi
+  title "Installing LunarVim"
+  if command_exists lvim; then
+    success "LunarVim already installed"
+  else
+    bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)
+  fi
 }
 
 install_homebrew() {
-    title "Installing Homebrew"
-    if command_exists brew; then
-        success "Homebrew already installed"
-    else
-        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
+  title "Installing Homebrew"
+  if command_exists brew; then
+    success "Homebrew already installed"
+  else
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
 }
 
 install_submodules() {
-    title "Installing submodules"
-    git submodule update --init --recursive
-    success "Submodules installed"
+  title "Installing submodules"
+  git submodule update --init --recursive
+  success "Submodules installed"
 }
 
 install_zinit() {
-    title "Installing Zinit"
-    if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-        bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
-    else
-        success "Zinit already installed."
-    fi
+  title "Installing Zinit"
+  if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+  else
+    success "Zinit already installed."
+  fi
 }
 
 install_ohmyzsh() {
-    title "Installing Oh-My-Zsh"
-    if [[ ! -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    else
-        success "Oh-My-Zsh already installed."
-    fi
+  title "Installing Oh-My-Zsh"
+  if [[ ! -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  else
+    success "Oh-My-Zsh already installed."
+  fi
 
 }
 
 case "$1" in
-cargo)
+  cargo)
     install_cargo
     ;;
-lvim)
+  lvim)
     install_lvim
     ;;
-nvchad)
+  nvchad)
     install_nvchad
     ;;
-homebrew)
+  homebrew)
     install_homebrew
     ;;
-ohmyzsh)
+  ohmyzsh)
     install_ohmyzsh
     ;;
-submodules)
+  submodules)
     install_submodules
     ;;
-zinit)
+  zinit)
     install_zinit
     ;;
-all)
+  all)
     install_homebrew
     install_submodules
     install_zinit
     ;;
-*)
+  *)
     echo -e $"\nUsage: $(basename "$0") {cargo|livm|nvchad|homebrew|ohmyzsh|submodules|zinit|all}\n"
     exit 1
     ;;
 esac
-

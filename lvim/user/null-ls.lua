@@ -3,6 +3,7 @@ formatters.setup({
 	{ command = "isort", filetypes = { "python" } },
 	{ command = "black", filetypes = { "python" } },
 	{ command = "stylua", filetypes = { "lua" } },
+	{ command = "shfmt", extra_args = { "-i", "2", "-ci" } },
 	{ command = "prettier", filetypes = { "markdown", "css", "typescript", "javascript" } },
 })
 

@@ -8,80 +8,80 @@ COLOR_RED="\033[0;31m"
 COLOR_YELLOW="\033[0;33m"
 
 title() {
-    echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
-    echo -e "${COLOR_GRAY}====================${COLOR_NONE}\n"
+  echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
+  echo -e "${COLOR_GRAY}====================${COLOR_NONE}\n"
 }
 
 question() {
-    echo -e -n "${COLOR_YELLOW} [?] $1 (y/n): ${COLOR_NONE}"
-    read -n 1 -r REPLY
-    echo
+  echo -e -n "${COLOR_YELLOW} [?] $1 (y/n): ${COLOR_NONE}"
+  read -n 1 -r REPLY
+  echo
 }
 
 warning() {
-    echo -e "${COLOR_YELLOW} [!] $1${COLOR_NONE}"
+  echo -e "${COLOR_YELLOW} [!] $1${COLOR_NONE}"
 }
 
 info() {
-    echo -e "${COLOR_BLUE} [*] $1${COLOR_NONE}"
+  echo -e "${COLOR_BLUE} [*] $1${COLOR_NONE}"
 }
 
 fail() {
-    echo -e "${COLOR_RED} [x] $1${COLOR_NONE}"
+  echo -e "${COLOR_RED} [x] $1${COLOR_NONE}"
 }
 
 success() {
-    echo -e "${COLOR_GREEN} [+] $1${COLOR_NONE}"
+  echo -e "${COLOR_GREEN} [+] $1${COLOR_NONE}"
 }
 
 symlink() {
-    target_file=$1
-    source_file=$2
-    if [ -e "$target_file" ]; then
-        if [ "$(readlink "$target_file")" != "$source_file" ]; then
-            question "'$target_file' already exists, do you want to overwrite it?"
-            if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-                rm -rf "$target_file"
-                info "remove $target_file"
-                ln -fs $source_file $target_file
-                info "$target_file -> $source_file"
-            else
-                fail "$target_file -> $source_file"
-            fi
-        else
-            info "Found $target_file -> $source_file"
-        fi
-    else
+  target_file=$1
+  source_file=$2
+  if [ -e "$target_file" ]; then
+    if [ "$(readlink "$target_file")" != "$source_file" ]; then
+      question "'$target_file' already exists, do you want to overwrite it?"
+      if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        rm -rf "$target_file"
+        info "remove $target_file"
         ln -fs $source_file $target_file
-        success "Created $target_file -> $source_file"
+        info "$target_file -> $source_file"
+      else
+        fail "$target_file -> $source_file"
+      fi
+    else
+      info "Found $target_file -> $source_file"
     fi
+  else
+    ln -fs $source_file $target_file
+    success "Created $target_file -> $source_file"
+  fi
 }
 
 is_darwin() {
-    [[ "$OSTYPE" == "darwin"* ]]
+  [[ "$OSTYPE" == "darwin"* ]]
 }
 
 is_osx() {
-    [ "$(uname)" == "Darwin" ]
+  [ "$(uname)" == "Darwin" ]
 }
 
 is_linux() {
-    [ "$(uname)" == "Linux" ]
+  [ "$(uname)" == "Linux" ]
 }
 
 command_exists() {
-    local command="$1"
-    command -v "$command" &>/dev/null
+  local command="$1"
+  command -v "$command" &>/dev/null
 }
 
 check_string_in_file() {
-    string=$1
-    filename=$2
-    grep -qF $string $2 &>/dev/null
+  string=$1
+  filename=$2
+  grep -qF $string $2 &>/dev/null
 }
 
 append_string_in_file() {
-    string=$1
-    filename=$2
-    echo "$string" >> $filename
+  string=$1
+  filename=$2
+  echo "$string" >>$filename
 }
