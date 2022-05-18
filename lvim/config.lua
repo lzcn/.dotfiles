@@ -7,6 +7,7 @@ vim.o.termguicolors = true
 
 lvim.user = {
 	copilot = { active = true },
+	numb = { active = false },
 	lastplace = { active = true },
 }
 
