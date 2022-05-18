@@ -77,7 +77,10 @@ lvim.plugins = {
 		config = function()
 			require("numb").setup()
 		end,
+		disable = not lvim.user.numb.active,
 	},
+	-- fast navigation
+	{ "ggandor/lightspeed.nvim" },
 
 	-- Python --
 	-- pydocstring
