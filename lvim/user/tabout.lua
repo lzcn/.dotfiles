@@ -7,7 +7,7 @@ M.config = function()
 	end
 
 	tabout.setup({
-		completion = true,
+		completion = false,
 		ignore_beginning = false,
 		tabouts = {
 			{ open = "'", close = "'" },
