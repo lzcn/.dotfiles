@@ -45,6 +45,14 @@ install_zinit() {
     success "Zinit already installed."
   fi
 }
+install_nvm() {
+  title "Installing NVM"
+  if [[ ! -f $HOME/.nvm/nvm.sh ]]; then
+    bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh)"
+  else
+    success "NVM already installed."
+  fi
+}
 
 install_ohmyzsh() {
   title "Installing Oh-My-Zsh"
@@ -66,6 +74,9 @@ case "$1" in
   nvchad)
     install_nvchad
     ;;
+  nvm)
+    install_nvm
+    ;;
   homebrew)
     install_homebrew
     ;;
@@ -80,11 +91,12 @@ case "$1" in
     ;;
   all)
     install_homebrew
+    install_nvm
     install_submodules
     install_zinit
     ;;
   *)
-    echo -e $"\nUsage: $(basename "$0") {cargo|livm|nvchad|homebrew|ohmyzsh|submodules|zinit|all}\n"
+    echo "Usage: $0 {cargo|lvim|nvchad|nvm|homebrew|ohmyzsh|submodules|zinit|all}"
     exit 1
     ;;
 esac
