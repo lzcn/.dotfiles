@@ -5,10 +5,12 @@ vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.o.termguicolors = true
 
+lvim.format_on_save = false
+
 lvim.user = {
 	copilot = { active = true },
-	numb = { active = false },
 	lastplace = { active = true },
+	navigation = { lightspeed = true, peekline = false },
 }
 
 -- additional plugins
