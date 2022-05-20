@@ -28,10 +28,10 @@ lvim.keys.normal_mode["<C-a>p"] = "<CMD>lua require('Navigator').previous()<CR>"
 
 -- insert mode --
 -- navigation within insert mode
-lvim.keys.insert_mode["<C-h>"] = "<left>"
-lvim.keys.insert_mode["<C-l>"] = "<Right>"
-lvim.keys.insert_mode["<C-k>"] = "<up>"
-lvim.keys.insert_mode["<C-j>"] = "<down>"
+lvim.keys.insert_mode["<C-h>"] = { "<left>", { noremap = true } }
+lvim.keys.insert_mode["<C-l>"] = { "<Right>", { noremap = true } }
+lvim.keys.insert_mode["<C-k>"] = { "<Up>", { noremap = true } }
+lvim.keys.insert_mode["<C-j>"] = { "<Down>", { noremap = true } }
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
@@ -40,6 +40,7 @@ if lvim.user.copilot.active then
 	local function t(str)
 		return vim.api.nvim_replace_termcodes(str, true, true, true)
 	end
+
 	lvim.builtin.cmp.mapping["<C-v>"] = cmp.mapping(function()
 		vim.api.nvim_feedkeys(vim.fn["copilot#Accept"](t("<Tab>")), "n", true)
 	end)
