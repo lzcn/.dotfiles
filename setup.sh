@@ -51,7 +51,11 @@ setup_env() {
 
 setup_alacritty() {
   title "Configuring Alacritty"
-  symlink $HOME/.config/alacritty $DOTFILES/alacritty
+  if command_exists alacritty; then
+    symlink "$HOME/.config/alacritty" "$DOTFILES/alacritty"
+  else
+    info 'alacritty is not installed'
+  fi
 }
 
 setup_brew() {
@@ -128,16 +132,17 @@ case "$1" in
     setup_zsh
     ;;
   all)
+    setup_alacritty
     setup_brew
     setup_env
     setup_flake
     setup_git
-    setup_nvim
+    setup_lvim
     setup_tmux
     setup_zsh
     ;;
   *)
-    echo -e $"\nUsage: $(basename "$0") {alacritty|brew|env|flake|git|lvim|tmux|zsh|all}\n"
+    echo "Usage: $0 [alacritty|brew|env|flake|git|pip|lvim|tmux|zsh|all]"
     exit 1
     ;;
 esac
