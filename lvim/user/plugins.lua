@@ -77,10 +77,10 @@ lvim.plugins = {
 		config = function()
 			require("numb").setup()
 		end,
-		disable = not lvim.user.numb.active,
+		disable = not lvim.user.navigation.peekline,
 	},
 	-- fast navigation
-	{ "ggandor/lightspeed.nvim" },
+	{ "ggandor/lightspeed.nvim", disable = not lvim.user.navigation.lightspeed },
 
 	-- Python --
 	-- pydocstring
