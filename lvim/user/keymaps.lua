@@ -36,6 +36,7 @@ lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
 if lvim.user.copilot.active then
+---@diagnostic disable-next-line: different-requires
 	local cmp = require("cmp")
 	local function t(str)
 		return vim.api.nvim_replace_termcodes(str, true, true, true)

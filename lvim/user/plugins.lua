@@ -77,10 +77,25 @@ lvim.plugins = {
 		config = function()
 			require("numb").setup()
 		end,
-		disable = not lvim.user.navigation.peekline,
+		disable = not lvim.user.navigation.numb,
 	},
 	-- fast navigation
-	{ "ggandor/lightspeed.nvim", disable = not lvim.user.navigation.lightspeed },
+	{
+		"ggandor/lightspeed.nvim",
+		event = "BufRead",
+		disable = not lvim.user.navigation.lightspeed,
+	},
+	-- ranger
+	{
+		"kevinhwang91/rnvimr",
+		cmd = "RnvimrToggle",
+		config = function()
+			vim.g.rnvimr_draw_border = 1
+			vim.g.rnvimr_pick_enable = 1
+			vim.g.rnvimr_bw_enable = 1
+		end,
+		disable = not lvim.user.navigation.rnvimr,
+	},
 
 	-- Python --
 	-- pydocstring
