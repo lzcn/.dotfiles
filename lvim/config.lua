@@ -10,7 +10,7 @@ lvim.format_on_save = false
 lvim.user = {
 	copilot = { active = true },
 	lastplace = { active = true },
-	navigation = { lightspeed = true, peekline = false },
+	navigation = { lightspeed = true, numb = false, rnvimr = true },
 }
 
 -- additional plugins
