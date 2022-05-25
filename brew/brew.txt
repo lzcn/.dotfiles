@@ -12,6 +12,7 @@ lazygit
 ncdu
 neovim
 node
+nvm
 rbenv
 ripgrep
 shellcheck
