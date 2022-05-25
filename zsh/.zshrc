@@ -63,6 +63,9 @@ zinit light mroth/evalcache
 # load autojump plugin if installed
 [[ ! -z $TMUX ]] || (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
+# source nvm
+[[ ! -z $TMUX ]] || (( ! $+commands[brew] )) || source $(brew --prefix nvm)/nvm.sh
+
 # lib from Oy My Zsh
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
@@ -153,8 +156,3 @@ git-mirror () {
     git config $opt --$2 url."https://hub.fastgit.xyz/".insteadOf "https://github.com/"
 }
 
-if [[ -z $TMUX ]] then
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-fi
