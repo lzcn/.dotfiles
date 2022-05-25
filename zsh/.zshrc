@@ -132,11 +132,13 @@ alias cll='colorls -l'
 alias cla='colorls -lAh'
 
 # aliases for cluster-smi
-(( ! $+commands[cluster-smi] )) || alias csmi='cluster-smi'
+alias csmi='cluster-smi'
 
 # aliases for conda
 alias sra='conda activate'
 alias srd='conda deactivate'
+
+alias lg='lazygit'
 
 # use nvim or lvim for vim
 (( ! $+commands[nvim] )) || alias vim='nvim'
