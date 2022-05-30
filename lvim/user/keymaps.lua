@@ -3,10 +3,10 @@ vim.g.maplocalleader = "\\"
 
 -- normal mode --
 -- navigate buffers use Tab to navigate buffer instead H/L
-lvim.keys.normal_mode["<S-l>"] = false
-lvim.keys.normal_mode["<S-h>"] = false
-lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
-lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
+-- lvim.keys.normal_mode["<S-l>"] = false
+-- lvim.keys.normal_mode["<S-h>"] = false
+-- lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
+-- lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 
 -- magama.nvim
 lvim.keys.visual_mode["<LocalLeader>r"] = ":<C-u>MagmaEvaluateVisual<CR>"
