@@ -41,48 +41,32 @@ draw_bold_text_with_bright_colors: true
 
 # Colors: Dracula
 colors:
+  # Default colors
   primary:
     background: '#282a36'
     foreground: '#f8f8f2'
-    bright_foreground: '#ffffff'
-  search:
-    matches:
-      foreground: '#44475a'
-      background: '#50fa7b'
-    focused_match:
-      foreground: '#44475a'
-      background: '#ffb86c'
-    bar:
-      background: '#282a36'
-      foreground: '#f8f8f2'
-  hints:
-    start:
-      foreground: '#282a36'
-      background: '#f1fa8c'
-    end:
-      foreground: '#f1fa8c'
-      background: '#282a36'
-  selection:
-    text: CellForeground
-    background: '#44475a'
+
+  # Normal colors
   normal:
-    black: '#21222c'
+    black: '#000000'
     red: '#ff5555'
     green: '#50fa7b'
     yellow: '#f1fa8c'
-    blue: '#bd93f9'
+    blue: '#caa9fa'
     magenta: '#ff79c6'
     cyan: '#8be9fd'
-    white: '#f8f8f2'
+    white: '#bfbfbf'
+
+  # Bright colors
   bright:
-    black: '#6272a4'
-    red: '#ff6e6e'
-    green: '#69ff94'
-    yellow: '#ffffa5'
-    blue: '#d6acff'
-    magenta: '#ff92df'
-    cyan: '#a4ffff'
-    white: '#ffffff'
+    black: '#575b70'
+    red: '#ff6e67'
+    green: '#5af78e'
+    yellow: '#f4f99d'
+    blue: '#caa9fa'
+    magenta: '#ff92d0'
+    cyan: '#9aedfe'
+    white: '#e6e6e6'
 
 selection:
   save_to_clipboard: true
@@ -98,29 +82,30 @@ live_config_reload: true
 # Key Binddings
 key_bindings:
   - { key: N, mods: Control|Shift, action: SpawnNewInstance }
-  - { key: A, mods: Alt, chars: "\x1ba" }
-  - { key: B, mods: Alt, chars: "\x1bb" }
-  - { key: C, mods: Alt, chars: "\x1bc" }
-  - { key: D, mods: Alt, chars: "\x1bd" }
-  - { key: E, mods: Alt, chars: "\x1be" }
-  - { key: F, mods: Alt, chars: "\x1bf" }
-  - { key: G, mods: Alt, chars: "\x1bg" }
-  - { key: H, mods: Alt, chars: "\x1bh" }
-  - { key: I, mods: Alt, chars: "\x1bi" }
-  - { key: J, mods: Alt, chars: "\x1bj" }
-  - { key: K, mods: Alt, chars: "\x1bk" }
-  - { key: L, mods: Alt, chars: "\x1bl" }
-  - { key: M, mods: Alt, chars: "\x1bm" }
-  - { key: N, mods: Alt, chars: "\x1bn" }
-  - { key: O, mods: Alt, chars: "\x1bo" }
-  - { key: P, mods: Alt, chars: "\x1bp" }
-  - { key: Q, mods: Alt, chars: "\x1bq" }
-  - { key: R, mods: Alt, chars: "\x1br" }
-  - { key: S, mods: Alt, chars: "\x1bs" }
-  - { key: T, mods: Alt, chars: "\x1bt" }
-  - { key: U, mods: Alt, chars: "\x1bu" }
-  - { key: V, mods: Alt, chars: "\x1bv" }
-  - { key: W, mods: Alt, chars: "\x1bw" }
-  - { key: X, mods: Alt, chars: "\x1bx" }
-  - { key: Y, mods: Alt, chars: "\x1by" }
-  - { key: Z, mods: Alt, chars: "\x1bz" }
+  - { key: A, mods: Alt, chars: "\ea" }
+  - { key: B, mods: Alt, chars: "\eb" }
+  - { key: C, mods: Alt, chars: "\ec" }
+  - { key: D, mods: Alt, chars: "\ed" }
+  - { key: E, mods: Alt, chars: "\ee" }
+  - { key: F, mods: Alt, chars: "\ef" }
+  - { key: G, mods: Alt, chars: "\eg" }
+  - { key: H, mods: Alt, chars: "\eh" }
+  - { key: I, mods: Alt, chars: "\ei" }
+  - { key: J, mods: Alt, chars: "\ej" }
+  - { key: K, mods: Alt, chars: "\ek" }
+  - { key: L, mods: Alt, chars: "\el" }
+  - { key: M, mods: Alt, chars: "\em" }
+  - { key: N, mods: Alt, chars: "\en" }
+  - { key: O, mods: Alt, chars: "\eo" }
+  - { key: P, mods: Alt, chars: "\ep" }
+  - { key: Q, mods: Alt, chars: "\eq" }
+  - { key: R, mods: Alt, chars: "\er" }
+  - { key: S, mods: Alt, chars: "\es" }
+  - { key: T, mods: Alt, chars: "\et" }
+  - { key: U, mods: Alt, chars: "\eu" }
+  - { key: V, mods: Alt, chars: "\ev" }
+  - { key: W, mods: Alt, chars: "\ew" }
+  - { key: X, mods: Alt, chars: "\ex" }
+  - { key: Y, mods: Alt, chars: "\ey" }
+  - { key: Z, mods: Alt, chars: "\ez" }
+theme: Dracula
