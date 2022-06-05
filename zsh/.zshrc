@@ -61,10 +61,10 @@ zinit light mroth/evalcache
 (( ! $+commands[rbenv] )) || _evalcache rbenv init -
 
 # load autojump plugin if installed
-[[ ! -z $TMUX ]] || (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
+(( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
 # source nvm
-[[ ! -z $TMUX ]] || (( ! $+commands[brew] )) || source $(brew --prefix nvm)/nvm.sh
+[[ ! -z $TMUX ]] || [[ ! -d $(brew --prefix nvm) ]] || source $(brew --prefix nvm)/nvm.sh
 
 # lib from Oy My Zsh
 zinit snippet OMZL::completion.zsh
