@@ -58,6 +58,15 @@ setup_alacritty() {
   fi
 }
 
+setup_atuin() {
+  title "Configuring Atuin"
+  if command_exists atuin; then
+    symlink "$HOME/.config/atuin/config.toml" "$DOTFILES/atuin/config.toml"
+  else
+    info 'atuin is not installed'
+  fi
+}
+
 setup_brew() {
   xargs brew install <./brew/brew.txt
   if is_osx; then
@@ -106,6 +115,9 @@ setup_flake() {
 case "$1" in
   alacritty)
     setup_alacritty
+    ;;
+  atuin)
+    setup_atuin
     ;;
   brew)
     setup_brew
