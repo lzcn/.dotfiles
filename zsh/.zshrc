@@ -93,8 +93,8 @@ zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
 # atuin
-# zinit ice wait lucid
-# zinit load ellie/atuin
+zinit ice wait lucid
+zinit load ellie/atuin
 
 ## --- Completion ---
 
