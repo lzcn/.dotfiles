@@ -1,8 +1,8 @@
 local status_ok, actions = pcall(require, "telescope.actions")
 
 if not status_ok then
-	print("Telescope not loaded.")
-	return
+  print("Telescope not loaded.")
+  return
 end
 
 lvim.builtin.telescope.defaults.prompt_prefix = " "
