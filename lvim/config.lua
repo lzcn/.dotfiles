@@ -8,9 +8,9 @@ vim.o.termguicolors = true
 lvim.format_on_save = false
 
 lvim.user = {
-	copilot = { active = true },
-	lastplace = { active = true },
-	navigation = { lightspeed = true, numb = false, rnvimr = true },
+  copilot = { active = true },
+  lastplace = { active = true },
+  navigation = { lightspeed = true, numb = false, rnvimr = true },
 }
 
 -- additional plugins
@@ -35,16 +35,16 @@ require("lv-user-config.whichkey")
 -- dashboard
 -- lvim.builtin.alpha.active = false
 lvim.builtin.alpha.dashboard.section.header.val = {
-	"                                                       ",
-	"                                                       ",
-	" ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
-	" ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
-	" ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
-	" ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
-	" ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
-	" ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
-	"                                                       ",
-	"                                                       ",
+  "                                                       ",
+  "                                                       ",
+  " ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
+  " ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
+  " ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
+  " ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
+  " ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
+  " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
+  "                                                       ",
+  "                                                       ",
 }
 lvim.builtin.alpha.dashboard.section.footer.val = require("alpha.fortune")()
 
@@ -64,13 +64,13 @@ vim.g.dracula_lualine_bg_color = "#282A3"
 -- nvimtree
 lvim.builtin.nvimtree.setup.actions.open_file.resize_window = false
 lvim.builtin.nvimtree.icons.git = {
-	deleted = "",
-	ignored = "◌",
-	renamed = "➜",
-	staged = "✓",
-	unmerged = "",
-	unstaged = "✗",
-	untracked = "★",
+  deleted = "",
+  ignored = "◌",
+  renamed = "➜",
+  staged = "✓",
+  unmerged = "",
+  unstaged = "✗",
+  untracked = "★",
 }
 
 -- gitsigns
@@ -79,18 +79,18 @@ lvim.builtin.gitsigns.opts.signs.topdelete.text = "▎"
 
 -- treesitter
 lvim.builtin.treesitter.ensure_installed = {
-	"bash",
-	"c",
-	"javascript",
-	"json",
-	"lua",
-	"python",
-	"typescript",
-	"tsx",
-	"css",
-	"rust",
-	"java",
-	"yaml",
+  "bash",
+  "c",
+  "javascript",
+  "json",
+  "lua",
+  "python",
+  "typescript",
+  "tsx",
+  "css",
+  "rust",
+  "java",
+  "yaml",
 }
 lvim.builtin.treesitter.rainbow.enable = true
 
@@ -103,9 +103,9 @@ require("lv-user-config.null-ls")
 
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "zsh",
-	callback = function()
-		-- let treesitter use bash highlight for zsh files as well
-		require("nvim-treesitter.highlight").attach(0, "bash")
-	end,
+  pattern = "zsh",
+  callback = function()
+    -- let treesitter use bash highlight for zsh files as well
+    require("nvim-treesitter.highlight").attach(0, "bash")
+  end,
 })
