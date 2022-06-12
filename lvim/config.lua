@@ -1,19 +1,17 @@
 -- general options
 lvim.colorscheme = "dracula"
+lvim.format_on_save = false
 
 vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.o.termguicolors = true
 
-lvim.format_on_save = false
-
+-- additional plugins
 lvim.user = {
   copilot = { active = true },
   lastplace = { active = true },
   navigation = { lightspeed = true, numb = false, rnvimr = true },
 }
-
--- additional plugins
 require("lv-user-config.plugins")
 
 -- toggleterm
@@ -33,7 +31,8 @@ require("lv-user-config.telescope")
 require("lv-user-config.whichkey")
 
 -- dashboard
--- lvim.builtin.alpha.active = false
+lvim.builtin.alpha.active = true
+lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.alpha.dashboard.section.header.val = {
   "                                                       ",
   "                                                       ",
@@ -63,7 +62,8 @@ vim.g.dracula_lualine_bg_color = "#282A3"
 
 -- nvimtree
 lvim.builtin.nvimtree.setup.actions.open_file.resize_window = false
-lvim.builtin.nvimtree.icons.git = {
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.nvimtree.setup.renderer.icons.glyphs.git = {
   deleted = "",
   ignored = "◌",
   renamed = "➜",
@@ -92,6 +92,8 @@ lvim.builtin.treesitter.ensure_installed = {
   "java",
   "yaml",
 }
+lvim.builtin.treesitter.ignore_install = { "haskell" }
+lvim.builtin.treesitter.highlight.enabled = true
 lvim.builtin.treesitter.rainbow.enable = true
 
 -- generic LSP settings
