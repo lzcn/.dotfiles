@@ -27,7 +27,12 @@ lvim.plugins = {
     end,
     event = { "BufRead", "BufNew" },
   },
-
+  {
+    "nathom/filetype.nvim",
+    config = function()
+      require("lv-user-config.filetype").config()
+    end,
+  },
   -- Diagnostics --
   {
     "folke/trouble.nvim",
@@ -123,6 +128,11 @@ lvim.plugins = {
       vim.g.vimtex_view_skim_activate = 1
       vim.g.vimtex_quickfix_mode = 0
     end,
+  },
+  {
+    "kdheepak/cmp-latex-symbols",
+    requires = "hrsh7th/nvim-cmp",
+    ft = "tex",
   },
 
   -- Markdown --
