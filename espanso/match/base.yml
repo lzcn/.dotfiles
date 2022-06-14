@@ -1,0 +1,33 @@
+matches:
+  - trigger: ":date"
+    replace: "{{time}}"
+    vars:
+      - name: time
+        type: date
+        params:
+          format: "%Y-%m-%d"
+
+  - trigger: ":time"
+    replace: "{{time}}"
+    vars:
+      - name: time
+        type: date
+        params:
+          format: "%H:%M"
+
+  - trigger: ":now"
+    replace: "{{time}}"
+    vars:
+      - name: time
+        type: date
+        params:
+          format: "%Y-%m-%d %H:%d"
+
+  - trigger: ":passwd"  
+    replace: "{{passwd}}"
+    vars:
+      - name: passwd
+        type: shell
+        params:
+          cmd: "security find-generic-password -w -s 'espanso-cli' -a 'espanso'"
+
