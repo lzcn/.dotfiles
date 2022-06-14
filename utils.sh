@@ -43,7 +43,7 @@ symlink() {
       if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         rm -rf "$target_file"
         info "remove $target_file"
-        ln -fs $source_file $target_file
+        ln -fs "$source_file" "$target_file"
         info "$target_file -> $source_file"
       else
         fail "$target_file -> $source_file"
@@ -52,7 +52,7 @@ symlink() {
       info "Found $target_file -> $source_file"
     fi
   else
-    ln -fs $source_file $target_file
+    ln -fs "$source_file" "$target_file"
     success "Created $target_file -> $source_file"
   fi
 }
@@ -77,11 +77,11 @@ command_exists() {
 check_string_in_file() {
   string=$1
   filename=$2
-  grep -qF $string $2 &>/dev/null
+  grep -qF "$string" "$2" &>/dev/null
 }
 
 append_string_in_file() {
   string=$1
   filename=$2
-  echo "$string" >>$filename
+  echo "$string" >>"$filename"
 }

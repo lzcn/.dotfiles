@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 DOTFILES="$(pwd)"
 
-source $DOTFILES/utils.sh
+source "$DOTFILES/utils.sh"
 
 setup_env() {
   # add bin to PATH
@@ -74,6 +74,19 @@ setup_brew() {
   fi
 }
 
+setup_espanso() {
+  title "Configuring Espanso"
+  if command_exists espanso; then
+    if is_osx; then
+      symlink "$HOME/Library/Application Support/espanso/match" "$DOTFILES/espanso/match"
+    else
+      symlink "$HOME/.config/espanso/match" "$DOTFILES/espanso/match"
+    fi
+  else
+    info 'espanso is not installed'
+  fi
+}
+
 setup_git() {
   title "Configuring Git"
   symlink $HOME/.gitalias.txt $DOTFILES/git/.gitalias/gitalias.txt
@@ -121,6 +134,9 @@ case "$1" in
     ;;
   brew)
     setup_brew
+    ;;
+  espanso)
+    setup_espanso
     ;;
   env)
     setup_env
