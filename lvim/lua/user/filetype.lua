@@ -1,7 +1,7 @@
 local M = {}
 
 M.config = function()
-  require("filetype").setup {
+  require("filetype").setup({
     overrides = {
       literal = {
         ["kitty.conf"] = "kitty",
@@ -22,7 +22,7 @@ M.config = function()
         mdx = "markdown",
       },
     },
-  }
+  })
 end
 
 return M

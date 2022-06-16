@@ -30,7 +30,7 @@ lvim.plugins = {
   {
     "nathom/filetype.nvim",
     config = function()
-      require("lv-user-config.filetype").config()
+      require("user.filetype").config()
     end,
   },
   -- Diagnostics --
@@ -51,7 +51,7 @@ lvim.plugins = {
   {
     "kevinhwang91/nvim-bqf",
     config = function()
-      require("lv-user-config.bqf").config()
+      require("user.bqf").config()
     end,
     event = "BufRead",
     ft = "qf",
@@ -154,7 +154,7 @@ lvim.plugins = {
   {
     "github/copilot.vim",
     config = function()
-      require("lv-user-config.copilot").config()
+      require("user.copilot").config()
     end,
     disable = not lvim.user.copilot.active,
   },
@@ -163,7 +163,7 @@ lvim.plugins = {
     wants = { "nvim-treesitter" },
     after = { "nvim-cmp" },
     config = function()
-      require("lv-user-config.tabout").config()
+      require("user.tabout").config()
     end,
     disable = not lvim.user.copilot.active,
   },
