@@ -12,7 +12,7 @@ lvim.user = {
   lastplace = { active = true },
   navigation = { lightspeed = true, numb = false, rnvimr = true },
 }
-require("lv-user-config.plugins")
+require("user.plugins")
 
 -- toggleterm
 lvim.builtin.terminal.active = true
@@ -22,13 +22,13 @@ lvim.builtin.terminal.execs[#lvim.builtin.terminal.execs + 1] = { "htop", "<c-\\
 lvim.builtin.terminal.execs[#lvim.builtin.terminal.execs + 1] = { "ncdu", "<c-\\><c-u>", "ncdu" }
 
 -- keymappings
-require("lv-user-config.keymaps")
+require("user.keymaps")
 
 -- telescope
-require("lv-user-config.telescope")
+require("user.telescope")
 
 -- whichkey
-require("lv-user-config.whichkey")
+require("user.whichkey")
 
 -- dashboard
 lvim.builtin.alpha.active = true
@@ -45,7 +45,8 @@ lvim.builtin.alpha.dashboard.section.header.val = {
   "                                                       ",
   "                                                       ",
 }
-lvim.builtin.alpha.dashboard.section.footer.val = require("alpha.fortune")()
+local fortune = require("alpha.fortune")
+lvim.builtin.alpha.dashboard.section.footer.val = fortune
 
 -- notify
 lvim.builtin.notify.active = false
@@ -101,7 +102,7 @@ lvim.lsp.automatic_servers_installation = true
 lvim.lsp.diagnostics.virtual_text = false
 
 -- null-ls configurations
-require("lv-user-config.null-ls")
+require("user.null-ls")
 
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
