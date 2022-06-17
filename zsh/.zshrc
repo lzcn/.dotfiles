@@ -1,8 +1,12 @@
+# Fig pre block. Keep at the top of this file.
+(( ! $+commands[fig] )) || . "$HOME/.fig/shell/zshrc.pre.zsh"
+
 # Powerlevel10k instant prompt.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Fig pre block. Keep at the top of this file.
 ## --- Zinit ---
 source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
@@ -158,3 +162,5 @@ git-mirror () {
     git config $opt --$2 url."https://hub.fastgit.xyz/".insteadOf "https://github.com/"
 }
 
+# Fig post block. Keep at the bottom of this file.
+(( ! $+commands[fig] )) || . "$HOME/.fig/shell/zshrc.post.zsh"
