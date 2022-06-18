@@ -1,8 +1,6 @@
 lvim.plugins = {
   -- Aesthetics --
   -- colorscheme
-  -- { "folke/tokyonight.nvim" },
-  -- { "joshdick/onedark.vim" },
   { "Mofiqul/dracula.nvim" },
   -- rainbow parentheses
   { "p00f/nvim-ts-rainbow" },
@@ -150,13 +148,23 @@ lvim.plugins = {
   },
 
   -- Utility --
+  -- indentline
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    event = "BufRead",
+    config = function()
+      require("user.indentline").config()
+    end,
+    disable = not lvim.user.indentline.active,
+  },
+
   -- copilot
   {
     "github/copilot.vim",
     config = function()
-      require("user.copilot").config()
+      require("user.cop").config()
     end,
-    disable = not lvim.user.copilot.active,
+    disable = not lvim.user.copilot.active or lvim.user.copilot.cmp,
   },
   {
     "abecodes/tabout.nvim",
@@ -165,7 +173,24 @@ lvim.plugins = {
     config = function()
       require("user.tabout").config()
     end,
-    disable = not lvim.user.copilot.active,
+    disable = not lvim.user.copilot.active or lvim.user.copilot.cmp,
+  },
+  {
+    "zbirenbaum/copilot.lua",
+    event = { "VimEnter" },
+    config = function()
+      vim.defer_fn(function()
+        require("copilot").setup({
+          plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
+        })
+      end, 100)
+    end,
+    disable = not lvim.user.copilot.active or not lvim.user.copilot.cmp,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    after = { "copilot.lua", "nvim-cmp" },
+    disable = not lvim.user.copilot.active or not lvim.user.copilot.cmp,
   },
 
   -- automatic session saver
