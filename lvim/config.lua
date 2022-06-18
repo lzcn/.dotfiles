@@ -6,13 +6,19 @@ vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.o.termguicolors = true
 
--- additional plugins
+-- user plugins
 lvim.user = {
-  copilot = { active = true },
+  copilot = { active = true, cmp = true },
+  indentline = { active = true },
   lastplace = { active = true },
   navigation = { lightspeed = true, numb = false, rnvimr = true },
 }
 require("user.plugins")
+-- Can not be placed into the config method of the plugins.
+if lvim.user.copilot.active and lvim.user.copilot.cmp then
+  lvim.builtin.cmp.formatting.source_names["copilot"] = "(Copilot)"
+  table.insert(lvim.builtin.cmp.sources, 1, { name = "copilot" })
+end
 
 -- toggleterm
 lvim.builtin.terminal.active = true
