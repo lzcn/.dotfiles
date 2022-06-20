@@ -30,7 +30,7 @@ lvim.keys.insert_mode["<C-j>"] = { "<Down>", { noremap = true } }
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
-if lvim.user.copilot.active then
+if lvim.user.copilot.active and not lvim.user.copilot.cmp then
   ---@diagnostic disable-next-line: different-requires
   local cmp = require("cmp")
   local function t(str)
