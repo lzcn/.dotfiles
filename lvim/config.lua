@@ -16,7 +16,9 @@ lvim.user = {
   copilot = { active = true, cmp = true },
   indentline = { active = true },
   lastplace = { active = true },
+  markdown = { glow = true, preview = true },
   navigation = { lightspeed = true, numb = false, rnvimr = true },
+  tex = { active = true },
 }
 require("user.plugins")
 -- copilot-cmp
