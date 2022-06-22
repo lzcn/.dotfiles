@@ -1,5 +1,10 @@
 -- general options
 lvim.colorscheme = "dracula"
+-- use the same color for buffer bg
+vim.g.dracula_lualine_bg_color = require("dracula").colors()["bg"]
+-- set italic comment
+vim.g.dracula_italic_comment = true
+
 lvim.format_on_save = false
 
 vim.opt.scrolloff = 5
@@ -14,7 +19,7 @@ lvim.user = {
   navigation = { lightspeed = true, numb = false, rnvimr = true },
 }
 require("user.plugins")
--- Can not be placed into the config method of the plugins.
+-- copilot-cmp
 if lvim.user.copilot.active and lvim.user.copilot.cmp then
   lvim.builtin.cmp.formatting.source_names["copilot"] = "(Copilot)"
   table.insert(lvim.builtin.cmp.sources, 1, { name = "copilot" })
@@ -64,8 +69,6 @@ lvim.builtin.bufferline.options.always_show_bufferline = true
 -- lualine
 lvim.builtin.lualine.options.globalstatus = true
 lvim.builtin.lualine.options.theme = "dracula-nvim"
--- use the same color for buffer bg
-vim.g.dracula_lualine_bg_color = "#282A3"
 
 -- nvimtree
 lvim.builtin.nvimtree.setup.actions.open_file.resize_window = false
