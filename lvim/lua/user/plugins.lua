@@ -99,6 +99,11 @@ lvim.plugins = {
     end,
     disable = not lvim.user.navigation.rnvimr,
   },
+  -- open url
+  {
+    "felipec/vim-sanegx",
+    event = "BufRead",
+  },
 
   -- Python --
   -- pydocstring
@@ -135,7 +140,7 @@ lvim.plugins = {
 
   -- Markdown --
   -- preview with glow
-  { "npxbr/glow.nvim", ft = { "markdown" } },
+  { "npxbr/glow.nvim", ft = { "markdown" }, disable = not lvim.user.markdown.glow },
   -- preview on browser
   {
     "iamcco/markdown-preview.nvim",
@@ -145,6 +150,7 @@ lvim.plugins = {
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_auto_start = 1
     end,
+    disable = not lvim.user.markdown.preview,
   },
 
   -- Utility --
