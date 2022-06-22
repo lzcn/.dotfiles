@@ -1,5 +1,5 @@
 # Fig pre block. Keep at the top of this file.
-(( ! $+commands[fig] )) || . "$HOME/.fig/shell/zshrc.pre.zsh"
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && . "$HOME/.fig/shell/zshrc.pre.zsh"
 
 # Powerlevel10k instant prompt.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -163,4 +163,4 @@ git-mirror () {
 }
 
 # Fig post block. Keep at the bottom of this file.
-(( ! $+commands[fig] )) || . "$HOME/.fig/shell/zshrc.post.zsh"
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && . "$HOME/.fig/shell/zshrc.post.zsh"
