@@ -131,11 +131,13 @@ lvim.plugins = {
       vim.g.vimtex_view_skim_activate = 1
       vim.g.vimtex_quickfix_mode = 0
     end,
+    disable = not lvim.user.tex.active,
   },
   {
     "kdheepak/cmp-latex-symbols",
     requires = "hrsh7th/nvim-cmp",
     ft = "tex",
+    disable = not lvim.user.tex.active,
   },
 
   -- Markdown --
