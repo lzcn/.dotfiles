@@ -14,6 +14,7 @@ vim.o.termguicolors = true
 -- user plugins
 lvim.user = {
   copilot = { active = true, cmp = true },
+  csv = { active = true },
   indentline = { active = true },
   lastplace = { active = true },
   markdown = { glow = false, preview = true },

@@ -7,6 +7,33 @@ lvim.plugins = {
   -- display color
   { "norcalli/nvim-colorizer.lua" },
 
+  { "mtdl9/vim-log-highlighting", ft = { "text", "log" } },
+  {
+    "chrisbra/csv.vim",
+    ft = { "csv" },
+    disable = not lvim.user.csv.active,
+  },
+  -- Git --
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+    module = "diffview",
+    event = "BufRead",
+    keys = "<leader>gd",
+    setup = function()
+      require("which-key").register({ ["<leader>gd"] = "diffview: diff HEAD" })
+    end,
+    config = function()
+      require("diffview").setup({
+        enhanced_diff_hl = true,
+        key_bindings = {
+          file_panel = { q = "<Cmd>DiffviewClose<CR>" },
+          view = { q = "<Cmd>DiffviewClose<CR>" },
+        },
+      })
+    end,
+  },
+
   -- LSP --
   -- diagnostics highlight for non-LSP colorscheme
   { "folke/lsp-colors.nvim" },
