@@ -7,7 +7,7 @@ lvim.plugins = {
   -- display color
   { "norcalli/nvim-colorizer.lua" },
 
-  { "mtdl9/vim-log-highlighting", ft = { "text", "log" } },
+  { "mtdl9/vim-log-highlighting", ft = { "text", "log" }, disable = not lvim.user.log.active },
   {
     "chrisbra/csv.vim",
     ft = { "csv" },
@@ -51,6 +51,7 @@ lvim.plugins = {
       require("lsp_signature").setup()
     end,
     event = { "BufRead", "BufNew" },
+    disable = not lvim.user.lsp_signature.active,
   },
   {
     "nathom/filetype.nvim",
