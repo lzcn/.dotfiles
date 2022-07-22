@@ -67,8 +67,9 @@ zinit light mroth/evalcache
 # load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
-# source nvm
-[[ ! -z $TMUX ]] || [[ ! -d $(brew --prefix nvm) ]] || source $(brew --prefix nvm)/nvm.sh
+# source fnm
+[[ ! -z $TMUX ]] || [[ ! -f $HOME/.fnm ]] || export PATH=$HOME/.fnm:$PATH
+[[ ! -z $TMUX ]] || (( ! $+commands[fnm] )) || eval "$(fnm env --use-on-cd)"
 
 # lib from Oy My Zsh
 zinit snippet OMZL::completion.zsh

@@ -45,12 +45,13 @@ install_zinit() {
     success "Zinit already installed."
   fi
 }
-install_nvm() {
-  title "Installing NVM"
-  if [[ ! -f $HOME/.nvm/nvm.sh ]]; then
-    bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh)"
+
+install_fnm() {
+  title "Installing Fast Node Manager"
+  if command_exists fnm; then
+    success "FNM already installed"
   else
-    success "NVM already installed."
+    curl -fsSL https://fnm.vercel.app/install | bash
   fi
 }
 
@@ -74,8 +75,8 @@ case "$1" in
   nvchad)
     install_nvchad
     ;;
-  nvm)
-    install_nvm
+  fnm)
+    install_fnm
     ;;
   homebrew)
     install_homebrew
@@ -91,12 +92,12 @@ case "$1" in
     ;;
   all)
     install_homebrew
-    install_nvm
+    install_fnm
     install_submodules
     install_zinit
     ;;
   *)
-    echo "Usage: $0 {cargo|lvim|nvchad|nvm|homebrew|ohmyzsh|submodules|zinit|all}"
+    echo "Usage: $0 {cargo|lvim|nvchad|fnm|homebrew|ohmyzsh|submodules|zinit|all}"
     exit 1
     ;;
 esac
