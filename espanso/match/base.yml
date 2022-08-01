@@ -23,11 +23,10 @@ matches:
         params:
           format: "%Y-%m-%d %H:%d"
 
-  - trigger: ":passwd"  
+  - trigger: ":passwd"
     replace: "{{passwd}}"
     vars:
       - name: passwd
         type: shell
         params:
           cmd: "security find-generic-password -w -s 'espanso-cli' -a 'espanso'"
-
