@@ -25,9 +25,7 @@ printf "%-10s|%-3s|%-16s|%-33s|%s\n" "User" "Attempts" "IP address" "Host" "Time
 for ip in $ip_list; do
   for user in $users; do
     # Count attempts by this user from this IP
-
     attempts=$(grep $ip $LOG | grep " $user " | wc -l)
-
     if [ $attempts -ne 0 ]; then
       first_time=$(grep $ip $LOG | grep " $user " | head -1 | cut -c-16)
       time="$first_time"
