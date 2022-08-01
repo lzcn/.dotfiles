@@ -20,7 +20,7 @@ lvim.user = {
   log = { active = true },
   lsp_signature = { active = false },
   markdown = { glow = false, preview = true },
-  navigation = { lightspeed = true, numb = false, rnvimr = false },
+  navigation = { lightspeed = false, numb = false, rnvimr = false },
   tex = { active = false },
 }
 require("user.plugins")
