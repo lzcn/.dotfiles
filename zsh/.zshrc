@@ -67,7 +67,7 @@ zinit light mroth/evalcache
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
 # source fnm
-[[ ! -z $TMUX ]] || [[ ! -f $HOME/.fnm ]] || export PATH=$HOME/.fnm:$PATH
+[[ ! -z $TMUX ]] || [[ ! -d $HOME/.fnm ]] || export PATH=$HOME/.fnm:$PATH
 [[ ! -z $TMUX ]] || (( ! $+commands[fnm] )) || eval "$(fnm env --use-on-cd)"
 
 # lib from Oy My Zsh
