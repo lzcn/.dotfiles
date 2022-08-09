@@ -76,7 +76,12 @@ lvim.builtin.lualine.options.globalstatus = true
 lvim.builtin.lualine.options.theme = "dracula-nvim"
 
 -- nvimtree
-lvim.builtin.nvimtree.setup.actions.open_file.resize_window = false
+lvim.builtin.nvimtree.setup.view.mappings.list = {
+  { key = { "l", "<CR>", "o" }, action = "edit", mode = "n" },
+  { key = "h", action = "close_node" },
+  { key = "v", action = "vsplit" },
+  { key = "C", action = "cd" },
+}
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 lvim.builtin.nvimtree.setup.renderer.icons.glyphs.git = {
   deleted = "",
