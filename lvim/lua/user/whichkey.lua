@@ -11,6 +11,13 @@ lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent 
 lvim.builtin.which_key.mappings["s"]["t"] = { "<cmd>TodoTelescope<CR>", "Find Todo" }
 lvim.builtin.which_key.mappings["s"]["w"] = { "<cmd>Telescope live_grep<CR>", "Words" }
 
+-- override timeout
+lvim.builtin.which_key.mappings["l"]["f"] = {
+  function()
+    require("lvim.lsp.utils").format({ timeout_ms = lvim.user.lsp.timeout })
+  end,
+  "Format",
+}
 -- trouble
 lvim.builtin.which_key.mappings["t"] = {
   name = "+Trouble",

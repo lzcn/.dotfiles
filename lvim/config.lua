@@ -11,18 +11,21 @@ vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.o.termguicolors = true
 
--- user plugins
+-- user configurations
 lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = false },
   indentline = { active = true },
   lastplace = { active = true },
   log = { active = true },
+  lsp = { timeout = 3000 },
   lsp_signature = { active = false },
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = false, rnvimr = false },
   tex = { active = false },
 }
+
+--plugins
 require("user.plugins")
 -- copilot-cmp
 if lvim.user.copilot.active and lvim.user.copilot.cmp then
