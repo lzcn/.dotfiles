@@ -50,7 +50,7 @@
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     direnv                  # direnv status (https://direnv.net/)
-    asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
+    # asdf                  # asdf version manager (https://github.com/asdf-vm/asdf)
     # virtualenv            # python virtual environment (https://docs.python.org/3/library/venv.html)
     # anaconda              # conda environment (https://conda.io/)
     # pyenv                 # python environment (https://github.com/pyenv/pyenv)
@@ -59,13 +59,13 @@
     nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
     nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
     node_version            # node.js version
-    go_version              # go version (https://golang.org)
-    rust_version            # rustc version (https://www.rust-lang.org)
+    # go_version            # go version (https://golang.org)
+    # rust_version          # rustc version (https://www.rust-lang.org)
     # dotnet_version        # .NET version (https://dotnet.microsoft.com)
-    php_version             # php version (https://www.php.net/)
+    # php_version           # php version (https://www.php.net/)
     # laravel_version       # laravel php framework version (https://laravel.com/)
-    java_version            # java version (https://www.java.com/)
-    package                 # name@version from package.json (https://docs.npmjs.com/files/package.json)
+    # java_version          # java version (https://www.java.com/)
+    # package               # name@version from package.json (https://docs.npmjs.com/files/package.json)
     rbenv                   # ruby version from rbenv (https://github.com/rbenv/rbenv)
     rvm                     # ruby version from rvm (https://rvm.io)
     # fvm                   # flutter version management (https://github.com/leoafarias/fvm)
@@ -83,25 +83,25 @@
     # gcloud                # google cloud cli account and project (https://cloud.google.com/)
     # google_app_cred       # google application credentials (https://cloud.google.com/docs/authentication/production)
     # nordvpn               # nordvpn connection status, linux only (https://nordvpn.com/)
-    # ranger                # ranger shell (https://github.com/ranger/ranger)
+    ranger                  # ranger shell (https://github.com/ranger/ranger)
     # nnn                   # nnn shell (https://github.com/jarun/nnn)
-    # vim_shell             # vim shell indicator (:sh)
+    vim_shell               # vim shell indicator (:sh)
     # midnight_commander    # midnight commander shell (https://midnight-commander.org/)
     # nix_shell             # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
     # vpn_ip                # virtual private network indicator
     # load                  # CPU load
     # disk_usage            # disk usage
     # ram                   # free RAM
-    # todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
-    # timewarrior             # timewarrior tracking status (https://timewarrior.net/)
-    # taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
-    # time                    # current time
+    # todo                  # todo items (https://github.com/todotxt/todo.txt-cli)
+    # timewarrior           # timewarrior tracking status (https://timewarrior.net/)
+    # taskwarrior           # taskwarrior task count (https://taskwarrior.org/)
+    # time                  # current time
     # =========================[ Line #2 ]=========================
     newline
     # ip                    # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
     proxy                   # system-wide http/https/ftp proxy
-    battery                 # internal battery
+    # battery               # internal battery
     wifi                    # wifi speed
   )
 
@@ -187,7 +187,7 @@
   # Red prompt symbol if the last command failed.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=196
   # Default prompt symbol.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='➜'
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='❯'
   # Prompt symbol in command vi mode.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VICMD_CONTENT_EXPANSION='❮'
   # Prompt symbol in visual vi mode.
@@ -329,17 +329,14 @@
   # parameter. For example, if POWERLEVEL9K_DIR_WORK_NOT_WRITABLE_FOREGROUND is not set, it falls
   # back to POWERLEVEL9K_DIR_FOREGROUND.
   #
-  # typeset -g POWERLEVEL9K_DIR_CLASSES=()
-
-  # Custom icon.
-  typeset -g POWERLEVEL9K_DIR_VISUAL_IDENTIFIER_EXPANSION=''
+  typeset -g POWERLEVEL9K_DIR_CLASSES=()
 
   # Custom prefix.
   # typeset -g POWERLEVEL9K_DIR_PREFIX='%fin '
 
   #####################################[ vcs: git status ]######################################
-  # Branch icon. Set this parameter to '\uF126 ' for the popular Powerline branch icon.
-  typeset -g POWERLEVEL9K_VCS_BRANCH_ICON='\uF126 '
+  # Branch icon. Set this parameter to '\UE0A0 ' for the popular Powerline branch icon.
+  typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=
 
   # Untracked files icon. It's really a question mark, your font isn't broken.
   # Change the value of this parameter to show a different icon.
@@ -479,13 +476,13 @@
   typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_COLOR=76
   typeset -g POWERLEVEL9K_VCS_LOADING_VISUAL_IDENTIFIER_COLOR=244
   # Custom icon.
-  # typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
   # typeset -g POWERLEVEL9K_VCS_PREFIX='%fon '
 
   # Show status of repositories of these types. You can add svn and/or hg if you are
   # using them. If you do, your prompt may become slow even when your current directory
-  # isn't in an svn or hg reposotiry.
+  # isn't in an svn or hg repository.
   typeset -g POWERLEVEL9K_VCS_BACKENDS=(git)
 
   # These settings are used for repositories other than Git or when gitstatusd fails and
@@ -540,7 +537,7 @@
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
   # Custom icon.
-  # typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
   # typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PREFIX='%ftook '
 
@@ -1114,6 +1111,16 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_PLENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  ###########[ perlbrew: perl version from perlbrew (https://github.com/gugod/App-perlbrew) ]############
+  # Perlbrew color.
+  typeset -g POWERLEVEL9K_PERLBREW_FOREGROUND=67
+  # Show perlbrew version only when in a perl project subdirectory.
+  typeset -g POWERLEVEL9K_PERLBREW_PROJECT_ONLY=true
+  # Don't show "perl-" at the front.
+  typeset -g POWERLEVEL9K_PERLBREW_SHOW_PREFIX=false
+  # Custom icon.
+  # typeset -g POWERLEVEL9K_PERLBREW_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
   ############[ phpenv: php version from phpenv (https://github.com/phpenv/phpenv) ]############
   # PHP color.
   typeset -g POWERLEVEL9K_PHPENV_FOREGROUND=99
@@ -1155,9 +1162,9 @@
   # typeset -g POWERLEVEL9K_HASKELL_STACK_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   #############[ kubecontext: current kubernetes context (https://kubernetes.io/) ]#############
-  # Show kubecontext only when the the command you are typing invokes one of these tools.
+  # Show kubecontext only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show kubecontext.
-  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern'
+  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
 
   # Kubernetes context classes for the purpose of using different colors, icons and expansions with
   # different contexts.
@@ -1281,7 +1288,7 @@
   # typeset -g POWERLEVEL9K_TERRAFORM_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   #[ aws: aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) ]#
-  # Show aws only when the the command you are typing invokes one of these tools.
+  # Show aws only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show aws.
   typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|terraform|pulumi|terragrunt'
 
@@ -1328,7 +1335,7 @@
   # typeset -g POWERLEVEL9K_AWS_EB_ENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ##########[ azure: azure account name (https://docs.microsoft.com/en-us/cli/azure) ]##########
-  # Show azure only when the the command you are typing invokes one of these tools.
+  # Show azure only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show azure.
   typeset -g POWERLEVEL9K_AZURE_SHOW_ON_COMMAND='az|terraform|pulumi|terragrunt'
   # Azure account name color.
@@ -1337,9 +1344,9 @@
   # typeset -g POWERLEVEL9K_AZURE_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ##########[ gcloud: google cloud account and project (https://cloud.google.com/) ]###########
-  # Show gcloud only when the the command you are typing invokes one of these tools.
+  # Show gcloud only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show gcloud.
-  typeset -g POWERLEVEL9K_GCLOUD_SHOW_ON_COMMAND='gcloud|gcs'
+  typeset -g POWERLEVEL9K_GCLOUD_SHOW_ON_COMMAND='gcloud|gcs|gsutil'
    # Google cloud color.
   typeset -g POWERLEVEL9K_GCLOUD_FOREGROUND=32
 
@@ -1378,7 +1385,7 @@
   # typeset -g POWERLEVEL9K_GCLOUD_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   #[ google_app_cred: google application credentials (https://cloud.google.com/docs/authentication/production) ]#
-  # Show google_app_cred only when the the command you are typing invokes one of these tools.
+  # Show google_app_cred only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show google_app_cred.
   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_SHOW_ON_COMMAND='terraform|pulumi|terragrunt'
 
@@ -1430,6 +1437,16 @@
   #
   # Note: ${VARIABLE//\%/%%} expands to ${VARIABLE} with all occurrences of '%' replaced by '%%'.
   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_DEFAULT_CONTENT_EXPANSION='${P9K_GOOGLE_APP_CRED_PROJECT_ID//\%/%%}'
+
+  ##############[ toolbox: toolbox name (https://github.com/containers/toolbox) ]###############
+  # Toolbox color.
+  typeset -g POWERLEVEL9K_TOOLBOX_FOREGROUND=178
+  # Don't display the name of the toolbox if it matches fedora-toolbox-*.
+  typeset -g POWERLEVEL9K_TOOLBOX_CONTENT_EXPANSION='${P9K_TOOLBOX_NAME:#fedora-toolbox-*}'
+  # Custom icon.
+  # typeset -g POWERLEVEL9K_TOOLBOX_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  # Custom prefix.
+  # typeset -g POWERLEVEL9K_TOOLBOX_PREFIX='%fin '
 
   ###############################[ public_ip: public IP address ]###############################
   # Public IP color.
@@ -1530,7 +1547,7 @@
   # behavior where they contain the end times of their preceding commands.
   typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=false
   # Custom icon.
-  # typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
   # typeset -g POWERLEVEL9K_TIME_PREFIX='%fat '
 
