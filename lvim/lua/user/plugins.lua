@@ -1,19 +1,21 @@
 lvim.plugins = {
-  -- Aesthetics --
   -- colorscheme
   { "Mofiqul/dracula.nvim" },
   -- rainbow parentheses
   { "p00f/nvim-ts-rainbow" },
   -- display color
   { "norcalli/nvim-colorizer.lua" },
-
+  -- hihglight logfile and csv file
   { "mtdl9/vim-log-highlighting", ft = { "text", "log" }, disable = not lvim.user.log.active },
+  { "chrisbra/csv.vim", ft = { "csv" }, disable = not lvim.user.csv.active },
+  -- line warp
   {
-    "chrisbra/csv.vim",
-    ft = { "csv" },
-    disable = not lvim.user.csv.active,
+    "andrewferrier/vim-wrapping-softhard",
+    config = function()
+      require("wrapping").setup()
+    end,
   },
-  -- Git --
+  -- git --
   {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
@@ -33,6 +35,8 @@ lvim.plugins = {
       })
     end,
   },
+
+  { "h-hg/fcitx.nvim", disable = not lvim.user.fcitx.active and lvim.user.macos },
 
   -- LSP --
   -- diagnostics highlight for non-LSP colorscheme
