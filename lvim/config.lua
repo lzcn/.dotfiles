@@ -15,17 +15,19 @@ vim.o.termguicolors = true
 lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = false },
+  fcitx = { active = true },
   indentline = { active = true },
   lastplace = { active = true },
   log = { active = true },
   lsp = { timeout = 3000 },
   lsp_signature = { active = false },
+  macos = vim.fn.has("macunix"),
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = false, rnvimr = false },
-  tex = { active = false },
+  tex = { active = true },
 }
 
---plugins
+-- plugins
 require("user.plugins")
 -- copilot-cmp
 if lvim.user.copilot.active and lvim.user.copilot.cmp then
