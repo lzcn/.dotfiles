@@ -1,12 +1,21 @@
 lvim.plugins = {
   -- colorscheme
-  { "Mofiqul/dracula.nvim" },
+  {
+    "Mofiqul/dracula.nvim",
+    config = function()
+      require("dracula").setup({
+        lualine_bg_color = "#282A36",
+        italic_comment = true,
+      })
+    end,
+  },
   -- rainbow parentheses
   { "p00f/nvim-ts-rainbow" },
   -- display color
   { "norcalli/nvim-colorizer.lua" },
-  -- hihglight logfile and csv file
+  -- hihglight logfile
   { "mtdl9/vim-log-highlighting", ft = { "text", "log" }, disable = not lvim.user.log.active },
+  -- lighlight csv file
   { "chrisbra/csv.vim", ft = { "csv" }, disable = not lvim.user.csv.active },
   -- line warp
   {
@@ -64,19 +73,7 @@ lvim.plugins = {
     end,
   },
   -- Diagnostics --
-  {
-    "folke/trouble.nvim",
-    config = function()
-      require("trouble").setup({
-        auto_open = true,
-        auto_close = true,
-        padding = false,
-        height = 10,
-        use_diagnostic_signs = true,
-      })
-    end,
-    cmd = "Trouble",
-  },
+  { "folke/trouble.nvim", cmd = "TroubleToogle" },
   -- better quickfix window
   {
     "kevinhwang91/nvim-bqf",

@@ -1,15 +1,12 @@
 -- general options
-lvim.colorscheme = "dracula"
--- use the same color for buffer bg
-vim.g.dracula_lualine_bg_color = require("dracula").colors()["bg"]
--- set italic comment
-vim.g.dracula_italic_comment = true
+vim.opt.scrolloff = 5
+vim.opt.relativenumber = true
+vim.opt.termguicolors = true
 
 lvim.format_on_save = false
 
-vim.opt.scrolloff = 5
-vim.opt.relativenumber = true
-vim.o.termguicolors = true
+-- colorscheme
+lvim.colorscheme = "dracula"
 
 -- user configurations
 lvim.user = {
@@ -122,7 +119,7 @@ lvim.builtin.treesitter.highlight.enabled = true
 lvim.builtin.treesitter.rainbow.enable = true
 
 -- generic LSP settings
-lvim.lsp.automatic_servers_installation = true
+lvim.lsp.installer.setup.automatic_installation = true
 lvim.lsp.diagnostics.virtual_text = false
 
 -- null-ls configurations
