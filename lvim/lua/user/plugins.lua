@@ -269,3 +269,9 @@ lvim.plugins = {
     event = { "BufEnter", "BufNewFile" },
   },
 }
+
+-- copilot-cmp
+if lvim.user.copilot.active and lvim.user.copilot.cmp then
+  lvim.builtin.cmp.formatting.source_names["copilot"] = "(Copilot)"
+  table.insert(lvim.builtin.cmp.sources, 1, { name = "copilot" })
+end
