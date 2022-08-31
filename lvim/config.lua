@@ -18,7 +18,7 @@ lvim.user = {
   log = { active = true },
   lsp = { timeout = 3000 },
   lsp_signature = { active = false },
-  macos = vim.fn.has("macunix"),
+  macos = vim.fn.has("macunix") > 0,
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = false, rnvimr = false },
   tex = { active = true },
