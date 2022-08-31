@@ -45,7 +45,7 @@ lvim.plugins = {
     end,
   },
 
-  { "h-hg/fcitx.nvim", disable = not lvim.user.fcitx.active and lvim.user.macos },
+  { "h-hg/fcitx.nvim", disable = not lvim.user.fcitx.active or not lvim.user.macos },
 
   -- LSP --
   -- diagnostics highlight for non-LSP colorscheme
