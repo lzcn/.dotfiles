@@ -22,6 +22,7 @@ lvim.keys.normal_mode["<C-a>j"] = "<CMD>lua require('Navigator').down()<CR>"
 lvim.keys.normal_mode["<C-a>p"] = "<CMD>lua require('Navigator').previous()<CR>"
 
 -- insert mode --
+
 -- navigation within insert mode
 lvim.keys.insert_mode["<C-h>"] = { "<left>", { noremap = true } }
 lvim.keys.insert_mode["<C-l>"] = { "<Right>", { noremap = true } }
@@ -30,8 +31,8 @@ lvim.keys.insert_mode["<C-j>"] = { "<Down>", { noremap = true } }
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
+-- copilot
 if lvim.user.copilot.active and not lvim.user.copilot.cmp then
-  ---@diagnostic disable-next-line: different-requires
   local cmp = require("cmp")
   local function t(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -44,12 +45,15 @@ if lvim.user.copilot.active and not lvim.user.copilot.cmp then
   lvim.keys.insert_mode["<M-[>"] = { "<Plug>(copilot-previous)", { silent = true } }
   lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
 end
+
 -- disable jj and kj for <Esc>
 lvim.keys.insert_mode["jj"] = false
 lvim.keys.insert_mode["kj"] = false
 
--- visual mode
+-- visual mode --
+
 lvim.keys.visual_mode["p"] = '"_dP'
 
--- terminal mode
+-- terminal mode --
+
 lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
