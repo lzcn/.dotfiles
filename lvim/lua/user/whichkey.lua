@@ -14,7 +14,7 @@ lvim.builtin.which_key.mappings["s"]["w"] = { "<cmd>Telescope live_grep<CR>", "W
 -- override timeout
 lvim.builtin.which_key.mappings["l"]["f"] = {
   function()
-    require("lvim.lsp.utils").format({ timeout_ms = lvim.user.lsp.timeout })
+    require("lvim.lsp.utils").format({ timeout_ms = lvim.user.lsp.timeout_ms })
   end,
   "Format",
 }
