@@ -185,15 +185,6 @@ lvim.plugins = {
   },
 
   -- Utility --
-  -- indentline
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "BufRead",
-    config = function()
-      require("user.indentline").config()
-    end,
-    disable = not lvim.user.indentline.active,
-  },
 
   -- copilot
   {

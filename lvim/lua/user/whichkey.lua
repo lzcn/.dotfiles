@@ -2,14 +2,14 @@
 lvim.builtin.which_key.vmappings["p"] = { '"_dP', "Replace" }
 
 -- normal mode --
-lvim.builtin.which_key.mappings["q"] = { "<cmd>q<CR>", "Quit" }
+-- lvim.builtin.which_key.mappings["q"] = { "<cmd>q<CR>", "Quit" }
 
 -- telescope.lua
 lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent Files" }
 
 -- search
-lvim.builtin.which_key.mappings["s"]["t"] = { "<cmd>TodoTelescope<CR>", "Find Todo" }
-lvim.builtin.which_key.mappings["s"]["w"] = { "<cmd>Telescope live_grep<CR>", "Words" }
+-- lvim.builtin.which_key.mappings["s"]["t"] = { "<cmd>TodoTelescope<CR>", "Find Todo" }
+-- lvim.builtin.which_key.mappings["s"]["w"] = { "<cmd>Telescope live_grep<CR>", "Words" }
 
 -- override timeout
 lvim.builtin.which_key.mappings["l"]["f"] = {
