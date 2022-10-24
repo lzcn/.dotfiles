@@ -3,6 +3,9 @@ vim.g.maplocalleader = "\\"
 
 -- normal mode --
 
+lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+
 -- magama.nvim
 lvim.keys.visual_mode["<LocalLeader>r"] = ":<C-u>MagmaEvaluateVisual<CR>"
 lvim.keys.normal_mode["<Localleader>r"] = ":MagmaEvaluateOperator<CR>"
