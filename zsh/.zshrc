@@ -60,7 +60,7 @@ zinit light mroth/evalcache
 [[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
 
 # rbenv init with _evalcache_clear
-(( ! $+commands[rbenv] )) || _evalcache rbenv init -
+# (( ! $+commands[rbenv] )) || _evalcache rbenv init -
 
 # load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
@@ -130,9 +130,9 @@ alias tlw='tmux list-windows'
 alias tkss='tmux kill-session -t'
 
 # aliases for colorls
-alias cls='colorls'
-alias cll='colorls -l'
-alias cla='colorls -lAh'
+# alias cls='colorls'
+# alias cll='colorls -l'
+# alias cla='colorls -lAh'
 
 # aliases for cluster-smi
 alias csmi='cluster-smi'

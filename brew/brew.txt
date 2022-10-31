@@ -9,10 +9,10 @@ fzf
 git
 isort
 lazygit
+lsd
 ncdu
 neovim
 node
-rbenv
 ripgrep
 shellcheck
 shfmt
