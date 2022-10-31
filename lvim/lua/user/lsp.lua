@@ -1,5 +1,5 @@
 lvim.lsp.installer.setup.ensure_installed = {
-  "sumeko_lua",
+  "sumneko_lua",
   "jsonls",
   "pyright",
 }
