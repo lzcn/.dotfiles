@@ -160,6 +160,7 @@ case "$1" in
     ;;
   all)
     setup_alacritty
+    setup_atuin
     setup_brew
     setup_env
     setup_flake
