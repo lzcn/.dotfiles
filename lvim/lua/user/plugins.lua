@@ -205,13 +205,12 @@ lvim.plugins = {
   },
   {
     "zbirenbaum/copilot.lua",
-    event = { "VimEnter" },
+    event = { "InsertEnter" },
+    after = { "lualine.nvim" },
     config = function()
-      vim.defer_fn(function()
-        require("copilot").setup({
-          plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
-        })
-      end, 100)
+      vim.schedule(function()
+        require("user.copilot").config()
+      end)
     end,
     disable = not lvim.user.copilot.active or not lvim.user.copilot.cmp,
   },
@@ -260,9 +259,3 @@ lvim.plugins = {
     event = { "BufEnter", "BufNewFile" },
   },
 }
-
--- copilot-cmp
-if lvim.user.copilot.active and lvim.user.copilot.cmp then
-  lvim.builtin.cmp.formatting.source_names["copilot"] = "(Copilot)"
-  table.insert(lvim.builtin.cmp.sources, 1, { name = "copilot" })
-end
