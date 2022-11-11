@@ -18,8 +18,8 @@ M.config = function()
     })
   else
     local methods = require("lvim.core.cmp").methods
-    local cmp = pcall(require, "cmp")
-    local luasnip = pcall(require, "luasnip")
+    local cmp = require("cmp")
+    local luasnip = require("luasnip")
 
     -- configurations
     vim.g.copilot_no_tab_map = true
