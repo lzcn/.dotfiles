@@ -12,7 +12,7 @@ lvim.colorscheme = "dracula"
 lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = false },
-  fcitx = { active = true },
+  fcitx = { active = false },
   indentline = { active = false },
   lastplace = { active = true },
   log = { active = true },
