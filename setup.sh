@@ -58,6 +58,15 @@ setup_alacritty() {
   fi
 }
 
+setup_kitty() {
+  title "Configuring Kitty"
+  if command_exists kitty; then
+    symlink "$HOME/.config/kitty" "$DOTFILES/kitty"
+  else
+    info 'kitty is not installed'
+  fi
+}
+
 setup_atuin() {
   title "Configuring Atuin"
   if command_exists atuin; then
@@ -146,6 +155,9 @@ case "$1" in
   git)
     setup_git
     ;;
+  kitty)
+    setup_kitty
+    ;;
   pip)
     setup_pip
     ;;
@@ -164,6 +176,7 @@ case "$1" in
     setup_brew
     setup_env
     setup_flake
+    setup_kitty
     setup_git
     setup_lvim
     setup_tmux
