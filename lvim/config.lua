@@ -1,7 +1,7 @@
 -- vim options
 vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
-vim.opt.termguicolors = true
+-- vim.opt.termguicolors = true
 
 -- colorscheme
 lvim.colorscheme = "dracula"

@@ -1,5 +1,3 @@
-# Wizard options: nerdfont-complete + powerline, small icons, unicode, lean, 2 lines,
-# disconnected, no frame, sparse, many icons, concise, instant_prompt=verbose.
 # Type `p10k configure` to generate another config.
 #
 # Config for Powerlevel10k with lean prompt style. Type `p10k configure` to generate
@@ -24,7 +22,7 @@
   unset -m '(POWERLEVEL9K_*|DEFAULT_USER)~POWERLEVEL9K_GITSTATUS_DIR'
 
   # Zsh >= 5.1 is required.
-  autoload -Uz is-at-least && is-at-least 5.1 || return
+  [[ $ZSH_VERSION == (5.<1->*|<6->.*) ]] || return
 
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
@@ -72,6 +70,7 @@
     # luaenv                # lua version from luaenv (https://github.com/cehoffman/luaenv)
     # jenv                  # java version from jenv (https://github.com/jenv/jenv)
     # plenv                 # perl version from plenv (https://github.com/tokuhirom/plenv)
+    # perlbrew              # perl version from perlbrew (https://github.com/gugod/App-perlbrew)
     # phpenv                # php version from phpenv (https://github.com/phpenv/phpenv)
     # scalaenv              # scala version from scalaenv (https://github.com/scalaenv/scalaenv)
     # haskell_stack         # haskell version from stack (https://haskellstack.org/)
@@ -85,6 +84,8 @@
     # nordvpn               # nordvpn connection status, linux only (https://nordvpn.com/)
     ranger                  # ranger shell (https://github.com/ranger/ranger)
     # nnn                   # nnn shell (https://github.com/jarun/nnn)
+    # lf                    # lf shell (https://github.com/gokcehan/lf)
+    # xplr                  # xplr shell (https://github.com/sayanarijit/xplr)
     vim_shell               # vim shell indicator (:sh)
     # midnight_commander    # midnight commander shell (https://midnight-commander.org/)
     # nix_shell             # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
@@ -92,9 +93,11 @@
     # load                  # CPU load
     # disk_usage            # disk usage
     # ram                   # free RAM
+    # swap                  # used swap
     # todo                  # todo items (https://github.com/todotxt/todo.txt-cli)
     # timewarrior           # timewarrior tracking status (https://timewarrior.net/)
     # taskwarrior           # taskwarrior task count (https://taskwarrior.org/)
+    # cpu_arch              # CPU architecture
     # time                  # current time
     # =========================[ Line #2 ]=========================
     newline
@@ -202,7 +205,7 @@
 
   ##################################[ dir: current directory ]##################################
   # Default current directory color.
-  typeset -g POWERLEVEL9K_DIR_FOREGROUND=6 #31
+  typeset -g POWERLEVEL9K_DIR_FOREGROUND=31
   # If directory is too long, shorten some of its segments to the shortest possible unique
   # prefix. The shortened directory can be tab-completed to the original.
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
@@ -212,7 +215,7 @@
   typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=103
   # Color of the anchor directory segments. Anchor segments are never shortened. The first
   # segment is always an anchor.
-  typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=6 #39
+  typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=39
   # Display anchor directory segments in bold.
   typeset -g POWERLEVEL9K_DIR_ANCHOR_BOLD=true
   # Don't shorten directories that contain any of these files. They are anchors.
@@ -716,6 +719,12 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_NNN_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  ######################[ lf: lf shell (https://github.com/gokcehan/lf) ]#######################
+  # lf shell color.
+  typeset -g POWERLEVEL9K_LF_FOREGROUND=72
+  # Custom icon.
+  # typeset -g POWERLEVEL9K_LF_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
   ##################[ xplr: xplr shell (https://github.com/sayanarijit/xplr) ]##################
   # xplr shell color.
   typeset -g POWERLEVEL9K_XPLR_FOREGROUND=72
@@ -836,6 +845,17 @@
 
   # Custom icon.
   # typeset -g POWERLEVEL9K_TASKWARRIOR_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
+  ################################[ cpu_arch: CPU architecture ]################################
+  # CPU architecture color.
+  typeset -g POWERLEVEL9K_CPU_ARCH_FOREGROUND=172
+
+  # Hide the segment when on a specific CPU architecture.
+  # typeset -g POWERLEVEL9K_CPU_ARCH_X86_64_CONTENT_EXPANSION=
+  # typeset -g POWERLEVEL9K_CPU_ARCH_X86_64_VISUAL_IDENTIFIER_EXPANSION=
+
+  # Custom icon.
+  # typeset -g POWERLEVEL9K_CPU_ARCH_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
@@ -1164,7 +1184,7 @@
   #############[ kubecontext: current kubernetes context (https://kubernetes.io/) ]#############
   # Show kubecontext only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show kubecontext.
-  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
+  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold|kubent'
 
   # Kubernetes context classes for the purpose of using different colors, icons and expansions with
   # different contexts.

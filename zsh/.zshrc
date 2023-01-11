@@ -149,17 +149,5 @@ alias lg='lazygit'
 
 alias ls="ls --color=auto"
 
-## --- Others ---
-
-# git-mirror set/unset local/global
-git-mirror () {
-    if [[ $1 == "set" ]] then
-      opt="" 
-    else
-      opt="--unset"
-    fi
-    git config $opt --$2 url."https://hub.fastgit.xyz/".insteadOf "https://github.com/"
-}
-
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
