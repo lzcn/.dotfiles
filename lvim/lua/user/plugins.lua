@@ -14,9 +14,9 @@ lvim.plugins = {
   -- display color
   { "norcalli/nvim-colorizer.lua" },
   -- hihglight logfile
-  { "mtdl9/vim-log-highlighting", ft = { "text", "log" }, disable = not lvim.user.log.active },
+  { "mtdl9/vim-log-highlighting", ft = { "text", "log" }, enabled = lvim.user.log.active },
   -- lighlight csv file
-  { "chrisbra/csv.vim", ft = { "csv" }, disable = not lvim.user.csv.active },
+  { "chrisbra/csv.vim", ft = { "csv" }, enabled = lvim.user.csv.active },
   -- line warp
   {
     "andrewferrier/vim-wrapping-softhard",
@@ -27,25 +27,11 @@ lvim.plugins = {
   -- git --
   {
     "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
-    module = "diffview",
     event = "BufRead",
-    keys = "<leader>gd",
-    setup = function()
-      require("which-key").register({ ["<leader>gd"] = "diffview: diff HEAD" })
-    end,
-    config = function()
-      require("diffview").setup({
-        enhanced_diff_hl = true,
-        key_bindings = {
-          file_panel = { q = "<Cmd>DiffviewClose<CR>" },
-          view = { q = "<Cmd>DiffviewClose<CR>" },
-        },
-      })
-    end,
   },
 
-  { "h-hg/fcitx.nvim", disable = not lvim.user.fcitx.active or not lvim.user.macos },
+  -- input-method --
+  { "h-hg/fcitx.nvim", enabled = lvim.user.fcitx.active and lvim.user.macos },
 
   -- LSP --
   -- diagnostics highlight for non-LSP colorscheme
@@ -64,7 +50,7 @@ lvim.plugins = {
       require("lsp_signature").setup()
     end,
     event = { "BufRead", "BufNew" },
-    disable = not lvim.user.lsp_signature.active,
+    enabled = lvim.user.lsp_signature.active,
   },
   {
     "nathom/filetype.nvim",
@@ -109,13 +95,13 @@ lvim.plugins = {
     config = function()
       require("numb").setup()
     end,
-    disable = not lvim.user.navigation.numb,
+    enabled = lvim.user.navigation.numb,
   },
   -- fast navigation
   {
     "ggandor/lightspeed.nvim",
     event = "BufRead",
-    disable = not lvim.user.navigation.lightspeed,
+    enabled = lvim.user.navigation.lightspeed,
   },
   -- ranger
   {
@@ -126,7 +112,7 @@ lvim.plugins = {
       vim.g.rnvimr_pick_enable = 1
       vim.g.rnvimr_bw_enable = 1
     end,
-    disable = not lvim.user.navigation.rnvimr,
+    enabled = lvim.user.navigation.rnvimr,
   },
   -- open url
   {
@@ -138,16 +124,16 @@ lvim.plugins = {
   -- pydocstring
   {
     "heavenshell/vim-pydocstring",
-    run = "make install",
+    build = "make install",
     ft = { "python" },
     config = function()
       vim.g.pydocstring_formatter = "google"
     end,
   },
   -- jupyter-notebook
-  { "dccsillag/magma-nvim", run = ":UpdateRemotePlugins", ft = { "python" } },
+  { "dccsillag/magma-nvim", build = ":UpdateRemotePlugins", ft = { "python" } },
   -- sphinx support
-  { "stsewd/sphinx.nvim", run = ":UpdateRemotePlugins", ft = { "rst" } },
+  { "stsewd/sphinx.nvim", build = ":UpdateRemotePlugins", ft = { "rst" } },
 
   -- LaTeX --
   {
@@ -160,28 +146,28 @@ lvim.plugins = {
       vim.g.vimtex_view_skim_activate = 1
       vim.g.vimtex_quickfix_mode = 0
     end,
-    disable = not lvim.user.tex.active,
+    enabled = lvim.user.tex.active,
   },
   {
     "kdheepak/cmp-latex-symbols",
-    requires = "hrsh7th/nvim-cmp",
+    denpencies = "hrsh7th/nvim-cmp",
     ft = "tex",
-    disable = not lvim.user.tex.active,
+    enabled = lvim.user.tex.active,
   },
 
   -- Markdown --
   -- preview with glow
-  { "npxbr/glow.nvim", ft = { "markdown" }, disable = not lvim.user.markdown.glow },
+  { "npxbr/glow.nvim", ft = { "markdown" }, enabled = lvim.user.markdown.glow },
   -- preview on browser
   {
     "iamcco/markdown-preview.nvim",
-    run = "cd app && npm install",
+    build = "cd app && npm install",
     ft = { "markdown" },
     config = function()
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_auto_start = 1
     end,
-    disable = not lvim.user.markdown.preview,
+    enabled = lvim.user.markdown.preview,
   },
 
   -- Utility --
@@ -192,39 +178,38 @@ lvim.plugins = {
     config = function()
       require("user.copilot").config()
     end,
-    disable = not lvim.user.copilot.active or lvim.user.copilot.cmp,
+    enabled = lvim.user.copilot.active and not lvim.user.copilot.cmp,
   },
   {
     "abecodes/tabout.nvim",
-    wants = { "nvim-treesitter" },
-    after = { "nvim-cmp" },
+    dependencies = { "nvim-treesitter", "nvim-cmp" },
     config = function()
       require("user.tabout").config()
     end,
-    disable = not lvim.user.copilot.active or lvim.user.copilot.cmp,
+    enabled = lvim.user.copilot.active and not lvim.user.copilot.cmp,
   },
   {
     "zbirenbaum/copilot.lua",
     event = { "InsertEnter" },
-    after = { "lualine.nvim" },
+    dependencies = { "lualine.nvim" },
     config = function()
       vim.schedule(function()
         require("user.copilot").config()
       end)
     end,
-    disable = not lvim.user.copilot.active or not lvim.user.copilot.cmp,
+    enabled = lvim.user.copilot.active and lvim.user.copilot.cmp,
   },
   {
     "zbirenbaum/copilot-cmp",
-    after = { "copilot.lua", "nvim-cmp" },
-    disable = not lvim.user.copilot.active or not lvim.user.copilot.cmp,
+    denpencies = { "copilot.lua", "nvim-cmp" },
+    enabled = lvim.user.copilot.active and lvim.user.copilot.cmp,
   },
 
   -- automatic session saver
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-    module = "persistence",
+    -- module = "persistence",
     config = function()
       require("persistence").setup()
     end,
@@ -237,13 +222,13 @@ lvim.plugins = {
       require("remember").setup({})
     end,
     event = "BufWinEnter",
-    disable = not lvim.user.lastplace.active,
+    enabled = lvim.user.lastplace.active,
   },
 
   -- todo comments
   {
     "folke/todo-comments.nvim",
-    requires = "nvim-lua/plenary.nvim",
+    denpencies = "nvim-lua/plenary.nvim",
     event = "BufRead",
   },
 
