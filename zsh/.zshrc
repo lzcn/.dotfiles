@@ -74,17 +74,12 @@ zinit snippet OMZL::history.zsh
 zinit snippet OMZL::termsupport.zsh
 
 # plugins from Oy My Zsh
-# TODO: move necessary aliases to zshrc 
 zinit wait lucid for \
-    OMZP::brew \
-    OMZP::colored-man-pages \
     OMZP::colorize \
     OMZP::command-not-found \
     OMZP::dotenv \
-    OMZP::dirhistory \
     OMZP::extract \
-    OMZP::fzf \
-    OMZP::rsync
+    OMZP::fzf
 
 # plugins from Prezto: relative order is important
 # TODO: move necessary parts to zshrc
@@ -119,6 +114,15 @@ bindkey -M viins '^[b' backward-word
 
 ## --- Aliases ---
 
+# aliases for brew
+alias bubu='brew update && brew outdated && brew upgrade && brew autoremove $$ brew cleanup'
+
+# aliases for rsync
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-synchronize="rsync -avzu --delete --progress -h"
+
 # aliases for tmux
 alias ta='tmux attach -t'
 alias tad='tmux attach -d -t'
@@ -128,12 +132,14 @@ alias tlw='tmux list-windows'
 alias tkss='tmux kill-session -t'
 
 # aliases for colorls
-# alias cls='colorls'
-# alias cll='colorls -l'
-# alias cla='colorls -lAh'
+if (( $+commands[colorls] )); then
+  alias cls='colorls'
+  alias cll='colorls -l'
+  alias cla='colorls -lAh'
+fi
 
 # aliases for cluster-smi
-alias csmi='cluster-smi'
+(( ! $+commands[cluster-smi] )) || alias csmi='cluster-smi'
 
 # aliases for conda
 alias sra='conda activate'
