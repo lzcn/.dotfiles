@@ -172,39 +172,33 @@ lvim.plugins = {
 
   -- Utility --
 
-  -- copilot
-  {
-    "github/copilot.vim",
-    config = function()
-      require("user.copilot").config()
-    end,
-    enabled = lvim.user.copilot.active and not lvim.user.copilot.cmp,
-  },
-  {
-    "abecodes/tabout.nvim",
-    dependencies = { "nvim-treesitter", "nvim-cmp" },
-    config = function()
-      require("user.tabout").config()
-    end,
-    enabled = lvim.user.copilot.active and not lvim.user.copilot.cmp,
-  },
-  {
-    "zbirenbaum/copilot.lua",
-    event = { "InsertEnter" },
-    dependencies = { "lualine.nvim" },
-    config = function()
-      vim.schedule(function()
-        require("user.copilot").config()
-      end)
-    end,
-    enabled = lvim.user.copilot.active and lvim.user.copilot.cmp,
-  },
+  -- copilot and copolot-cmp
   {
     "zbirenbaum/copilot-cmp",
-    denpencies = { "copilot.lua", "nvim-cmp" },
-    enabled = lvim.user.copilot.active and lvim.user.copilot.cmp,
+    event = "InsertEnter",
+    dependencies = { "zbirenbaum/copilot.lua" },
+    config = function()
+      vim.defer_fn(function()
+        require("copilot").setup({
+          plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
+          suggestion = {
+            enabled = not lvim.user.copilot.cmp,
+            auto_trigger = true,
+            debounce = 75,
+            keymap = {
+              accept = "<C-f>",
+              next = "<M-]>",
+              prev = "<M-[>",
+              dismiss = "<C-]>",
+            },
+          },
+          panel = { enabled = not lvim.user.copilot.cmp },
+        })
+        require("copilot_cmp").setup()
+      end, 100)
+    end,
+    enabled = lvim.user.copilot.active,
   },
-
   -- automatic session saver
   {
     "folke/persistence.nvim",

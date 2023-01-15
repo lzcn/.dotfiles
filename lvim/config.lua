@@ -9,7 +9,7 @@ lvim.colorscheme = "dracula"
 -- user configurations
 lvim.user = {
   copilot = { active = true, cmp = true },
-  csv = { active = false },
+  csv = { active = true },
   fcitx = { active = false },
   indentline = { active = false },
   lastplace = { active = true },
@@ -18,7 +18,7 @@ lvim.user = {
   lsp_signature = { active = false },
   macos = vim.fn.has("macunix") > 0,
   markdown = { glow = false, preview = true },
-  navigation = { lightspeed = false, numb = false, rnvimr = false },
+  navigation = { lightspeed = false, numb = true, rnvimr = false },
   tex = { active = true },
 }
 
