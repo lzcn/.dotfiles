@@ -44,6 +44,11 @@ zinit light zsh-users/zsh-completions
 zinit ice wait lucid
 zinit light zdharma-continuum/history-search-multi-word
 
+# about: open the GitHub page or website for a repository 
+# usage: git open
+zinit ice wait lucid
+zinit light paulirish/git-open
+
 # about: cache the output of an initialization command to speed up startup
 #
 # usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
