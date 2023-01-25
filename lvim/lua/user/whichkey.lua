@@ -2,14 +2,12 @@
 lvim.builtin.which_key.vmappings["p"] = { '"_dP', "Replace" }
 
 -- normal mode --
--- lvim.builtin.which_key.mappings["q"] = { "<cmd>q<CR>", "Quit" }
 
 -- telescope.lua
 lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent Files" }
 
--- search
--- lvim.builtin.which_key.mappings["s"]["t"] = { "<cmd>TodoTelescope<CR>", "Find Todo" }
--- lvim.builtin.which_key.mappings["s"]["w"] = { "<cmd>Telescope live_grep<CR>", "Words" }
+-- todo-comments.nvim
+lvim.builtin.which_key.mappings["s"]["T"] = { "<cmd>TodoTelescope<CR>", "Todo" }
 
 -- override timeout
 lvim.builtin.which_key.mappings["l"]["f"] = {
@@ -18,7 +16,8 @@ lvim.builtin.which_key.mappings["l"]["f"] = {
   end,
   "Format",
 }
--- trouble
+
+-- trouble.nvim
 lvim.builtin.which_key.mappings["t"] = {
   name = "+Trouble",
   r = { "<cmd>Trouble lsp_references<cr>", "References" },
@@ -29,7 +28,7 @@ lvim.builtin.which_key.mappings["t"] = {
   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
 }
 
--- sessions
+-- persistence.nvim
 lvim.builtin.which_key.mappings["S"] = {
   name = "Session",
   c = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },

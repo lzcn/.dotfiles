@@ -222,10 +222,11 @@ lvim.plugins = {
   -- todo comments
   {
     "folke/todo-comments.nvim",
-    denpencies = "nvim-lua/plenary.nvim",
     event = "BufRead",
+    config = function()
+      require("todo-comments").setup()
+    end,
   },
-
   -- delete, change and add surroundings
   {
     "tpope/vim-surround",
