@@ -10,56 +10,89 @@ lvim.plugins = {
     end,
   },
   -- rainbow parentheses
-  { "p00f/nvim-ts-rainbow" },
-  -- display color
-  { "norcalli/nvim-colorizer.lua" },
-  -- hihglight logfile
-  { "mtdl9/vim-log-highlighting", ft = { "text", "log" }, enabled = lvim.user.log.active },
-  -- lighlight csv file
-  { "chrisbra/csv.vim", ft = { "csv" }, enabled = lvim.user.csv.active },
+  {
+    "mrjones2014/nvim-ts-rainbow",
+  },
+  -- colorizer
+  {
+    "NvChad/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup({
+        filetypes = { "yaml", "lua", "css", "javascript" },
+        user_default_options = {
+          names = false, -- "Name" codes like Blue or blue
+          RGB = true, -- #RGB hex codes
+          RRGGBB = true, -- #RRGGBB hex codes
+          RRGGBBAA = true, -- #RRGGBBAA hex codes
+          AARRGGBB = true, -- 0xAARRGGBB hex codes
+          mode = "virtualtext",
+        },
+      })
+    end,
+  },
+  -- #TODO: replace with nvim plugin
+  {
+    "mtdl9/vim-log-highlighting",
+    ft = { "log" },
+    enabled = lvim.user.log.active,
+  },
+  -- #TODO: replace with nvim plugin
+  {
+    "chrisbra/csv.vim",
+    ft = { "csv" },
+    enabled = lvim.user.csv.active,
+  },
   -- line warp
   {
-    "andrewferrier/vim-wrapping-softhard",
+    "andrewferrier/wrapping.nvim",
     config = function()
       require("wrapping").setup()
     end,
+    enabled = lvim.user.wrapping.active,
   },
   -- git --
   {
     "sindrets/diffview.nvim",
     event = "BufRead",
+    enabled = lvim.user.git.diffview,
   },
 
   -- input-method --
-  { "h-hg/fcitx.nvim", enabled = lvim.user.fcitx.active and lvim.user.macos },
+  {
+    "h-hg/fcitx.nvim",
+    enabled = lvim.user.fcitx.active and lvim.user.macos,
+  },
 
   -- LSP --
   -- diagnostics highlight for non-LSP colorscheme
-  { "folke/lsp-colors.nvim" },
+  {
+    "folke/lsp-colors.nvim",
+    enabled = false,
+  },
   -- previewing definition
   {
     "rmagatti/goto-preview",
     config = function()
-      require("goto-preview").setup({})
+      require("goto-preview").setup()
     end,
+    enabled = false,
   },
-  -- hitn signature when type
+  -- signature hint when typing
   {
     "ray-x/lsp_signature.nvim",
     config = function()
       require("lsp_signature").setup()
     end,
     event = { "BufRead", "BufNew" },
-    enabled = lvim.user.lsp_signature.active,
+    enabled = lvim.user.lsp.signature_help,
   },
-  {
-    "nathom/filetype.nvim",
-    config = function()
-      require("user.filetype").config()
-    end,
-  },
+
   -- Diagnostics --
-  { "folke/trouble.nvim", cmd = "TroubleToogle" },
+  {
+    "folke/trouble.nvim",
+    cmd = "TroubleToogle",
+    enabled = lvim.user.trouble.active,
+  },
   -- better quickfix window
   {
     "kevinhwang91/nvim-bqf",
@@ -74,11 +107,8 @@ lvim.plugins = {
   -- enhanced matchup
   {
     "andymass/vim-matchup",
-    event = "BufReadPost",
+    event = "CursorMoved",
     config = function()
-      vim.g.matchup_enabled = 1
-      vim.g.matchup_surround_enabled = 1
-      vim.g.matchup_matchparen_deferred = 1
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,
   },
@@ -118,6 +148,7 @@ lvim.plugins = {
   {
     "felipec/vim-sanegx",
     event = "BufRead",
+    enabled = false,
   },
 
   -- Python --
@@ -131,9 +162,17 @@ lvim.plugins = {
     end,
   },
   -- jupyter-notebook
-  { "dccsillag/magma-nvim", build = ":UpdateRemotePlugins", ft = { "python" } },
+  {
+    "dccsillag/magma-nvim",
+    build = ":UpdateRemotePlugins",
+    ft = { "python" },
+  },
   -- sphinx support
-  { "stsewd/sphinx.nvim", build = ":UpdateRemotePlugins", ft = { "rst" } },
+  {
+    "stsewd/sphinx.nvim",
+    build = ":UpdateRemotePlugins",
+    ft = { "rst" },
+  },
 
   -- LaTeX --
   {
@@ -157,7 +196,11 @@ lvim.plugins = {
 
   -- Markdown --
   -- preview with glow
-  { "npxbr/glow.nvim", ft = { "markdown" }, enabled = lvim.user.markdown.glow },
+  {
+    "npxbr/glow.nvim",
+    ft = { "markdown" },
+    enabled = lvim.user.markdown.glow,
+  },
   -- preview on browser
   {
     "iamcco/markdown-preview.nvim",
@@ -182,7 +225,7 @@ lvim.plugins = {
         require("copilot").setup({
           plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
           suggestion = {
-            enabled = not lvim.user.copilot.cmp,
+            enabled = true,
             auto_trigger = true,
             debounce = 75,
             keymap = {
@@ -192,7 +235,7 @@ lvim.plugins = {
               dismiss = "<C-]>",
             },
           },
-          panel = { enabled = not lvim.user.copilot.cmp },
+          panel = { enabled = true },
         })
         require("copilot_cmp").setup()
       end, 100)
@@ -203,7 +246,6 @@ lvim.plugins = {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-    -- module = "persistence",
     config = function()
       require("persistence").setup()
     end,
@@ -224,7 +266,9 @@ lvim.plugins = {
     "folke/todo-comments.nvim",
     event = "BufRead",
     config = function()
-      require("todo-comments").setup()
+      require("todo-comments").setup({
+        signs = false, -- icons in the sign column
+      })
     end,
   },
   -- delete, change and add surroundings
@@ -233,9 +277,26 @@ lvim.plugins = {
     keys = { "c", "d", "y" },
   },
 
+  -- show registers
+  {
+    "tversteeg/registers.nvim",
+    config = function()
+      require("registers").setup()
+    end,
+  },
+
   -- highlight the word under the cursor
   {
-    "xiyaowong/nvim-cursorword",
+    "itchyny/vim-cursorword",
     event = { "BufEnter", "BufNewFile" },
+    config = function()
+      vim.api.nvim_command("augroup user_plugin_cursorword")
+      vim.api.nvim_command("autocmd!")
+      vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
+      vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
+      vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
+      vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
+      vim.api.nvim_command("augroup END")
+    end,
   },
 }

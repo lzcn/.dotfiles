@@ -7,7 +7,7 @@ lvim.builtin.which_key.vmappings["p"] = { '"_dP', "Replace" }
 lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent Files" }
 
 -- todo-comments.nvim
-lvim.builtin.which_key.mappings["s"]["T"] = { "<cmd>TodoTelescope<CR>", "Todo" }
+lvim.builtin.which_key.mappings["s"]["T"] = { "<cmd>TodoTelescope keywords=TODO,FIX<CR>", "Todo" }
 
 -- override timeout
 lvim.builtin.which_key.mappings["l"]["f"] = {
@@ -18,15 +18,17 @@ lvim.builtin.which_key.mappings["l"]["f"] = {
 }
 
 -- trouble.nvim
-lvim.builtin.which_key.mappings["t"] = {
-  name = "+Trouble",
-  r = { "<cmd>Trouble lsp_references<cr>", "References" },
-  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
-  d = { "<cmd>Trouble document_diagnostics<cr>", "Document Diagnostics" },
-  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
-  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
-  w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
-}
+if lvim.user.trouble.active then
+  lvim.builtin.which_key.mappings["t"] = {
+    name = "Trouble",
+    r = { "<cmd>Trouble lsp_references<cr>", "References" },
+    f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
+    d = { "<cmd>Trouble document_diagnostics<cr>", "Document Diagnostics" },
+    q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
+    l = { "<cmd>Trouble loclist<cr>", "LocationList" },
+    w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
+  }
+end
 
 -- persistence.nvim
 lvim.builtin.which_key.mappings["S"] = {
