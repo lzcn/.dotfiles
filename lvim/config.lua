@@ -1,11 +1,40 @@
--- options
-require("user.options")
+-- general options
+vim.opt.scrolloff = 5
+vim.opt.termguicolors = true
 
--- plugins
-require("user.plugins")
+-- colorscheme
+lvim.colorscheme = "tokyonight"
+lvim.builtin.lualine.options.theme = "tokyonight"
 
 -- toggleterm
-require("user.toggleterm")
+lvim.builtin.terminal.active = true
+
+-- bufferline
+lvim.builtin.bufferline.active = true
+lvim.builtin.bufferline.options.always_show_bufferline = true
+
+-- lualine
+lvim.builtin.lualine.options.globalstatus = true
+
+-- plugins
+lvim.user = {
+  copilot = { active = true, cmp = true },
+  csv = { active = false },
+  fcitx = { active = false },
+  indentline = { active = false },
+  lastplace = { active = true },
+  log = { active = false },
+  lsp = { timeout_ms = 3000, signature_help = true },
+  macos = vim.fn.has("macunix") > 0,
+  markdown = { glow = false, preview = true },
+  navigation = { lightspeed = false, numb = true, rnvimr = false },
+  git = { diffview = false },
+  wrapping = { active = true },
+  tex = { active = true },
+  trouble = { active = false },
+}
+
+require("user.plugins")
 
 -- keymappings
 require("user.keymaps")
@@ -18,12 +47,6 @@ require("user.whichkey")
 
 -- dashboard
 require("user.dashboard")
-
--- bufferline
-require("user.bufferline")
-
--- lualine
-require("user.lualine")
 
 -- nvimtree
 require("user.nvimtree")
