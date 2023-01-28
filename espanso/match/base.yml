@@ -1,4 +1,7 @@
 matches:
+  - trigger: ":cuda"
+    replace: "CUDA_VISIBLE_DEVICES="
+
   - trigger: ":date"
     replace: "{{time}}"
     vars:

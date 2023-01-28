@@ -1,0 +1,14 @@
+matches:
+  - trigger: ":impnp"
+    replace: "import numpy as np"
+
+  - trigger: ":imppd"
+    replace: "import pandas as pd"
+
+  - trigger: ":impplt"
+    replace: "import matplotlib.pyplot as plt"
+
+  - trigger: ":autoload"
+    replace: >
+      %load_ext autoreload
+      %autoreload 2
