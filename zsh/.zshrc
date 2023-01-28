@@ -152,6 +152,9 @@ alias srd='conda deactivate'
 
 alias lg='lazygit'
 
+# count number of files in current directory
+alias cntfile='ls -1 | wc -l'
+
 # use nvim or lvim for vim
 (( ! $+commands[nvim] )) || alias vim='nvim'
 (( ! $+commands[nvim] )) || (( ! $+commands[lvim] )) || alias vim='lvim'
