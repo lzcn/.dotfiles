@@ -236,6 +236,10 @@ lvim.plugins = {
             },
           },
           panel = { enabled = true },
+          filetypes = {
+            yaml = true,
+            mardown = true,
+          },
         })
         require("copilot_cmp").setup()
       end, 100)
