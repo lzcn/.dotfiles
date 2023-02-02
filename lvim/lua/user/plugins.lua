@@ -302,5 +302,6 @@ lvim.plugins = {
       vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
       vim.api.nvim_command("augroup END")
     end,
+    enabled = lvim.user.cursorword,
   },
 }

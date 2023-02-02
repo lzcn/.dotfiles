@@ -16,10 +16,20 @@ lvim.builtin.bufferline.options.always_show_bufferline = true
 -- lualine
 lvim.builtin.lualine.options.globalstatus = true
 
+-- cmp-cmdline
+lvim.builtin.cmp.cmdline.enable = true
+
+-- nvim-navic
+lvim.builtin.breadcrumbs.active = false
+
+-- debug adapter protocol
+lvim.builtin.dap.active = false
+
 -- plugins
 lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = false },
+  cursorword = { active = false },
   fcitx = { active = false },
   indentline = { active = false },
   lastplace = { active = true },
