@@ -1,8 +1,3 @@
--- visual mode --
-lvim.builtin.which_key.vmappings["p"] = { '"_dP', "Replace" }
-
--- normal mode --
-
 -- telescope.lua
 lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent Files" }
 
