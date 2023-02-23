@@ -1,13 +1,19 @@
 -- telescope.lua
-lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<CR>", "Recent Files" }
+lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<cr>", "Recent Files" }
+lvim.builtin.which_key.mappings["s"]["g"] = { "<cmd>Telescope live_grep<cr>", "Text" }
+lvim.builtin.which_key.mappings["s"]["b"] = { "<cmd>Telescope buffers<cr>", "Buffer" }
 
 -- todo-comments.nvim
-lvim.builtin.which_key.mappings["s"]["T"] = { "<cmd>TodoTelescope keywords=TODO,FIX<CR>", "Todo" }
+lvim.builtin.which_key.mappings["s"]["t"] = { "<cmd>TodoTelescope keywords=TODO,FIX<cr>", "Todo" }
+
+-- buffers
+lvim.builtin.which_key.mappings["b"]["o"] =
+  { "<cmd>BufferLineCloseRight<cr><cmd>BufferLineCloseLeft<cr>", "Close other buffers" }
 
 -- override timeout
 lvim.builtin.which_key.mappings["l"]["f"] = {
   function()
-    require("lvim.lsp.utils").format({ timeout_ms = lvim.user.lsp.timeout_ms })
+    require("lvim.lsp.utils").format(lvim.user.lsp.format)
   end,
   "Format",
 }

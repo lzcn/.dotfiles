@@ -84,7 +84,7 @@ lvim.plugins = {
       require("lsp_signature").setup()
     end,
     event = { "BufRead", "BufNew" },
-    enabled = lvim.user.lsp.signature_help,
+    enabled = lvim.user.lsp.signature,
   },
 
   -- Diagnostics --
