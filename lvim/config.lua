@@ -34,7 +34,7 @@ lvim.user = {
   indentline = { active = false },
   lastplace = { active = true },
   log = { active = false },
-  lsp = { timeout_ms = 3000, signature_help = true },
+  lsp = { format = { async = true, timeout_ms = 3000 }, signature = true },
   macos = vim.fn.has("macunix") > 0,
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = true, rnvimr = false },
