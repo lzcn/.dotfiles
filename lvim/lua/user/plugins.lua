@@ -284,8 +284,14 @@ lvim.plugins = {
   -- show registers
   {
     "tversteeg/registers.nvim",
+    name = "registers",
+    keys = {
+      { '"', mode = { "n", "v" } },
+      { "<C-R>", mode = "i" },
+    },
+    cmd = "Registers",
     config = function()
-      require("registers").setup()
+      require("registers").setup({ show_empty = false })
     end,
   },
 
@@ -314,5 +320,6 @@ lvim.plugins = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
     },
+    enabled = os.getenv("OPENAI_API_KEY") ~= nil,
   },
 }
