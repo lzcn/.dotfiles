@@ -1,5 +1,6 @@
 -- general options
 vim.opt.scrolloff = 5
+vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
 -- colorscheme
