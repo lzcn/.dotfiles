@@ -223,7 +223,6 @@ lvim.plugins = {
     config = function()
       vim.defer_fn(function()
         require("copilot").setup({
-          plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
           suggestion = {
             enabled = true,
             auto_trigger = true,
@@ -235,10 +234,25 @@ lvim.plugins = {
               dismiss = "<C-]>",
             },
           },
-          panel = { enabled = true },
+          panel = {
+            enabled = true,
+            auto_refresh = false,
+            keymap = {
+              jump_prev = "[[",
+              jump_next = "]]",
+              accept = "<CR>",
+              refresh = "gr",
+              open = "<M-CR>",
+            },
+            layout = {
+              position = "right",
+              ratio = 0.4,
+            },
+          },
           filetypes = {
             yaml = true,
             mardown = true,
+            gitcommit = true,
           },
         })
         require("copilot_cmp").setup()
