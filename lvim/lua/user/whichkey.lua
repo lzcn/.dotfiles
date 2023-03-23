@@ -1,3 +1,5 @@
+-- nvim-tree.lua
+lvim.builtin.which_key.mappings["e"] = { "<cmd>NvimTreeFocus<CR>", "Explorer" }
 -- telescope.lua
 lvim.builtin.which_key.mappings["r"] = { "<cmd>Telescope oldfiles<cr>", "Recent Files" }
 lvim.builtin.which_key.mappings["s"]["g"] = { "<cmd>Telescope live_grep<cr>", "Text" }
