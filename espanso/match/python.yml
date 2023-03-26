@@ -9,6 +9,6 @@ matches:
     replace: "import matplotlib.pyplot as plt"
 
   - trigger: ":autoload"
-    replace: >
+    replace: |
       %load_ext autoreload
       %autoreload 2
