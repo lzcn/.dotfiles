@@ -36,7 +36,7 @@ lvim.user = {
   lastplace = { active = true },
   log = { active = false },
   lsp = { format = { async = true, timeout_ms = 3000 }, signature = true },
-  macos = vim.fn.has("macunix") > 0,
+  macos = vim.fn.has "macunix" > 0,
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = true, rnvimr = false },
   git = { diffview = false },
@@ -45,34 +45,34 @@ lvim.user = {
   trouble = { active = false },
 }
 
-require("user.plugins")
+require "user.plugins"
 
 -- keymappings
-require("user.keymaps")
+require "user.keymaps"
 
 -- telescope
-require("user.telescope")
+require "user.telescope"
 
 -- whichkey
-require("user.whichkey")
+require "user.whichkey"
 
 -- dashboard
-require("user.dashboard")
+require "user.dashboard"
 
 -- nvimtree
-require("user.nvimtree")
+require "user.nvimtree"
 
 -- gitsigns
-require("user.gitsigns")
+require "user.gitsigns"
 
 -- treesitter
-require("user.treesitter")
+require "user.treesitter"
 
 -- lsp configurations
-require("user.lsp")
+require "user.lsp"
 
 -- null-ls configurations
-require("user.null-ls")
+require "user.null-ls"
 
 -- autocommands
-require("user.autocommands")
+require "user.autocommands"

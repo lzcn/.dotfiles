@@ -3,10 +3,10 @@ lvim.plugins = {
   {
     "Mofiqul/dracula.nvim",
     config = function()
-      require("dracula").setup({
+      require("dracula").setup {
         lualine_bg_color = "#282A36",
         italic_comment = true,
-      })
+      }
     end,
   },
   -- rainbow parentheses
@@ -17,7 +17,7 @@ lvim.plugins = {
   {
     "NvChad/nvim-colorizer.lua",
     config = function()
-      require("colorizer").setup({
+      require("colorizer").setup {
         filetypes = { "yaml", "lua", "css", "javascript" },
         user_default_options = {
           names = false, -- "Name" codes like Blue or blue
@@ -27,7 +27,7 @@ lvim.plugins = {
           AARRGGBB = true, -- 0xAARRGGBB hex codes
           mode = "virtualtext",
         },
-      })
+      }
     end,
   },
   -- #TODO: replace with nvim plugin
@@ -222,7 +222,7 @@ lvim.plugins = {
     dependencies = { "zbirenbaum/copilot.lua" },
     config = function()
       vim.defer_fn(function()
-        require("copilot").setup({
+        require("copilot").setup {
           suggestion = {
             enabled = true,
             auto_trigger = true,
@@ -254,7 +254,7 @@ lvim.plugins = {
             mardown = true,
             gitcommit = true,
           },
-        })
+        }
         require("copilot_cmp").setup()
       end, 100)
     end,
@@ -273,7 +273,7 @@ lvim.plugins = {
   {
     "vladdoster/remember.nvim",
     config = function()
-      require("remember").setup({})
+      require("remember").setup {}
     end,
     event = "BufWinEnter",
     enabled = lvim.user.lastplace.active,
@@ -284,9 +284,9 @@ lvim.plugins = {
     "folke/todo-comments.nvim",
     event = "BufRead",
     config = function()
-      require("todo-comments").setup({
+      require("todo-comments").setup {
         signs = false, -- icons in the sign column
-      })
+      }
     end,
   },
   -- delete, change and add surroundings
@@ -305,7 +305,7 @@ lvim.plugins = {
     },
     cmd = "Registers",
     config = function()
-      require("registers").setup({ show_empty = false })
+      require("registers").setup { show_empty = false }
     end,
   },
 
@@ -314,26 +314,26 @@ lvim.plugins = {
     "itchyny/vim-cursorword",
     event = { "BufEnter", "BufNewFile" },
     config = function()
-      vim.api.nvim_command("augroup user_plugin_cursorword")
-      vim.api.nvim_command("autocmd!")
-      vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
-      vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
-      vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
-      vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
-      vim.api.nvim_command("augroup END")
+      vim.api.nvim_command "augroup user_plugin_cursorword"
+      vim.api.nvim_command "autocmd!"
+      vim.api.nvim_command "autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0"
+      vim.api.nvim_command "autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif"
+      vim.api.nvim_command "autocmd InsertEnter * let b:cursorword = 0"
+      vim.api.nvim_command "autocmd InsertLeave * let b:cursorword = 1"
+      vim.api.nvim_command "augroup END"
     end,
     enabled = lvim.user.cursorword,
   },
   {
     "jackMort/ChatGPT.nvim",
     config = function()
-      require("chatgpt").setup({})
+      require("chatgpt").setup {}
     end,
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
     },
-    enabled = os.getenv("OPENAI_API_KEY") ~= nil,
+    enabled = os.getenv "OPENAI_API_KEY" ~= nil,
   },
 }
