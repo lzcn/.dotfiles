@@ -6,7 +6,7 @@ M.config = function()
     return
   end
 
-  bqf.setup({
+  bqf.setup {
     auto_enable = true,
     auto_resize_height = true,
     preview = {
@@ -26,7 +26,7 @@ M.config = function()
         extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
       },
     },
-  })
+  }
 end
 
 return M
