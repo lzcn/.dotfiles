@@ -64,11 +64,6 @@ lvim.plugins = {
   },
 
   -- LSP --
-  -- diagnostics highlight for non-LSP colorscheme
-  {
-    "folke/lsp-colors.nvim",
-    enabled = false,
-  },
   -- previewing definition
   {
     "rmagatti/goto-preview",
@@ -81,9 +76,9 @@ lvim.plugins = {
   {
     "ray-x/lsp_signature.nvim",
     config = function()
-      require("lsp_signature").setup()
+      require("lsp_signature").on_attach()
     end,
-    event = { "BufRead", "BufNew" },
+    event = "BufRead",
     enabled = lvim.user.lsp.signature,
   },
 
@@ -185,13 +180,13 @@ lvim.plugins = {
       vim.g.vimtex_view_skim_activate = 1
       vim.g.vimtex_quickfix_mode = 0
     end,
-    enabled = lvim.user.tex.active,
+    enabled = lvim.user.tex.active and lvim.user.macos,
   },
   {
     "kdheepak/cmp-latex-symbols",
     denpencies = "hrsh7th/nvim-cmp",
     ft = "tex",
-    enabled = lvim.user.tex.active,
+    enabled = lvim.user.tex.active and lvim.user.macos,
   },
 
   -- Markdown --
@@ -199,7 +194,7 @@ lvim.plugins = {
   {
     "npxbr/glow.nvim",
     ft = { "markdown" },
-    enabled = lvim.user.markdown.glow,
+    enabled = lvim.user.markdown.glow and lvim.user.macos,
   },
   -- preview on browser
   {
@@ -210,7 +205,7 @@ lvim.plugins = {
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_auto_start = 1
     end,
-    enabled = lvim.user.markdown.preview,
+    enabled = lvim.user.markdown.preview and lvim.user.macos,
   },
 
   -- Utility --
