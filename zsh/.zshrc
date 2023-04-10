@@ -41,8 +41,8 @@ zinit light zsh-users/zsh-completions
 # about: multi-word, syntax highlighted history searching for Zsh
 #
 # usage: ctrl-r
-zinit ice wait lucid
-zinit light zdharma-continuum/history-search-multi-word
+# zinit ice wait lucid
+# zinit light zdharma-continuum/history-search-multi-word
 
 # about: open the GitHub page or website for a repository 
 # usage: git open
@@ -76,7 +76,6 @@ zinit light mroth/evalcache
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
 zinit snippet OMZL::history.zsh
-zinit snippet OMZL::termsupport.zsh
 
 # plugins from Oy My Zsh
 zinit wait lucid for \
