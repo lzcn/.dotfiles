@@ -219,7 +219,7 @@ lvim.plugins = {
       vim.defer_fn(function()
         require("copilot").setup {
           suggestion = {
-            enabled = true,
+            enabled = not lvim.user.copilot.cmp,
             auto_trigger = true,
             debounce = 75,
             keymap = {
@@ -230,7 +230,7 @@ lvim.plugins = {
             },
           },
           panel = {
-            enabled = true,
+            enabled = not lvim.user.copilot.cmp,
             auto_refresh = false,
             keymap = {
               jump_prev = "[[",
@@ -247,7 +247,7 @@ lvim.plugins = {
           filetypes = {
             yaml = true,
             mardown = true,
-            gitcommit = true,
+            gitcommit = false,
           },
         }
         require("copilot_cmp").setup()
