@@ -92,7 +92,6 @@ case "$1" in
     ;;
   all)
     install_homebrew
-    install_fnm
     install_submodules
     install_zinit
     ;;
