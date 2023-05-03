@@ -3,6 +3,10 @@ vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
+-- use treesitter folding
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+
 -- colorscheme
 lvim.colorscheme = "tokyonight"
 lvim.builtin.lualine.options.theme = "tokyonight"
@@ -38,7 +42,7 @@ lvim.user = {
   lsp = { format = { async = true, timeout_ms = 3000 }, signature = true },
   macos = vim.fn.has "macunix" > 0,
   markdown = { glow = false, preview = true },
-  navigation = { lightspeed = false, numb = true, rnvimr = false },
+  navigation = { lightspeed = false, numb = true, rnvimr = true },
   git = { diffview = false },
   wrapping = { active = true },
   tex = { active = true },
