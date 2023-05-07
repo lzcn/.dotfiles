@@ -3,13 +3,8 @@ vim.opt.scrolloff = 5
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
--- use treesitter folding
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-
 -- colorscheme
 lvim.colorscheme = "tokyonight"
-lvim.builtin.lualine.options.theme = "tokyonight"
 
 -- toggleterm
 lvim.builtin.terminal.active = true
@@ -17,9 +12,6 @@ lvim.builtin.terminal.active = true
 -- bufferline
 lvim.builtin.bufferline.active = true
 lvim.builtin.bufferline.options.always_show_bufferline = true
-
--- lualine
-lvim.builtin.lualine.options.globalstatus = true
 
 -- cmp-cmdline
 lvim.builtin.cmp.cmdline.enable = true
@@ -34,7 +26,6 @@ lvim.builtin.dap.active = false
 lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = false },
-  cursorword = { active = false },
   fcitx = { active = false },
   indentline = { active = false },
   lastplace = { active = true },
@@ -44,12 +35,15 @@ lvim.user = {
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = true, rnvimr = true },
   git = { diffview = false },
-  wrapping = { active = true },
+  wrapping = { active = false },
   tex = { active = true },
   trouble = { active = false },
 }
 
 require "user.plugins"
+
+-- lualine
+require "user.lualine"
 
 -- keymappings
 require "user.keymaps"
