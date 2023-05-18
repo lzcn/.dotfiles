@@ -49,7 +49,7 @@ require "user.lualine"
 require "user.keymaps"
 
 -- telescope
-require "user.telescope"
+-- require "user.telescope"
 
 -- whichkey
 require "user.whichkey"
