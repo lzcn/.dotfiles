@@ -27,10 +27,10 @@ lvim.keys.normal_mode["<C-a>p"] = "<CMD>lua require('Navigator').previous()<CR>"
 -- insert mode --
 
 -- navigation within insert mode
-lvim.keys.insert_mode["<C-h>"] = { "<left>", { noremap = true } }
-lvim.keys.insert_mode["<C-l>"] = { "<Right>", { noremap = true } }
-lvim.keys.insert_mode["<C-k>"] = { "<Up>", { noremap = true } }
-lvim.keys.insert_mode["<C-j>"] = { "<Down>", { noremap = true } }
+-- lvim.keys.insert_mode["<C-h>"] = { "<left>", { noremap = true } }
+-- lvim.keys.insert_mode["<C-l>"] = { "<Right>", { noremap = true } }
+-- lvim.keys.insert_mode["<C-k>"] = { "<Up>", { noremap = true } }
+-- lvim.keys.insert_mode["<C-j>"] = { "<Down>", { noremap = true } }
 lvim.keys.insert_mode["<C-e>"] = "<End>"
 lvim.keys.insert_mode["<C-a>"] = "<Esc>^i"
 
