@@ -22,9 +22,9 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # about: vim-mode for zsh
 # configuration for vim-mode
-ZVM_VI_EDITOR=lvim
-ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
-zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
+# ZVM_VI_EDITOR=lvim
+# ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+# zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
 
 # about: syntax-highlighting for Zsh
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
