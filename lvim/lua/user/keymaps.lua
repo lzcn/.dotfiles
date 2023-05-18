@@ -2,7 +2,7 @@ lvim.leader = "space"
 vim.g.maplocalleader = "\\"
 
 -- normal mode --
-lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<CR>"
+-- lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<CR>"
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 
