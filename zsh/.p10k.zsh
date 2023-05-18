@@ -105,7 +105,7 @@
     # public_ip             # public IP address
     proxy                   # system-wide http/https/ftp proxy
     # battery               # internal battery
-    # wifi                  # wifi speed
+    wifi                    # wifi speed
   )
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
