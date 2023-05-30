@@ -168,7 +168,23 @@ lvim.plugins = {
     build = ":UpdateRemotePlugins",
     ft = { "rst" },
   },
-
+  -- switch virtualenv
+  { "AckslD/swenv.nvim" },
+  -- default dap configuration for python
+  {
+    "mfussenegger/nvim-dap-python",
+    config = function()
+      require("dap-python").setup "python"
+    end,
+    enabled = lvim.builtin.dap.active,
+  },
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    config = function()
+      require("nvim-dap-virtual-text").setup()
+    end,
+    enabled = lvim.builtin.dap.active,
+  },
   -- LaTeX --
   {
     "lervag/vimtex",
