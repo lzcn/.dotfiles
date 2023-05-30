@@ -20,7 +20,7 @@ lvim.builtin.cmp.cmdline.enable = true
 lvim.builtin.breadcrumbs.active = false
 
 -- debug adapter protocol
-lvim.builtin.dap.active = false
+lvim.builtin.dap.active = true
 
 -- plugins
 lvim.user = {

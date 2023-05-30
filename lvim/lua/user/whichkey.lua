@@ -42,3 +42,8 @@ lvim.builtin.which_key.mappings["S"] = {
   a = { "<cmd>lua require('persistence').start()<cr>", "Automatically save when leave" },
   Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
 }
+-- python env
+lvim.builtin.which_key.mappings["C"] = {
+  name = "Env",
+  c = { "<cmd>lua require('swenv.api').pick_venv()<cr>", "Change Python Interpreter" },
+}
