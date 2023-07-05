@@ -210,7 +210,7 @@ lvim.plugins = {
   {
     "npxbr/glow.nvim",
     ft = { "markdown" },
-    enabled = lvim.user.markdown.glow and lvim.user.macos,
+    enabled = lvim.user.markdown.glow,
   },
   -- preview on browser
   {
@@ -221,7 +221,7 @@ lvim.plugins = {
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_auto_start = 1
     end,
-    enabled = lvim.user.markdown.preview and lvim.user.macos,
+    enabled = lvim.user.markdown.preview,
   },
 
   -- Utility --
