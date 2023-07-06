@@ -119,7 +119,7 @@ bindkey -M viins '^[b' backward-word
 ## --- Aliases ---
 
 # aliases for brew
-alias bubu='brew update && brew outdated && brew upgrade && brew autoremove $$ brew cleanup'
+alias bubu='brew update && brew outdated && brew upgrade && brew autoremove && brew cleanup'
 
 # aliases for rsync
 alias rsync-copy="rsync -avz --progress -h"
