@@ -128,10 +128,6 @@ setup_tmux() {
   symlink $HOME/.tmux.conf.local $DOTFILES/tmux/.tmux.conf.local
 }
 
-setup_flake() {
-  title "Configuring flake"
-  symlink $HOME/.config/flake8 $DOTFILES/flake8/flake8
-}
 
 case "$1" in
   alacritty)
@@ -148,9 +144,6 @@ case "$1" in
     ;;
   env)
     setup_env
-    ;;
-  flake)
-    setup_flake
     ;;
   git)
     setup_git
@@ -175,7 +168,6 @@ case "$1" in
     setup_atuin
     setup_brew
     setup_env
-    setup_flake
     setup_kitty
     setup_git
     setup_lvim
@@ -183,7 +175,7 @@ case "$1" in
     setup_zsh
     ;;
   *)
-    echo "Usage: $0 [alacritty|brew|env|flake|git|pip|lvim|tmux|zsh|all]"
+    echo "Usage: $0 [alacritty|brew|env|git|pip|lvim|tmux|zsh|all]"
     exit 1
     ;;
 esac
