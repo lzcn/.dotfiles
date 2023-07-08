@@ -21,6 +21,9 @@ lvim.builtin.breadcrumbs.active = false
 
 -- debug adapter protocol
 lvim.builtin.dap.active = true
+lvim.builtin.dap.on_config_done = function()
+  require("dap.ext.vscode").load_launchjs()
+end
 
 -- plugins
 lvim.user = {
