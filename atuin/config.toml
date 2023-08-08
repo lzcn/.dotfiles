@@ -1,6 +1,7 @@
 # see https://github.com/ellie/atuin/blob/main/atuin-client/config.toml for example
 auto_sync = true
 filter_mode = "global"
-search_mode = "skim"
+search_mode = "fuzzy"
 style = "compact"
 update_check = false
+inline_height = 15
