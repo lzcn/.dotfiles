@@ -2,6 +2,14 @@ matches:
   - trigger: ":cuda"
     replace: "CUDA_VISIBLE_DEVICES="
 
+  - trigger: ":zettel"
+    replace: "{{time}}"
+    vars:
+      - name: time
+        type: date
+        params:
+          format: "%Y%m%d%H%M%S"
+
   - trigger: ":date"
     replace: "{{time}}"
     vars:
