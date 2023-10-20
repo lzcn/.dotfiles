@@ -17,7 +17,7 @@ lvim.builtin.bufferline.options.always_show_bufferline = true
 lvim.builtin.cmp.cmdline.enable = true
 
 -- nvim-navic
-lvim.builtin.breadcrumbs.active = false
+lvim.builtin.breadcrumbs.active = true
 
 -- debug adapter protocol
 lvim.builtin.dap.active = true
@@ -30,7 +30,7 @@ lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = false },
   fcitx = { active = false },
-  indentline = { active = false },
+  indentline = { active = true },
   lastplace = { active = true },
   log = { active = false },
   lsp = { format = { async = true, timeout_ms = 3000 }, signature = true },
