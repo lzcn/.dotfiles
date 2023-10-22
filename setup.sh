@@ -87,9 +87,9 @@ setup_espanso() {
   title "Configuring Espanso"
   if command_exists espanso; then
     if is_osx; then
-      symlink "$HOME/Library/Application Support/espanso/match" "$DOTFILES/espanso/match"
+      symlink "$HOME/Library/Application Support/espanso" "$DOTFILES/espanso"
     else
-      symlink "$HOME/.config/espanso/match" "$DOTFILES/espanso/match"
+      symlink "$HOME/.config/espanso" "$DOTFILES/espanso"
     fi
   else
     info 'espanso is not installed'
@@ -127,7 +127,6 @@ setup_tmux() {
   symlink $HOME/.tmux.conf $DOTFILES/tmux/.tmux/.tmux.conf
   symlink $HOME/.tmux.conf.local $DOTFILES/tmux/.tmux.conf.local
 }
-
 
 case "$1" in
   alacritty)
