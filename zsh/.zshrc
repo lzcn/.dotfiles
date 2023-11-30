@@ -56,6 +56,10 @@ zinit light paulirish/git-open
 #        to clear cache use `_evalcache_clear`
 zinit light mroth/evalcache
 
+# about: a command-line fuzzy finder
+zinit light junegunn/fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # homebrew init with _evalcache
 [[ ! -z $TMUX ]] || [[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
 
@@ -82,8 +86,8 @@ zinit wait lucid for \
     OMZP::colorize \
     OMZP::command-not-found \
     OMZP::dotenv \
-    OMZP::extract \
-    OMZP::fzf
+    OMZP::extract
+    # OMZP::fzf
 
 # plugins from Prezto: relative order is important
 # TODO: move necessary parts to zshrc
