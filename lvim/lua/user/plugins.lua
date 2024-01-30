@@ -9,37 +9,50 @@ lvim.plugins = {
       }
     end,
   },
-  -- rainbow parentheses
-  {
-    "mrjones2014/nvim-ts-rainbow",
-  },
+  -- rainbow delimiters
+  { "HiPhish/rainbow-delimiters.nvim" },
   -- colorizer
   {
     "NvChad/nvim-colorizer.lua",
-    config = function()
-      require("colorizer").setup {
-        filetypes = { "yaml", "lua", "css", "javascript" },
-        user_default_options = {
-          names = false, -- "Name" codes like Blue or blue
-          RGB = true, -- #RGB hex codes
-          RRGGBB = true, -- #RRGGBB hex codes
-          RRGGBBAA = true, -- #RRGGBBAA hex codes
-          AARRGGBB = true, -- 0xAARRGGBB hex codes
-          mode = "virtualtext",
-        },
-      }
-    end,
+    opts = {
+      filetypes = { "yaml", "lua", "css", "javascript" },
+      user_default_options = {
+        names = false, -- "Name" codes like Blue or blue
+        RGB = true, -- #RGB hex codes
+        RRGGBB = true, -- #RRGGBB hex codes
+        RRGGBBAA = true, -- #RRGGBBAA hex codes
+        AARRGGBB = true, -- 0xAARRGGBB hex codes
+        mode = "virtualtext",
+      },
+    },
   },
-  -- #TODO: replace with nvim plugin
+  -- log highlight
   {
-    "mtdl9/vim-log-highlighting",
-    ft = { "log" },
+    "fei6409/log-highlight.nvim",
+    config = function()
+      require("log-highlight").setup {}
+    end,
     enabled = lvim.user.log.active,
   },
-  -- #TODO: replace with nvim plugin
+  -- csv highlight
   {
-    "chrisbra/csv.vim",
-    ft = { "csv" },
+    "cameron-wags/rainbow_csv.nvim",
+    config = true,
+    ft = {
+      "csv",
+      "tsv",
+      "csv_semicolon",
+      "csv_whitespace",
+      "csv_pipe",
+      "rfc_csv",
+      "rfc_semicolon",
+    },
+    cmd = {
+      "RainbowDelim",
+      "RainbowDelimSimple",
+      "RainbowDelimQuoted",
+      "RainbowMultiDelim",
+    },
     enabled = lvim.user.csv.active,
   },
   -- line warp
@@ -75,10 +88,11 @@ lvim.plugins = {
   -- signature hint when typing
   {
     "ray-x/lsp_signature.nvim",
-    config = function()
-      require("lsp_signature").on_attach()
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts)
+      require("lsp_signature").setup(opts)
     end,
-    event = "BufRead",
     enabled = lvim.user.lsp.signature,
   },
 
@@ -275,9 +289,7 @@ lvim.plugins = {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-    config = function()
-      require("persistence").setup()
-    end,
+    opts = {},
   },
 
   -- open at last edited position
@@ -293,19 +305,18 @@ lvim.plugins = {
   -- todo comments
   {
     "folke/todo-comments.nvim",
-    event = "BufRead",
-    config = function()
-      require("todo-comments").setup {
-        signs = false, -- icons in the sign column
-      }
-    end,
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
   },
   -- delete, change and add surroundings
   {
-    "tpope/vim-surround",
-    keys = { "c", "d", "y" },
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup {}
+    end,
   },
-
   -- show registers
   {
     "tversteeg/registers.nvim",

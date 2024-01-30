@@ -28,15 +28,15 @@ end
 -- plugins
 lvim.user = {
   copilot = { active = true, cmp = true },
-  csv = { active = false },
+  csv = { active = true },
   fcitx = { active = false },
   indentline = { active = true },
   lastplace = { active = true },
-  log = { active = false },
+  log = { active = true },
   lsp = { format = { async = true, timeout_ms = 3000 }, signature = true },
   macos = vim.fn.has "macunix" > 0,
   markdown = { glow = false, preview = true },
-  navigation = { lightspeed = false, numb = true, rnvimr = true },
+  navigation = { lightspeed = false, numb = true, rnvimr = false },
   git = { diffview = false },
   wrapping = { active = false },
   tex = { active = true },
