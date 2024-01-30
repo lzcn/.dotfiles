@@ -98,10 +98,13 @@ setup_espanso() {
 
 setup_git() {
   title "Configuring Git"
-  symlink $HOME/.gitalias.txt $DOTFILES/git/.gitalias/gitalias.txt
-  symlink $HOME/.gitconfig $DOTFILES/git/.gitconfig
-  symlink $HOME/.gitignore_global $DOTFILES/git/.gitignore_global
-  symlink $HOME/.git-commit-template $DOTFILES/git/.git-commit-template
+  if [[ ! -d ~/.gitalias ]]; then
+    title "Installing Git Alias"
+    git clone https://github.com/GitAlias/gitalias.git ~/.gitalias
+  else
+    success "Git Alias already installed."
+  fi
+  symlink ~/.gitconfig "$DOTFILES"/git/.gitconfig
 }
 
 setup_pip() {
@@ -124,8 +127,14 @@ setup_lvim() {
 
 setup_tmux() {
   title "Configuring Tmux"
-  symlink $HOME/.tmux.conf $DOTFILES/tmux/.tmux/.tmux.conf
-  symlink $HOME/.tmux.conf.local $DOTFILES/tmux/.tmux.conf.local
+  if [[ ! -d ~/.tmux ]]; then
+    title "Installing Oh My Tmux"
+    git clone https://github.com/gpakosz/.tmux.git ~/.tmux
+  else
+    success "Oh My Tmux already installed."
+  fi
+  symlink ~/.tmux.conf ~/.tmux/.tmux.conf
+  symlink ~/.tmux.conf.local "$DOTFILES"/tmux/.tmux.conf.local
 }
 
 case "$1" in

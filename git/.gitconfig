@@ -3,9 +3,9 @@
 	name = Zhi Lu
 [core]
 	editor = lvim
-	excludesfile = ~/.gitignore_global
+	excludesfile = ~/.dotfiles/git/gitignore_global
 [include]
-	path = ~/.gitalias.txt
+	path = ~/.gitalias/gitalias.txt
 [alias]
 	st = status -sb
 	unstage = restore --staged
@@ -16,4 +16,4 @@
 	process = git-lfs filter-process
 	required = true
 [commit]
-	template = ~/.git-commit-template
+	template = ~/.dotfiles/git/git-commit-template
