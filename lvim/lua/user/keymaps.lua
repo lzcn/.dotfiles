@@ -40,4 +40,4 @@ lvim.keys.visual_mode["p"] = '"_dP'
 
 -- terminal mode --
 
-lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
+lvim.keys.term_mode["<C-x>"] = [[<C-\><C-n>]]
