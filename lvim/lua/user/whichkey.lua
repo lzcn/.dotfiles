@@ -15,7 +15,8 @@ lvim.builtin.which_key.mappings["b"]["o"] =
 -- override timeout
 lvim.builtin.which_key.mappings["l"]["f"] = {
   function()
-    require("lvim.lsp.utils").format(lvim.user.lsp.format)
+    -- require("lvim.lsp.utils").format(lvim.user.lsp.format)
+    require("conform").format()
   end,
   "Format",
 }
