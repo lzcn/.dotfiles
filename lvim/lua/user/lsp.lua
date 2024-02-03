@@ -4,5 +4,5 @@ lvim.lsp.installer.setup.ensure_installed = {
   "pyright",
 }
 vim.diagnostic.config {
-  virtual_text = false,
+  virtual_text = true,
 }

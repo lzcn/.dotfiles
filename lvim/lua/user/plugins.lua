@@ -9,6 +9,15 @@ lvim.plugins = {
       }
     end,
   },
+  {
+    "navarasu/onedark.nvim",
+    config = function()
+      require("onedark").setup {
+        style = "dark",
+      }
+    end,
+  },
+
   -- rainbow delimiters
   { "HiPhish/rainbow-delimiters.nvim" },
   -- colorizer
@@ -17,11 +26,11 @@ lvim.plugins = {
     opts = {
       filetypes = { "yaml", "lua", "css", "javascript" },
       user_default_options = {
-        names = false, -- "Name" codes like Blue or blue
-        RGB = true, -- #RGB hex codes
-        RRGGBB = true, -- #RRGGBB hex codes
-        RRGGBBAA = true, -- #RRGGBBAA hex codes
-        AARRGGBB = true, -- 0xAARRGGBB hex codes
+        names = false,
+        RGB = true,
+        RRGGBB = true,
+        RRGGBBAA = true,
+        AARRGGBB = true,
         mode = "virtualtext",
       },
     },
@@ -111,7 +120,12 @@ lvim.plugins = {
     event = "BufRead",
     ft = "qf",
   },
-
+  {
+    "stevearc/conform.nvim",
+    config = function()
+      require "user.conform"
+    end,
+  },
   -- Navigation --
   -- enhanced matchup
   {
@@ -175,6 +189,7 @@ lvim.plugins = {
     "dccsillag/magma-nvim",
     build = ":UpdateRemotePlugins",
     ft = { "python" },
+    enabled = lvim.user.magma.active,
   },
   -- sphinx support
   {

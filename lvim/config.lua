@@ -4,7 +4,7 @@ vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
 -- colorscheme
-lvim.colorscheme = "tokyonight"
+lvim.colorscheme = "onedark"
 
 -- toggleterm
 lvim.builtin.terminal.active = true
@@ -21,11 +21,12 @@ lvim.builtin.breadcrumbs.active = true
 
 -- debug adapter protocol
 lvim.builtin.dap.active = true
+-- support configurations using 'launch.json' file
 lvim.builtin.dap.on_config_done = function()
   require("dap.ext.vscode").load_launchjs()
 end
 
--- plugins
+-- user settings
 lvim.user = {
   copilot = { active = true, cmp = true },
   csv = { active = true },
@@ -35,6 +36,7 @@ lvim.user = {
   log = { active = true },
   lsp = { format = { async = true, timeout_ms = 3000 }, signature = true },
   macos = vim.fn.has "macunix" > 0,
+  magma = { active = false },
   markdown = { glow = false, preview = true },
   navigation = { lightspeed = false, numb = true, rnvimr = false },
   git = { diffview = false },
@@ -52,7 +54,7 @@ require "user.lualine"
 require "user.keymaps"
 
 -- telescope
--- require "user.telescope"
+require "user.telescope"
 
 -- whichkey
 require "user.whichkey"
