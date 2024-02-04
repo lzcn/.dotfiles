@@ -261,44 +261,19 @@ lvim.plugins = {
     event = "InsertEnter",
     dependencies = { "zbirenbaum/copilot.lua" },
     config = function()
-      vim.defer_fn(function()
-        require("copilot").setup {
-          suggestion = {
-            enabled = not lvim.user.copilot.cmp,
-            auto_trigger = true,
-            debounce = 75,
-            keymap = {
-              accept = "<C-f>",
-              next = "<M-]>",
-              prev = "<M-[>",
-              dismiss = "<C-]>",
-            },
-          },
-          panel = {
-            enabled = not lvim.user.copilot.cmp,
-            auto_refresh = false,
-            keymap = {
-              jump_prev = "[[",
-              jump_next = "]]",
-              accept = "<CR>",
-              refresh = "gr",
-              open = "<M-CR>",
-            },
-            layout = {
-              position = "right",
-              ratio = 0.4,
-            },
-          },
-          filetypes = {
-            yaml = true,
-            mardown = true,
-            gitcommit = false,
-          },
-        }
-        require("copilot_cmp").setup()
-      end, 100)
+      require("copilot").setup {}
     end,
     enabled = lvim.user.copilot.active,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function()
+      require("copilot_cmp").setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      }
+    end,
+    enabled = lvim.user.copilot.cmp,
   },
   -- automatic session saver
   {
@@ -344,5 +319,6 @@ lvim.plugins = {
     config = function()
       require("registers").setup { show_empty = false }
     end,
+    enabled = false,
   },
 }
