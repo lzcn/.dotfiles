@@ -19,13 +19,6 @@ lvim.builtin.cmp.cmdline.enable = true
 -- nvim-navic
 lvim.builtin.breadcrumbs.active = true
 
--- debug adapter protocol
-lvim.builtin.dap.active = true
--- support configurations using 'launch.json' file
-lvim.builtin.dap.on_config_done = function()
-  require("dap.ext.vscode").load_launchjs()
-end
-
 -- user settings
 lvim.user = {
   copilot = { active = true, cmp = true },
@@ -46,6 +39,9 @@ lvim.user = {
 }
 
 require "user.plugins"
+
+-- dap
+require "user.dap"
 
 -- lualine
 require "user.lualine"
