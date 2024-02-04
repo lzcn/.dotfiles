@@ -7,7 +7,6 @@ lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<CR>"
 lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode[";"] = ":"
-lvim.keys.normal_mode["<C-k>"] = "<cmd> lua require('lsp_signature').toggle_float_win()<CR>" -- show signature help
 
 lvim.keys.normal_mode["<leader>h"] = "<cmd>lua require'dap'.toggle_breakpoint()<cr>"
 lvim.keys.normal_mode["<F5>"] = "<cmd>lua require'dap'.continue()<cr>"
