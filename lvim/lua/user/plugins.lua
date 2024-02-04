@@ -258,9 +258,9 @@ lvim.plugins = {
 
   -- copilot and copolot-cmp
   {
-    "zbirenbaum/copilot-cmp",
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
     event = "InsertEnter",
-    dependencies = { "zbirenbaum/copilot.lua" },
     config = function()
       require("copilot").setup {}
     end,
