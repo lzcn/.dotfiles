@@ -7,7 +7,14 @@ lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<CR>"
 lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode[";"] = ":"
+lvim.keys.normal_mode["<C-k>"] = "<cmd> lua require('lsp_signature').toggle_float_win()<CR>" -- show signature help
 
+lvim.keys.normal_mode["<leader>h"] = "<cmd>lua require'dap'.toggle_breakpoint()<cr>"
+lvim.keys.normal_mode["<F5>"] = "<cmd>lua require'dap'.continue()<cr>"
+lvim.keys.normal_mode["<F6>"] = "<cmd>lua require'dap'.pause()<cr>"
+lvim.keys.normal_mode["<F10>"] = "<cmd>lua require'dap'.step_over()<cr>"
+lvim.keys.normal_mode["<F11>"] = "<cmd>lua require'dap'.step_into()<cr>"
+lvim.keys.normal_mode["<F12>"] = "<cmd>lua require'dap'.step_out()<cr>"
 -- magama.nvim
 if lvim.user.magma.active then
   lvim.keys.visual_mode["<LocalLeader>r"] = ":<C-u>MagmaEvaluateVisual<CR>"

@@ -1,3 +1,4 @@
+lvim.builtin.which_key.setup.plugins.registers = true
 -- nvim-tree.lua
 lvim.builtin.which_key.mappings["e"] = { "<cmd>NvimTreeFocus<CR>", "Explorer" }
 -- telescope.lua
@@ -48,3 +49,6 @@ lvim.builtin.which_key.mappings["C"] = {
   name = "Env",
   c = { "<cmd>lua require('swenv.api').pick_venv()<cr>", "Change Python Interpreter" },
 }
+
+-- dap
+lvim.builtin.which_key.mappings["h"] = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" }

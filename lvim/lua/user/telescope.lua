@@ -5,7 +5,7 @@ if not status_ok then
   return
 end
 
-lvim.builtin.telescope.defaults.prompt_prefix = " "
+lvim.builtin.telescope.defaults.prompt_prefix = "  "
 -- use j/k to move selection and p/n to cycle history
 -- lvim.builtin.telescope.defaults.mappings["i"]["<C-j>"] = actions.move_selection_next
 -- lvim.builtin.telescope.defaults.mappings["i"]["<C-k>"] = actions.move_selection_previous
