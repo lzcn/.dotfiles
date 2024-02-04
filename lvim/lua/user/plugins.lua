@@ -183,6 +183,7 @@ lvim.plugins = {
     config = function()
       vim.g.pydocstring_formatter = "google"
     end,
+    enabled = false,
   },
   -- jupyter-notebook
   {
