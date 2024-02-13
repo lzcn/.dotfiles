@@ -125,6 +125,11 @@ setup_lvim() {
 
 }
 
+setup_nvchad() {
+  title "Configuring NvChad"
+  symlink $HOME/.config/nvim/lua/custom $DOTFILES/nvim/lua/custom
+}
+
 setup_tmux() {
   title "Configuring Tmux"
   if [[ ! -d ~/.tmux ]]; then
@@ -161,6 +166,9 @@ case "$1" in
     ;;
   pip)
     setup_pip
+    ;;
+  nvchad)
+    setup_nvchad
     ;;
   lvim)
     setup_lvim
