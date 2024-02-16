@@ -53,6 +53,14 @@ setup_alacritty() {
   title "Configuring Alacritty"
   if command_exists alacritty; then
     symlink "$HOME/.config/alacritty" "$DOTFILES/alacritty"
+    if [[ ! -d $HOME/.config/alacritty/themes ]]; then
+      title "Installing themes"
+      mkdir -p $HOME/config/alacritty/themes
+      git clone https://github.com/alacritty/alacritty-theme $HOME/.config/alacritty/themes --depth 1
+    else
+      info "Found alacritty themes"
+    fi
+
   else
     info 'alacritty is not installed'
   fi
