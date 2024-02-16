@@ -75,7 +75,3 @@ require "user.null-ls"
 
 -- autocommands
 require "user.autocommands"
-
--- TODO: temporal fix context_commentstring nvim-treesitter module is deprecated
-require("ts_context_commentstring").setup {}
-vim.g.skip_ts_context_commentstring_module = true

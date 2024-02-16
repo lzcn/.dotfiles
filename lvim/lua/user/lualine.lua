@@ -8,7 +8,7 @@ elseif string.find(lvim.colorscheme, "tokyonight") then
 else
   lvim.builtin.lualine.options.theme = lvim.colorscheme
 end
-lvim.builtin.lualine.sections.lualine_a = { "mode" }
+-- lvim.builtin.lualine.sections.lualine_a = { "mode" }
 lvim.builtin.lualine.sections.lualine_c = {
   components.diff,
   components.python_env,

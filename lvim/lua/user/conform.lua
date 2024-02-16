@@ -8,7 +8,7 @@ local options = {
     javascript = { "prettier" },
     lua = { "stylua" },
     markdown = { "prettier" },
-    python = { "isrot", "black" },
+    python = { "isort", "black" },
     sh = { "shfmt" },
     yaml = { "prettier" },
   },

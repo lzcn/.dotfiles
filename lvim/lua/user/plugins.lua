@@ -38,6 +38,7 @@ lvim.plugins = {
   -- log highlight
   {
     "fei6409/log-highlight.nvim",
+    ft = "log",
     config = function()
       require("log-highlight").setup {}
     end,
@@ -71,6 +72,7 @@ lvim.plugins = {
       require("wrapping").setup()
     end,
     enabled = lvim.user.wrapping.active,
+    lazy = true,
   },
   -- git --
   {
@@ -125,6 +127,7 @@ lvim.plugins = {
     config = function()
       require "user.conform"
     end,
+    lazy = true,
   },
   -- Navigation --
   -- enhanced matchup
@@ -203,6 +206,7 @@ lvim.plugins = {
   -- default dap configuration for python
   {
     "mfussenegger/nvim-dap-python",
+    ft = "python",
     config = function()
       require("dap-python").setup "python"
     end,
@@ -298,6 +302,7 @@ lvim.plugins = {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {},
+    lazy = true,
   },
   -- delete, change and add surroundings
   {
