@@ -171,6 +171,18 @@ local plugins = {
       "LazyGit",
     },
   },
+  -- python virtual environment
+  { "AckslD/swenv.nvim" },
+  -- rainbow delimiters
+  { "HiPhish/rainbow-delimiters.nvim", event = "BufRead" },
+  -- enhanced matchup
+  {
+    "andymass/vim-matchup",
+    event = "CursorMoved",
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
 }
 
 return plugins
