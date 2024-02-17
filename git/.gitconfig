@@ -2,7 +2,7 @@
 	email = zhilu@ustc.edu.cn
 	name = Zhi Lu
 [core]
-	editor = vim
+	editor = nvim
 	excludesfile = ~/.dotfiles/git/gitignore_global
 [include]
 	path = ~/.gitalias/gitalias.txt
