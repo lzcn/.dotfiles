@@ -20,7 +20,7 @@ local M = {
     ["/"] = { "<cmd>lua require'Comment.api'.toggle.linewise.current()<cr>", "Toggle comment" },
     ["f"] = { "<cmd>Telescope find_files<cr>", "Find File" },
     ["h"] = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
-    ['r'] = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
+    ["r"] = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
     ["q"] = { "<cmd>confirm q<CR>", "Quit" },
     ["w"] = { "<cmd>w<cr>", "Save" },
     ["x"] = { "<cmd>lua require 'nvchad.tabufline'.close_buffer()<cr>", "Close Buffer" },
@@ -28,13 +28,13 @@ local M = {
       name = "Buffers",
       f = { "<cmd>Telescope buffers previewer=false<cr>", "Find" },
       b = { "<cmd>enew<cr>", "New buffer" },
-      p = { "<cmd>require('nvchad.tabufline').tabuflinePrev()<cr>", "Previous" },
-      n = { "<cmd>require('nvchad.tabufline').tabuflineNext()<cr>", "Next" },
       W = { "<cmd>noautocmd w<cr>", "Save without formatting (rnoautocmd)" },
-      e = { "<cmd>require('nvchad.tabufline').close_buffer()<cr>", "Pick which buffer to close" },
-      o = { "<cmd>require('nvchad.tabufline').closeOtherBufs<cr>", "Close other buffers" },
-      h = { "<cmd>require('nvchad.tabufline').closeBufs_at_direction('left')<cr>", "Close all to the left" },
-      l = { "<cmd>require('nvchad.tabufline').closeBufs_at_direction('right')<cr>", "Close all to the right" },
+      p = { "<cmd>lua require('nvchad.tabufline').tabuflinePrev()<cr>", "Previous" },
+      n = { "<cmd>lua require('nvchad.tabufline').tabuflineNext()<cr>", "Next" },
+      e = { "<cmd>lua require('nvchad.tabufline').close_buffer()<cr>", "Pick which buffer to close" },
+      o = { "<cmd>lua require('nvchad.tabufline').closeOtherBufs()<cr>", "Close other buffers" },
+      h = { "<cmd>lua require('nvchad.tabufline').closeBufs_at_direction('left')<cr>", "Close all to the left" },
+      l = { "<cmd>lua require('nvchad.tabufline').closeBufs_at_direction('right')<cr>", "Close all to the right" },
     },
     C = {
       name = "Env",
@@ -55,7 +55,7 @@ local M = {
       r = { "<cmd>lua require'dap'.repl.toggle()<cr>", "Toggle Repl" },
       s = { "<cmd>lua require'dap'.continue()<cr>", "Start" },
       q = { "<cmd>lua require'dap'.close()<cr>", "Quit" },
-      U = { "<cmd>lua require'dapui'.toggle({reset = true})<cr>", "Toggle UI" }
+      U = { "<cmd>lua require'dapui'.toggle({reset = true})<cr>", "Toggle UI" },
     },
     p = {
       name = "Plugins",
@@ -66,7 +66,7 @@ local M = {
       u = { "<cmd>Lazy update<cr>", "Update" },
       p = { "<cmd>Lazy profile<cr>", "Profile" },
       l = { "<cmd>Lazy log<cr>", "Log" },
-      d = { "<cmd>Lazy debug<cr>", "Debug" }
+      d = { "<cmd>Lazy debug<cr>", "Debug" },
     },
     g = {
       name = "Git",
@@ -91,7 +91,7 @@ local M = {
       d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
       w = { "<cmd>Telescope diagnostics<cr>", "Diagnostics" },
       -- f = { "<cmd>lua vim.lsp.buf.format { async = true }<cr>", "Format" },
-      f = {"<cmd>lua require('conform').format()<cr>", "Format"},
+      f = { "<cmd>lua require('conform').format()<cr>", "Format" },
       i = { "<cmd>LspInfo<cr>", "Info" },
       I = { "<cmd>Mason<cr>", "Mason Info" },
       j = { "<cmd>lua vim.diagnostic.goto_next { float = { border = 'rounded' } }<cr>", "Next Diagnostic" },
@@ -101,7 +101,7 @@ local M = {
       r = { "<cmd>lua require('nvchad.renamer').open()<cr>", "Rename" },
       s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
       S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
-      e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" }
+      e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
     },
     s = {
       name = "Search",
@@ -143,8 +143,8 @@ local M = {
     },
     T = {
       name = "Treesitter",
-      i = { ":TSConfigInfo<cr>", "Info" }
-    }
+      i = { ":TSConfigInfo<cr>", "Info" },
+    },
   },
   -- NOTE: Prefer using : over <cmd> as the latter avoids going back in normal-mode.
   -- see https://neovim.io/doc/user/map.html#:map-cmd
@@ -152,9 +152,9 @@ local M = {
     ["/"] = { "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", "Toggle comment" },
     l = {
       name = "LSP",
-      a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" }
-    }
-  }
+      a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
+    },
+  },
 }
 
 return M
