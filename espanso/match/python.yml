@@ -1,14 +1,17 @@
 matches:
-  - trigger: ":impnp"
+  - trigger: ":np"
     replace: "import numpy as np"
 
-  - trigger: ":imppd"
+  - trigger: ":pd"
     replace: "import pandas as pd"
 
-  - trigger: ":impplt"
+  - trigger: ":plt"
     replace: "import matplotlib.pyplot as plt"
 
   - trigger: ":autoload"
     replace: |
       %load_ext autoreload
       %autoreload 2
+
+  - trigger: ":hl"
+    form: "hydra/launcher=torchrun hydra.launcher.rdzv_endpoint=127.0.0.1:[[port]] hydra.launcher.nproc_per_node=[[nproc]]"
