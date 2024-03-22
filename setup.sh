@@ -133,6 +133,11 @@ setup_lvim() {
 
 }
 
+setup_nvim() {
+  title "Configuring Neovim"
+  symlink $HOME/.config/nvim $DOTFILES/nvim
+}
+
 setup_nvchad() {
   title "Configuring NvChad"
   symlink $HOME/.config/nvim/lua/custom $DOTFILES/nvim/lua/custom
@@ -174,6 +179,9 @@ case "$1" in
     ;;
   pip)
     setup_pip
+    ;;
+  nvim)
+    setup_nvim
     ;;
   nvchad)
     setup_nvchad
