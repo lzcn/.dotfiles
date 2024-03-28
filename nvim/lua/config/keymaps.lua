@@ -34,7 +34,7 @@ del("n", "<leader>w|")
 set("n", "<C-a>", "ggVG", opts.n)
 
 -- floating terminal
-local util = require("lazyvim.util")
+local util = require "lazyvim.util"
 set("n", "<A-i>", function()
   util.terminal(nil, { cwd = util.root() })
 end, opts.n)
@@ -45,3 +45,12 @@ set("n", "<A-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>", opts
 
 -- format file using vscode keymap
 set("n", "<A-F>", "<cmd>LazyFormat<cr>", opts.n)
+
+-- insert mode --
+-- navigation
+set("i", "<C-h>", "<left>", opts.i)
+set("i", "<C-j>", "<down>", opts.i)
+set("i", "<C-k>", "<up>", opts.i)
+set("i", "<C-l>", "<right>", opts.i)
+set("i", "<C-a>", "<esc>^i", opts.i)
+set("i", "<C-e>", "<esc>$a", opts.i)
