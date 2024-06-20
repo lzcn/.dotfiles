@@ -15,3 +15,6 @@ matches:
 
   - trigger: ":hl"
     form: "hydra/launcher=torchrun hydra.launcher.rdzv_endpoint=127.0.0.1:[[port]] hydra.launcher.nproc_per_node=[[nproc]]"
+
+  - trigger: ":torchrun"
+    form: "--rdzv-backend=c10d --rdzv-endpoint=localhost:[[PORT]] --nnodes=1 --nproc-per-node=[[NUM_TRAINERS]]"
