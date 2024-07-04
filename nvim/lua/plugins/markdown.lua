@@ -39,7 +39,7 @@ return {
       },
     },
     config = function()
-      vim.cmd [[do FileType]]
+      vim.cmd([[do FileType]])
     end,
   },
 
@@ -47,7 +47,7 @@ return {
     "lukas-reineke/headlines.nvim",
     opts = function()
       local opts = {}
-      for _, ft in ipairs { "markdown", "norg", "rmd", "org" } do
+      for _, ft in ipairs({ "markdown", "norg", "rmd", "org" }) do
         opts[ft] = {
           headline_highlights = {},
           -- disable bullets for now. See https://github.com/lukas-reineke/headlines.nvim/issues/66

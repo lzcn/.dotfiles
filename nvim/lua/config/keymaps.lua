@@ -1,56 +1,61 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
-local set = vim.keymap.set
-local del = vim.keymap.del
-local opts = {
-  n = {
+local keymapSet = vim.keymap.set
+local keymapDel = vim.keymap.del
+local keymapOptions = {
+  normalMode = {
     noremap = true,
     silent = true,
   },
-  i = {
+  insertMode = {
     noremap = true,
     silent = true,
   },
-  v = {
+  visualMode = {
     noremap = true,
     silent = true,
   },
-  x = {
+  selectMode = {
     noremap = true,
     silent = true,
   },
-  t = {
+  terminalMode = {
     expr = true,
   },
 }
--- delete default window keymaps
-del("n", "<leader>ww")
-del("n", "<leader>wd")
-del("n", "<leader>w-")
-del("n", "<leader>w|")
 
--- select all
-set("n", "<C-a>", "ggVG", opts.n)
+-- Delete default window keymaps
+-- keymapDel("n", "<leader>ww")
+-- keymapDel("n", "<leader>wd")
+-- keymapDel("n", "<leader>w-")
+-- keymapDel("n", "<leader>w|")
 
--- floating terminal
-local util = require "lazyvim.util"
-set("n", "<A-i>", function()
+-- Normal mode keymaps
+-- Select all
+keymapSet("n", "<C-a>", "ggVG", keymapOptions.normalMode)
+
+-- Floating terminal
+local util = require("lazyvim.util")
+keymapSet("n", "<A-i>", function()
   util.terminal(nil, { cwd = util.root() })
-end, opts.n)
-set("t", "<A-i>", "<cmd>close<cr>")
+end, keymapOptions.normalMode)
+keymapSet("t", "<A-i>", "<cmd>close<cr>")
 
--- open file
-set("n", "<A-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>", opts.n)
+-- Open file
+keymapSet("n", "<A-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>", keymapOptions.normalMode)
 
--- format file using vscode keymap
-set("n", "<A-F>", "<cmd>LazyFormat<cr>", opts.n)
+-- Save file
+keymapSet("n", "<D-s>", "<cmd>update<cr>", keymapOptions.normalMode)
 
--- insert mode --
--- navigation
-set("i", "<C-h>", "<left>", opts.i)
-set("i", "<C-j>", "<down>", opts.i)
-set("i", "<C-k>", "<up>", opts.i)
-set("i", "<C-l>", "<right>", opts.i)
-set("i", "<C-a>", "<esc>^i", opts.i)
-set("i", "<C-e>", "<esc>$a", opts.i)
+-- Format file using vscode keymap
+keymapSet("n", "<A-F>", "<cmd>LazyFormat<cr>", keymapOptions.normalMode)
+
+-- Insert mode keymaps
+-- Navigation
+keymapSet("i", "<C-h>", "<left>", keymapOptions.insertMode)
+keymapSet("i", "<C-j>", "<down>", keymapOptions.insertMode)
+keymapSet("i", "<C-k>", "<up>", keymapOptions.insertMode)
+keymapSet("i", "<C-l>", "<right>", keymapOptions.insertMode)
+keymapSet("i", "<C-a>", "<esc>^i", keymapOptions.insertMode)
+keymapSet("i", "<C-e>", "<esc>$a", keymapOptions.insertMode)
