@@ -1,24 +1,37 @@
 return {
-  -- Add telescope-fzf-native
   {
-    "telescope.nvim",
+    "nvim-telescope/telescope.nvim",
     dependencies = {
       "nvim-telescope/telescope-fzf-native.nvim",
       build = "make",
       config = function()
-        require("telescope").load_extension "fzf"
+        require("telescope").load_extension("fzf")
       end,
     },
-  },
-  {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    opts = {
-      defaults = {
-        ["<leader>w"] = { "<cmd>update<cr>", "Save" },
+    keys = {
+      -- disable the keymap to grep files
+      { "<leader>/", false },
+      -- change a keymap
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+      -- add a keymap to browse plugin files
+      {
+        "<leader>fp",
+        function()
+          require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
+        end,
+        desc = "Find Plugin File",
       },
     },
   },
+  -- {
+  --   "folke/which-key.nvim",
+  --   event = "VeryLazy",
+  --   opts = {
+  --     defaults = {
+  --       ["<leader>w"] = { "<cmd>update<cr>", "Save" },
+  --     },
+  --   },
+  -- },
   -- Use <tab> for completion and snippets (supertab)
   -- first: disable default <tab> and <s-tab> behavior in LuaSnip
   {
@@ -35,11 +48,11 @@ return {
       local has_words_before = function()
         unpack = unpack or table.unpack
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
 
-      local luasnip = require "luasnip"
-      local cmp = require "cmp"
+      local luasnip = require("luasnip")
+      local cmp = require("cmp")
 
       opts.completion.completeopt = "menu,menuone,noselect"
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
@@ -65,9 +78,9 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        ["<CR>"] = cmp.mapping.confirm {
+        ["<CR>"] = cmp.mapping.confirm({
           select = false,
-        },
+        }),
       })
     end,
   },
