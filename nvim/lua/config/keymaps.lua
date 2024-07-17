@@ -2,7 +2,7 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 local keymapSet = vim.keymap.set
-local keymapDel = vim.keymap.del
+-- local keymapDel = vim.keymap.del
 local keymapOptions = {
   normalMode = {
     noremap = true,
