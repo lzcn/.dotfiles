@@ -1,6 +1,6 @@
-# see https://github.com/ellie/atuin/blob/main/atuin-client/config.toml for example
+# see https://docs.atuin.sh/configuration/config
 auto_sync = true
-filter_mode = "global"
+filter_mode = "host"
 search_mode = "skim"
 style = "compact"
 update_check = false
