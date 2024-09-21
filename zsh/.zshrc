@@ -102,8 +102,8 @@ zinit load ellie/atuin
 
 ## --- Completion ---
 
-zinit ice wait lucid
-zinit light esc/conda-zsh-completion
+# zinit ice wait lucid
+# zinit light esc/conda-zsh-completion
 
 ## --- Scripts ---
 
