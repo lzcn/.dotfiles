@@ -1,4 +1,3 @@
-
 [[keyboard.bindings]]
 action = "SpawnNewInstance"
 key = "N"
