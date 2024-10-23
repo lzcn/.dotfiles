@@ -58,20 +58,15 @@ setup_alacritty() {
       mkdir -p $HOME/config/alacritty/themes
       git clone https://github.com/alacritty/alacritty-theme $HOME/.config/alacritty/themes --depth 1
     else
-      info "Found alacritty themes"
+      info "Update alacritty themes"
+      # update themes
+      cd $HOME/.config/alacritty/themes
+      git pull
+      cd $DOTFILES
     fi
 
   else
     info 'alacritty is not installed'
-  fi
-}
-
-setup_kitty() {
-  title "Configuring Kitty"
-  if command_exists kitty; then
-    symlink "$HOME/.config/kitty" "$DOTFILES/kitty"
-  else
-    info 'kitty is not installed'
   fi
 }
 
@@ -86,9 +81,9 @@ setup_atuin() {
 
 setup_brew() {
   xargs brew install <./brew/brew.txt
-  if is_osx; then
-    xargs brew install <./brew/cask.txt
-  fi
+  # if is_osx; then
+  #   xargs brew install <./brew/cask.txt
+  # fi
 }
 
 setup_espanso() {
@@ -127,20 +122,9 @@ setup_zsh() {
 
 }
 
-setup_lvim() {
-  title "Configuring LunarVim"
-  symlink $HOME/.config/lvim $DOTFILES/lvim
-
-}
-
 setup_nvim() {
   title "Configuring Neovim"
   symlink $HOME/.config/nvim $DOTFILES/nvim
-}
-
-setup_nvchad() {
-  title "Configuring NvChad"
-  symlink $HOME/.config/nvim/lua/custom $DOTFILES/nvim/lua/custom
 }
 
 setup_tmux() {
@@ -174,20 +158,11 @@ case "$1" in
   git)
     setup_git
     ;;
-  kitty)
-    setup_kitty
-    ;;
   pip)
     setup_pip
     ;;
   nvim)
     setup_nvim
-    ;;
-  nvchad)
-    setup_nvchad
-    ;;
-  lvim)
-    setup_lvim
     ;;
   tmux)
     setup_tmux
@@ -200,14 +175,13 @@ case "$1" in
     setup_atuin
     setup_brew
     setup_env
-    setup_kitty
-    setup_git
-    setup_lvim
+    setup_espano
+    setup_nvim
     setup_tmux
     setup_zsh
     ;;
   *)
-    echo "Usage: $0 [alacritty|brew|env|git|pip|lvim|tmux|zsh|all]"
+    echo "Usage: $0 [alacritty|atuin|brew|env|espanso|git|pip|nvim|tmux|zsh|all]"
     exit 1
     ;;
 esac
