@@ -9,29 +9,48 @@ return {
       end,
     },
   },
-  -- {
-  --   "folke/which-key.nvim",
-  --   event = "VeryLazy",
-  --   opts = {
-  --     defaults = {
-  --       ["<leader>w"] = { "<cmd>update<cr>", "Save" },
-  --     },
-  --   },
-  --   keys = {
-  --     -- disable the keymap to grep files
-  --     { "<leader>/", false },
-  --     -- change a keymap
-  --     { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
-  --     -- add a keymap to browse plugin files
-  --     {
-  --       "<leader>fp",
-  --       function()
-  --         require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
-  --       end,
-  --       desc = "Find Plugin File",
-  --     },
-  --   },
-  -- },
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters = {
+        shfmt = {
+          prepend_args = { "-i", "2", "-ci" },
+        },
+        black = {
+          prepend_args = { "--line-length", "120" },
+        },
+      },
+      formatters_by_ft = {
+        ["python"] = { "isort", "black" },
+      },
+    },
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      filesystem = {
+        filtered_items = {
+          hide_dotfiles = false,
+          hide_gitignored = true,
+        },
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        pyright = {
+          settings = {
+            pyright = { disableOrganizeImports = true },
+            python = { analysis = { typeCheckingMode = "basic", ignore = { "*" } } },
+          },
+        },
+        ruff_lsp = { settings = { lint = { enable = false } } },
+      },
+    },
+  },
   -- Use <tab> for completion and snippets (supertab)
   -- first: disable default <tab> and <s-tab> behavior in LuaSnip
   {

@@ -1,4 +1,5 @@
 -- Save current file when it loses focus
--- vim.cmd([[
---   autocmd BufLeave * silent! w
--- ]])
+-- vim.api.nvim_create_autocmd("BufLeave", {
+--     pattern = "*",
+--     command = "silent! w"
+-- })
