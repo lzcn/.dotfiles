@@ -15,10 +15,9 @@ local keymapOptions = {
 keymapSet("n", "<C-a>", "ggVG", keymapOptions.normalMode)
 
 -- Open file
-keymapSet("n", "<A-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>", keymapOptions.normalMode)
+-- keymapSet("n", "<A-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>", keymapOptions.normalMode)
 -- Save file
-
-keymapSet("n", "<D-s>", "<cmd>update<cr>", keymapOptions.normalMode)
+-- keymapSet("n", "<D-s>", "<cmd>update<cr>", keymapOptions.normalMode)
 
 -- Format file using vscode keymap
 keymapSet("n", "<A-F>", "<cmd>LazyFormat<cr>", keymapOptions.normalMode)
