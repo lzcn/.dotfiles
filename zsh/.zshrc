@@ -1,87 +1,82 @@
-# # Powerlevel10k instant prompt.
+# Powerlevel10k instant prompt.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-## --- Zinit ---
+# --- Zinit ---
 source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-## --- Envs ---
-[[ ! -z $TMUX ]] || export PATH="$HOME/.local/bin":$PATH
+# --- Opts ---
+setopt interactive_comments
 
-## --- Theme ---
+# --- Envs ---
+# Only prepend ~/.local/bin to PATH if not in TMUX
+if [ -z "$TMUX" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
 
-# about: powerlevel10k theme
+# --- Theme ---
+# Powerlevel10k theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice depth=1
+zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-## --- Plugins ---
+# --- Plugins ---
 
-# about: vim-mode for zsh
-# configuration for vim-mode
-# ZVM_VI_EDITOR=lvim
-# ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
-# zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
-
-# about: syntax-highlighting for Zsh
+# Syntax-highlighting for Zsh
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
 zinit light zdharma-continuum/fast-syntax-highlighting
 
-# about: fish-like autosuggestions for Zsh
+# Fish-like autosuggestions for Zsh
 zinit ice wait lucid atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions
 
-# about: additional completion definitions for Zsh
+# Additional completion definitions for Zsh
 zinit ice wait lucid blockf atpull'zinit creinstall -q .'
 zinit light zsh-users/zsh-completions
 
-# about: multi-word, syntax highlighted history searching for Zsh
-#
-# usage: ctrl-r
+# Multi-word, syntax-highlighted history searching for Zsh
 # zinit ice wait lucid
 # zinit light zdharma-continuum/history-search-multi-word
 
-# about: open the GitHub page or website for a repository 
-# usage: git open
+# Open the GitHub page or website for a repository
 zinit ice wait lucid
 zinit light paulirish/git-open
 
-# about: cache the output of an initialization command to speed up startup
-#
-# usage: replace a specific init command, for example, `eval "$(hub alias -s)"`
-#        with `_evalcache hub alias -s` in setup
-#        to clear cache use `_evalcache_clear`
+# Cache the output of an initialization command to speed up startup
 zinit light mroth/evalcache
 
-# about: a command-line fuzzy finder
+# Command-line fuzzy finder
 zinit light junegunn/fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 
-# homebrew init with _evalcache
-[[ ! -z $TMUX ]] || [[ ! -f $HOMEBREW_PREFIX/bin/brew ]] || _evalcache $HOMEBREW_PREFIX/bin/brew shellenv
+# Homebrew init with _evalcache
+[ -n "$TMUX" ] || [ ! -f "$HOMEBREW_PREFIX/bin/brew" ] || _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
 
-# conda init with _evalcache
-[[ ! -f $CONDA_PREFIX/bin/conda ]] || _evalcache $CONDA_PREFIX/bin/conda shell.zsh hook
+# Conda init with _evalcache
+[ ! -f "$CONDA_PREFIX/bin/conda" ] || _evalcache "$CONDA_PREFIX/bin/conda" shell.zsh hook
 
-# rbenv init with _evalcache_clear
+# Rbenv init with _evalcache_clear
 # (( ! $+commands[rbenv] )) || _evalcache rbenv init -
 
-# load autojump plugin if installed
+# Load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
-# source fnm
-[[ ! -z $TMUX ]] || [[ ! -d $HOME/.fnm ]] || export PATH=$HOME/.fnm:$PATH
-[[ ! -z $TMUX ]] || (( ! $+commands[fnm] )) || eval "$(fnm env --use-on-cd)"
+# Source fnm
+if [ -z "$TMUX" ]; then
+  [ -d "$HOME/.fnm" ] && export PATH="$HOME/.fnm:$PATH"
+  (( $+commands[fnm] )) && eval "$(fnm env --use-on-cd)"
+fi
 
-# lib from Oy My Zsh
+# Lib from Oh My Zsh
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
 zinit snippet OMZL::history.zsh
 
-# plugins from Oy My Zsh
+# Plugins from Oh My Zsh
 zinit wait lucid for \
     OMZP::colorize \
     OMZP::command-not-found \
@@ -89,49 +84,48 @@ zinit wait lucid for \
     OMZP::extract
     # OMZP::fzf
 
-# plugins from Prezto: relative order is important
-# TODO: move necessary parts to zshrc
+# Plugins from Prezto: relative order is important
 zinit snippet PZT::modules/helper
 zinit snippet PZT::modules/gnu-utility
 zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
-# atuin
+# Atuin
 zinit ice wait lucid
 zinit load ellie/atuin
 
-## --- Completion ---
-
+# --- Completion ---
 # zinit ice wait lucid
 # zinit light esc/conda-zsh-completion
 
-## --- Scripts ---
-
-# about: an alternative to the cd
+# --- Scripts ---
+# An alternative to the cd
 zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
   atload="wd() { . wd.sh }" \
   atpull'!git reset --hard'
 zinit light mfaerevaag/wd
 
-## --- key-bindings ---
+# --- Key-bindings ---
+function setup_keybindings_viins() {
+  bindkey -M viins '^[p' up-line-or-search
+  bindkey -M viins '^[n' down-line-or-search
+  bindkey -M viins '^[f' forward-word
+  bindkey -M viins '^[b' backward-word
+}
+setup_keybindings_viins
 
-bindkey -M viins '^[p' up-line-or-search
-bindkey -M viins '^[n' down-line-or-search
-bindkey -M viins '^[f' forward-word
-bindkey -M viins '^[b' backward-word
+# --- Aliases ---
 
-## --- Aliases ---
-
-# aliases for brew
+# Aliases for brew
 alias bubu='brew update && brew outdated && brew upgrade && brew autoremove && brew cleanup'
 
-# aliases for rsync
+# Aliases for rsync
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
 alias rsync-update="rsync -avzu --progress -h"
 alias rsync-synchronize="rsync -avzu --delete --progress -h"
 
-# aliases for tmux
+# Aliases for tmux
 alias ta='tmux attach -t'
 alias tad='tmux attach -d -t'
 alias ts='tmux new-session -s'
@@ -139,27 +133,25 @@ alias tls='tmux list-sessions'
 alias tlw='tmux list-windows'
 alias tkss='tmux kill-session -t'
 
-# aliases for colorls
+# Aliases for colorls
 if (( $+commands[colorls] )); then
   alias cls='colorls'
   alias cll='colorls -l'
   alias cla='colorls -lAh'
 fi
 
-# aliases for cluster-smi
-(( ! $+commands[cluster-smi] )) || alias csmi='cluster-smi'
-
-# aliases for conda
+# Aliases for conda
 alias sra='conda activate'
 alias srd='conda deactivate'
 
+# Alias for lazygit
 alias lg='lazygit'
 
-# count number of files in current directory
+# Count number of files in current directory
 alias cntfile='ls -1 | wc -l'
 
-# use nvim or lvim for vim
+# Use nvim or lvim for vim
 (( ! $+commands[nvim] )) || alias vim='nvim'
-# (( ! $+commands[nvim] )) || (( ! $+commands[lvim] )) || alias vim='lvim'
 
+# Use colored output for ls
 alias ls="ls --color=auto"
