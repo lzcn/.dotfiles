@@ -89,11 +89,7 @@ setup_brew() {
 setup_espanso() {
   title "Configuring Espanso"
   if command_exists espanso; then
-    if is_osx; then
-      symlink "$HOME/Library/Application Support/espanso" "$DOTFILES/espanso"
-    else
       symlink "$HOME/.config/espanso" "$DOTFILES/espanso"
-    fi
   else
     info 'espanso is not installed'
   fi
