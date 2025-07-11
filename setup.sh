@@ -86,15 +86,6 @@ setup_brew() {
   # fi
 }
 
-setup_espanso() {
-  title "Configuring Espanso"
-  if command_exists espanso; then
-      symlink "$HOME/.config/espanso" "$DOTFILES/espanso"
-  else
-    info 'espanso is not installed'
-  fi
-}
-
 setup_git() {
   title "Configuring Git"
   if [[ ! -d ~/.gitalias ]]; then
@@ -144,9 +135,6 @@ case "$1" in
     ;;
   brew)
     setup_brew
-    ;;
-  espanso)
-    setup_espanso
     ;;
   env)
     setup_env
