@@ -102,6 +102,20 @@ setup_pip() {
   pip install -r $DOTFILES/pip/packages.txt
 }
 
+setup_swift() {
+  title "Configuring Swift"
+  if is_osx && command_exists swift; then
+    mkdir -p ~/.local/bin
+    for swift_file in "$DOTFILES/swift"/*.swift; do
+      filename=$(basename "$swift_file" .swift)
+      swiftc "$swift_file" -o "$HOME/.local/bin/$filename"
+      success "Compiled $filename"
+    done
+  else
+    info "Swift setup requires macOS and Swift compiler"
+  fi
+}
+
 setup_zsh() {
   title "Configuring Zsh"
   symlink $HOME/.zshrc $DOTFILES/zsh/.zshrc
@@ -145,6 +159,9 @@ case "$1" in
   pip)
     setup_pip
     ;;
+  swift)
+    setup_swift
+    ;;
   nvim)
     setup_nvim
     ;;
@@ -159,13 +176,15 @@ case "$1" in
     setup_atuin
     setup_brew
     setup_env
-    setup_espano
+    setup_git
+    setup_pip
+    setup_swift
     setup_nvim
     setup_tmux
     setup_zsh
     ;;
   *)
-    echo "Usage: $0 [alacritty|atuin|brew|env|espanso|git|pip|nvim|tmux|zsh|all]"
+    echo "Usage: $0 [alacritty|atuin|brew|env|git|pip|swift|nvim|tmux|zsh|all]"
     exit 1
     ;;
 esac
