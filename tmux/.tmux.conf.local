@@ -1,4 +1,4 @@
-# : << EOF
+# : << 'EOF'
 # https://github.com/gpakosz/.tmux
 # (‑●‑●)> dual licensed under the WTFPL v2 license and the MIT license,
 #         without any warranty.
@@ -254,10 +254,10 @@ tmux_conf_theme_left_separator_main=""
 tmux_conf_theme_left_separator_sub="|"
 tmux_conf_theme_right_separator_main=""
 tmux_conf_theme_right_separator_sub="|"
-tmux_conf_theme_left_separator_main='\uE0B4'  # 
-tmux_conf_theme_left_separator_sub='\uE0B5'   # 
-tmux_conf_theme_right_separator_main='\uE0B6' # 
-tmux_conf_theme_right_separator_sub='\uE0B7'  # 
+tmux_conf_theme_left_separator_main='\uE0B0'   # 
+tmux_conf_theme_left_separator_sub='\uE0B1'    # 
+tmux_conf_theme_right_separator_main='\uE0B2'  # 
+tmux_conf_theme_right_separator_sub='\uE0B3'   # 
 
 # status left/right content:
 #   - separate main sections with "|"
@@ -427,6 +427,9 @@ bind C-a send-prefix
 # if you don't want Oh my tmux! to alter a binding or a setting, use #!important
 # bind c new-window -c '#{pane_current_path}' #!important
 
+# display a message after toggling mouse support
+bind m run "cut -c3- '#{TMUX_CONF}' | sh -s _toggle_mouse" \; display 'mouse #{?#{mouse},on,off}'
+
 # move status line to top
 #set -g status-position top
 
@@ -470,6 +473,7 @@ tmux_conf_uninstall_plugins_on_reload=true
 # /!\ do not add set -g @plugin 'tmux-plugins/tpm'
 # /!\ do not add run '~/.tmux/plugins/tpm/tpm'
 
+# /!\ the 'set -g @tpm_plugins' syntax is not supported
 # to enable a plugin, use the 'set -g @plugin' syntax:
 # visit https://github.com/tmux-plugins for available plugins
 #set -g @plugin 'tmux-plugins/tmux-copycat'
