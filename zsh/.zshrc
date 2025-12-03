@@ -1,4 +1,4 @@
-# Powerlevel10k instant prompt.
+# --- Powerlevel10k instant prompt ---
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -11,6 +11,18 @@ autoload -Uz _zinit
 # --- Opts ---
 setopt interactive_comments
 
+# --- History configuration
+[[ -z "$HISTFILE" ]] && HISTFILE="$HOME/.zsh_history"
+(( HISTSIZE < 50000 )) && HISTSIZE=50000
+(( SAVEHIST < 10000 )) && SAVEHIST=10000
+
+setopt extended_history       # record timestamps in history
+setopt hist_expire_dups_first # expire duplicate entries first
+setopt hist_ignore_dups       # ignore consecutive duplicates
+setopt hist_ignore_space      # ignore commands starting with space
+setopt hist_verify            # show expanded command before executing
+setopt share_history          # share history across sessions
+
 # --- Envs ---
 # Only prepend ~/.local/bin to PATH if not in TMUX
 if [ -z "$TMUX" ]; then
@@ -18,8 +30,8 @@ if [ -z "$TMUX" ]; then
 fi
 
 # --- Theme ---
-# Powerlevel10k theme
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+
+# Powerlevel10k
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -39,8 +51,8 @@ zinit ice wait lucid blockf atpull'zinit creinstall -q .'
 zinit light zsh-users/zsh-completions
 
 # Multi-word, syntax-highlighted history searching for Zsh
-# zinit ice wait lucid
-# zinit light zdharma-continuum/history-search-multi-word
+zinit ice wait lucid
+zinit light zdharma-continuum/history-search-multi-word
 
 # Open the GitHub page or website for a repository
 zinit ice wait lucid
@@ -59,22 +71,18 @@ zinit light junegunn/fzf
 # Conda init with _evalcache
 [ ! -f "$CONDA_PREFIX/bin/conda" ] || _evalcache "$CONDA_PREFIX/bin/conda" shell.zsh hook
 
-# Rbenv init with _evalcache_clear
-# (( ! $+commands[rbenv] )) || _evalcache rbenv init -
-
 # Load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
 # Source fnm
 if [ -z "$TMUX" ]; then
   [ -d "$HOME/.fnm" ] && export PATH="$HOME/.fnm:$PATH"
-  (( $+commands[fnm] )) && eval "$(fnm env --use-on-cd)"
+  (( $+commands[fnm] )) && _evalcache fnm env --use-on-cd
 fi
 
-# Lib from Oh My Zsh
+# Oh My Zsh libs
 zinit snippet OMZL::completion.zsh
 zinit snippet OMZL::spectrum.zsh
-zinit snippet OMZL::history.zsh
 
 # Plugins from Oh My Zsh
 zinit wait lucid for \
@@ -84,15 +92,17 @@ zinit wait lucid for \
     OMZP::extract
     # OMZP::fzf
 
-# Plugins from Prezto: relative order is important
+# Plugins from Prezto (order matters)
 zinit snippet PZT::modules/helper
 zinit snippet PZT::modules/gnu-utility
 zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
-# Atuin
-zinit ice wait lucid
-zinit load atuinsh/atuin
+# --- Atuin ---
+# zinit ice wait lucid
+# zinit load atuinsh/atuin
+export ATUIN_NOBIND="true"
+_evalcache atuin init zsh
 
 # --- Completion ---
 # zinit ice wait lucid
@@ -106,26 +116,22 @@ zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
 zinit light mfaerevaag/wd
 
 # --- Key-bindings ---
-function setup_keybindings_viins() {
-  bindkey -M viins '^[p' up-line-or-search
-  bindkey -M viins '^[n' down-line-or-search
-  bindkey -M viins '^[f' forward-word
-  bindkey -M viins '^[b' backward-word
-}
-setup_keybindings_viins
+bindkey -M viins '^[p' up-line-or-search   # Alt+p for searching backward in history
+bindkey -M viins '^[n' down-line-or-search # Alt+n for searching forward in history
+bindkey -M viins '^[f' forward-word        # Alt+f for moving forward by word
+bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
+
+bindkey '^[[A' _atuin_search_widget        # Up arrow for atuin history search
 
 # --- Aliases ---
 
-# Aliases for brew
-alias bubu='brew update && brew outdated && brew upgrade && brew autoremove && brew cleanup'
-
-# Aliases for rsync
+# Rsync aliases
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
 alias rsync-update="rsync -avzu --progress -h"
 alias rsync-synchronize="rsync -avzu --delete --progress -h"
 
-# Aliases for tmux
+# Tmux aliases
 alias ta='tmux attach -t'
 alias tad='tmux attach -d -t'
 alias ts='tmux new-session -s'
@@ -133,18 +139,18 @@ alias tls='tmux list-sessions'
 alias tlw='tmux list-windows'
 alias tkss='tmux kill-session -t'
 
-# Aliases for colorls
+# Colorls aliases
 if (( $+commands[colorls] )); then
   alias cls='colorls'
   alias cll='colorls -l'
   alias cla='colorls -lAh'
 fi
 
-# Aliases for conda
+# Conda aliases
 alias sra='conda activate'
 alias srd='conda deactivate'
 
-# Alias for lazygit
+# Lazygit alias
 alias lg='lazygit'
 
 # Count number of files in current directory
