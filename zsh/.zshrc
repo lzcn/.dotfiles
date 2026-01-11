@@ -71,6 +71,9 @@ zinit light junegunn/fzf
 # Conda init with _evalcache
 [ ! -f "$CONDA_PREFIX/bin/conda" ] || _evalcache "$CONDA_PREFIX/bin/conda" shell.zsh hook
 
+# Mamba init with _evalcache
+[ ! -f "$CONDA_PREFIX/bin/mamba" ] || _evalcache "$CONDA_PREFIX/bin/mamba" shell hook --shell zsh
+
 # Load autojump plugin if installed
 (( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
 
