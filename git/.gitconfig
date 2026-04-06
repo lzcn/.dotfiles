@@ -1,5 +1,5 @@
 [user]
-	email = zhilu@ustc.edu.cn
+	email = zhilu@uestc.edu.cn
 	name = Zhi Lu
 [core]
 	editor = nvim
@@ -9,7 +9,12 @@
 [alias]
 	st = status -sb
 	unstage = restore --staged
-  get = !git fetch --prune && git pull --rebase && git submodule update --init --recursive
+	get = !git fetch --prune && git pull --rebase && git submodule update --init --recursive
+	lg = log --graph --oneline --decorate --all
+	last = log -1 HEAD --stat
+	amend = commit --amend --no-edit
+[submodule]
+	recurse = true
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

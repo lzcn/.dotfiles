@@ -1,19 +1,25 @@
-# Type(<scope>): <subject>                                               | 79 |
-
+# Type(<scope>): <subject>                                               | 72 |
+#
 # <body>
-
+#
 # <footer>
-
+#
 # Type should be one of the following:
-# * feat (new feature)
+# * feat (new feature or method)
 # * fix (bug fix)
-# * docs (changes to documentation)
-# * style (formatting, missing semi colons, etc; no code change)
-# * refactor (refactoring production code)
-# * test (adding missing tests, refactoring tests; no production code change)
-# * chore (updating grunt tasks etc; no production code change)
-# * config (updating configurations)
-# Scope is just the scope of the change.
-# Subject should use impertivite tone and say what you did.
-# The body should go into detail about changes made.
-# The footer should contain any issue references or actions.
+# * docs (documentation / paper / report updates)
+# * refactor (code refactor with no behavior change)
+# * test (tests or validation scripts)
+# * chore (maintenance tasks)
+# * config (environment or runtime configuration)
+# * exp (experiment setup / run / result tracking)
+# * data (dataset / preprocessing / split changes)
+# * analysis (evaluation, ablation, plotting)
+#
+# Scope is optional but recommended, e.g. train, eval, data, paper.
+# Subject should be imperative and concise.
+#
+# Body (recommended):
+# - What changed
+# - Why it changed
+# - Key result/metric if applicable
