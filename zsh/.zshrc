@@ -40,6 +40,9 @@ zinit light romkatv/powerlevel10k
 
 # --- Plugins ---
 
+# Auto-close matching delimiters in the shell editor
+zinit light hlissner/zsh-autopair
+
 # Syntax-highlighting for Zsh
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
 zinit light zdharma-continuum/fast-syntax-highlighting
@@ -72,8 +75,11 @@ zinit light mroth/evalcache
 # Mamba init with _evalcache
 [ ! -f "$CONDA_PREFIX/bin/mamba" ] || _evalcache "$CONDA_PREFIX/bin/mamba" shell hook --shell zsh
 
-# Load autojump plugin if installed
-(( ! $+commands[autojump] )) || zinit snippet OMZP::autojump
+# Direnv hook for project-local environments
+(( $+commands[direnv] )) && _evalcache direnv hook zsh
+
+# Zoxide for smarter directory jumping
+(( $+commands[zoxide] )) && _evalcache zoxide init zsh
 
 # Source fnm
 if [ -z "$TMUX" ]; then
@@ -81,22 +87,20 @@ if [ -z "$TMUX" ]; then
   (( $+commands[fnm] )) && _evalcache fnm env --use-on-cd
 fi
 
-# Oh My Zsh libs
-zinit snippet OMZL::completion.zsh
-zinit snippet OMZL::spectrum.zsh
+# Oh My Zsh
+# zinit snippet OMZL::completion.zsh  # completion defaults
+# zinit snippet OMZL::spectrum.zsh    # color preview helpers: spectrum_ls / spectrum_bls
 
-# Plugins from Oh My Zsh
-zinit wait lucid for \
-    OMZP::colorize \
-    OMZP::command-not-found \
-    OMZP::dotenv \
-    OMZP::extract
+# zinit snippet OMZP::colorize        # colorized cat/less via ccat / cless
+zinit snippet OMZP::command-not-found # missing-command suggestions
+# zinit snippet OMZP::dotenv          # replaced by direnv hook
+zinit snippet OMZP::extract           # extract archives via x / extract
 
 # Plugins from Prezto (order matters)
-zinit snippet PZT::modules/helper
-zinit snippet PZT::modules/gnu-utility
-zinit snippet PZT::modules/utility
-zinit snippet PZT::modules/completion
+zinit snippet PZT::modules/helper      # helper functions used by other Prezto modules
+zinit snippet PZT::modules/gnu-utility # wrap GNU tools on non-GNU systems
+zinit snippet PZT::modules/utility     # general aliases and utility functions
+zinit snippet PZT::modules/completion  # Prezto completion setup and styles
 
 # --- Atuin ---
 # Load Atuin widgets/hooks and keep Ctrl-R owned by history-search-multi-word.
@@ -107,11 +111,13 @@ zinit snippet PZT::modules/completion
 # zinit light esc/conda-zsh-completion
 
 # --- Scripts ---
-# An alternative to the cd
-zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
-  atload="wd() { . wd.sh }" \
-  atpull'!git reset --hard'
-zinit light mfaerevaag/wd
+# OMZP::autojump / mfaerevaag/wd were previous directory-jump helpers.
+# Keep zoxide as the primary replacement.
+# zinit snippet OMZP::autojump
+# zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
+#   atload="wd() { . wd.sh }" \
+#   atpull'!git reset --hard'
+# zinit light mfaerevaag/wd
 
 # --- Key-bindings ---
 bindkey -M viins '^[p' up-line-or-search   # Alt+p for searching backward in history
