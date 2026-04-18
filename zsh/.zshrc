@@ -4,17 +4,19 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # --- Zinit ---
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+source "${ZINIT_HOME}/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # --- Opts ---
 setopt interactive_comments
 
-# --- History configuration
-[[ -z "$HISTFILE" ]] && HISTFILE="$HOME/.zsh_history"
-(( HISTSIZE < 50000 )) && HISTSIZE=50000
-(( SAVEHIST < 10000 )) && SAVEHIST=10000
+# --- History configuration ---
+# Follows Oh My Zsh lib/history.zsh
+[ -z "$HISTFILE" ] && HISTFILE="$HOME/.zsh_history"
+[ "$HISTSIZE" -lt 50000 ] && HISTSIZE=50000
+[ "$SAVEHIST" -lt 10000 ] && SAVEHIST=10000
 
 setopt extended_history       # record timestamps in history
 setopt hist_expire_dups_first # expire duplicate entries first
@@ -61,10 +63,6 @@ zinit light paulirish/git-open
 # Cache the output of an initialization command to speed up startup
 zinit light mroth/evalcache
 
-# Command-line fuzzy finder
-zinit light junegunn/fzf
-[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
-
 # Homebrew init with _evalcache
 [ -n "$TMUX" ] || [ ! -f "$HOMEBREW_PREFIX/bin/brew" ] || _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
 
@@ -93,7 +91,6 @@ zinit wait lucid for \
     OMZP::command-not-found \
     OMZP::dotenv \
     OMZP::extract
-    # OMZP::fzf
 
 # Plugins from Prezto (order matters)
 zinit snippet PZT::modules/helper
@@ -102,10 +99,8 @@ zinit snippet PZT::modules/utility
 zinit snippet PZT::modules/completion
 
 # --- Atuin ---
-# zinit ice wait lucid
-# zinit load atuinsh/atuin
-export ATUIN_NOBIND="true"
-_evalcache atuin init zsh
+# Load Atuin widgets/hooks and keep Ctrl-R owned by history-search-multi-word.
+(( $+commands[atuin] )) && _evalcache atuin init zsh --disable-ctrl-r
 
 # --- Completion ---
 # zinit ice wait lucid
@@ -123,8 +118,6 @@ bindkey -M viins '^[p' up-line-or-search   # Alt+p for searching backward in his
 bindkey -M viins '^[n' down-line-or-search # Alt+n for searching forward in history
 bindkey -M viins '^[f' forward-word        # Alt+f for moving forward by word
 bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
-
-bindkey '^[[A' _atuin_search_widget        # Up arrow for atuin history search
 
 # --- Aliases ---
 
