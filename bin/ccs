@@ -1,0 +1,200 @@
+#!/bin/zsh
+set -euo pipefail
+
+SETTINGS="$HOME/.claude/settings.json"
+CONFIG_DIR="$HOME/.config/ccs"
+SECRETS_FILE="$CONFIG_DIR/providers.env"
+
+usage() {
+  cat <<'TXT'
+ccs — switch Claude Code provider/model
+
+Usage: ccs <provider> [model]
+       ccs set-key <provider>
+       ccs current
+
+Providers:
+  deepseek    deepseek-v4-flash   https://api.deepseek.com/anthropic
+  minimax     MiniMax-M2.7        https://api.minimaxi.com/anthropic
+
+Examples:
+  ccs deepseek
+  ccs deepseek deepseek-chat
+  ccs minimax MiniMax-M2.7-2402
+  ccs set-key deepseek
+  ccs current
+
+Secrets: ~/.config/ccs/providers.env
+  DEEPSEEK_API_KEY=...
+  MINIMAX_API_KEY=...
+
+Notes:
+  - Overwrites ~/.claude/settings.json; start a new session after switching.
+  - ccs set-key reads the key interactively (safe from shell history).
+TXT
+}
+
+die() {
+  echo "ccs: $*" >&2
+  exit 1
+}
+
+load_secrets() {
+  [[ -f "$SECRETS_FILE" ]] || die "missing secrets file: $SECRETS_FILE"
+  source "$SECRETS_FILE"
+}
+
+ensure_config_dir() {
+  mkdir -p "$CONFIG_DIR"
+  [[ -f "$SECRETS_FILE" ]] || touch "$SECRETS_FILE"
+  chmod 600 "$SECRETS_FILE"
+}
+
+save_secret() {
+  local key_name="$1"
+  local key_value="$2"
+
+  ensure_config_dir
+
+  python3 - <<'PY' "$SECRETS_FILE" "$key_name" "$key_value"
+from pathlib import Path
+import shlex
+import sys
+
+path = Path(sys.argv[1])
+key_name = sys.argv[2]
+key_value = sys.argv[3]
+
+lines = []
+if path.exists():
+    lines = path.read_text(encoding="utf-8").splitlines()
+
+quoted = shlex.quote(key_value)
+entry = f"{key_name}={quoted}"
+
+updated = False
+for i, line in enumerate(lines):
+    if line.startswith(f"{key_name}="):
+        lines[i] = entry
+        updated = True
+        break
+
+if not updated:
+    lines.append(entry)
+
+path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+PY
+}
+
+add_provider_key() {
+  local provider="$1"
+  local env_name=""
+  local label=""
+
+  case "$provider" in
+    deepseek)
+      env_name="DEEPSEEK_API_KEY"
+      label="DeepSeek"
+      ;;
+    minimax)
+      env_name="MINIMAX_API_KEY"
+      label="MiniMax"
+      ;;
+    *)
+      die "unknown provider for set-key: $provider"
+      ;;
+  esac
+
+  local key_value=""
+  printf "Enter %s API key: " "$label" >&2
+  read -rs key_value
+  echo >&2
+  [[ -n "$key_value" ]] || die "empty API key"
+
+  save_secret "$env_name" "$key_value"
+  echo "Saved $label API key to $SECRETS_FILE."
+}
+
+write_settings() {
+  local base_url="$1"
+  local token="$2"
+  local model="$3"
+
+  python3 - <<'PY' "$SETTINGS" "$base_url" "$token" "$model"
+import json
+import sys
+
+settings, base_url, token, model = sys.argv[1:5]
+
+data = {
+    "$schema": "https://json.schemastore.org/claude-code-settings.json",
+    "env": {
+        "ANTHROPIC_BASE_URL": base_url,
+        "ANTHROPIC_AUTH_TOKEN": token,
+        "ANTHROPIC_MODEL": model,
+        "ANTHROPIC_SMALL_FAST_MODEL": model,
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": model,
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": model,
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": model,
+        "API_TIMEOUT_MS": "3000000",
+        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+    },
+    "permissions": {
+        "allow": [
+            "Bash(sort -k2 -n)",
+            "Bash(awk 'NR % 10 == 0')"
+        ]
+    }
+}
+
+with open(settings, 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+    f.write('\n')
+PY
+}
+
+show_current() {
+  [[ -f "$SETTINGS" ]] || die "missing settings file: $SETTINGS"
+  python3 - <<'PY' "$SETTINGS"
+import json
+import sys
+
+with open(sys.argv[1], 'r', encoding='utf-8') as f:
+    data = json.load(f)
+env = data.get('env', {})
+print('base_url:', env.get('ANTHROPIC_BASE_URL', ''))
+print('model:', env.get('ANTHROPIC_MODEL', ''))
+PY
+}
+
+provider="${1:-help}"
+model="${2:-}"
+
+case "$provider" in
+  help|-h|--help)
+    usage
+    ;;
+  set-key)
+    add_provider_key "${2:-}"
+    ;;
+  current)
+    show_current
+    ;;
+  deepseek)
+    load_secrets
+    : "${DEEPSEEK_API_KEY:?DEEPSEEK_API_KEY is not set in $SECRETS_FILE}"
+    model="${model:-deepseek-v4-flash}"
+    write_settings "https://api.deepseek.com/anthropic" "$DEEPSEEK_API_KEY" "$model"
+    echo "Switched Claude Code to DeepSeek ($model)."
+    ;;
+  minimax)
+    load_secrets
+    : "${MINIMAX_API_KEY:?MINIMAX_API_KEY is not set in $SECRETS_FILE}"
+    model="${model:-MiniMax-M2.7}"
+    write_settings "https://api.minimaxi.com/anthropic" "$MINIMAX_API_KEY" "$model"
+    echo "Switched Claude Code to MiniMax ($model)."
+    ;;
+  *)
+    die "unknown provider: $provider"
+    ;;
+esac
