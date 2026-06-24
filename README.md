@@ -4,26 +4,25 @@ This repository contains my personal configuration files, scripts etc., which in
 
 - Alacritty. Terminal app.
 - Git. Aliases and configurations for git are included.
-- Brew. Homebrew is a package manager for macOS and Linux.
+- Brew. A reference list of recommended packages (brew/brew.txt, not auto-installed).
 - Tmux. Tmux is a terminal multiplexer that allows you to run multiple programs in one terminal.
 - Zsh. Oh-my-zsh and Zinit are used for the zsh shell.
-- Nvim. LunarVim is used.
+- Nvim. LazyVim is used.
 - Scripts. Some scripts I use for my daily work.
 
 ## Installation
 
-1.  Clone the repository with its sub-modules.
+1.  Clone the repository.
 
     ```bash
     git clone https://www.github.com/lzcn/.dotfiles.git
     cd .dotfiles
-    git submodule update --init --recursive
     ```
 
 2.  Install dependencies
 
     ```bash
-    ./install.sh -h
+    ./install.sh
     ```
 
 3.  Setup
@@ -40,5 +39,5 @@ This repository contains my personal configuration files, scripts etc., which in
     2. Setup the configuration for different software:
 
     ```bash
-    ./setup.sh -h
+    ./setup.sh
     ```

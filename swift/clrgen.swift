@@ -1,3 +1,4 @@
+// clrgen — macOS only (uses AppKit NSColor/NSColorList)
 import Foundation
 import AppKit
 

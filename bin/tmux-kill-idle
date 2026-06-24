@@ -45,11 +45,11 @@ proc_tree_idle() {
 
   # Skip zombies — they're dead and won't do work
   local state
-  state=$(awk '/^State:/ {print $2}' /proc/$pid/status 2>/dev/null)
+  state=$(awk '/^State:/ {print $2}' /proc/"$pid"/status 2>/dev/null)
   [[ "$state" == "Z" ]] && return 0
 
   local comm
-  comm=$(cat /proc/$pid/comm 2>/dev/null) || return 0
+  comm=$(cat /proc/"$pid"/comm 2>/dev/null) || return 0
 
   # If this process itself is non-idle, the tree is active
   if ! echo "$comm" | grep -qE "$IDLE_COMMS"; then
@@ -58,7 +58,7 @@ proc_tree_idle() {
 
   # Recurse into children
   local children
-  children=$(cat /proc/$pid/task/$pid/children 2>/dev/null)
+  children=$(cat /proc/"$pid"/task/"$pid"/children 2>/dev/null)
   for cpid in $children; do
     if ! proc_tree_idle "$cpid"; then
       return 1
@@ -73,22 +73,9 @@ pane_is_idle() {
   proc_tree_idle "$pane_pid"
 }
 
-# Show pane foreground command, truncate if needed
-pane_fg_cmd() {
-  local pane_pid=$1
-  local cmd
-  cmd=$(cat /proc/$pane_pid/comm 2>/dev/null) || { echo "?"; return; }
-  # Also show first arg if available (e.g., "python train.py" → useful)
-  local arg1
-  arg1=$(tr '\0' ' ' < /proc/$pane_pid/cmdline 2>/dev/null | awk '{print $2}')
-  if [[ -n "${arg1:-}" ]]; then
-    echo "$cmd $arg1"
-  else
-    echo "$cmd"
-  fi
-}
-
 main() {
+  [[ "$(uname)" == "Linux" ]] || die "this script requires /proc (Linux only)"
+
   local verbose=false
   local force=false
 
@@ -109,13 +96,11 @@ main() {
   [[ -n "${TMUX:-}" ]] && current_session=$(tmux display-message -p '#S' 2>/dev/null) || true
 
   local -a idle_sessions=()
-  local -A session_pane_info=()
 
   while IFS= read -r session; do
     [[ -n "$session" ]] || continue
 
     local has_active=false
-    local -a pane_cmds=()
 
     while IFS= read -r pane_pid; do
       [[ -n "$pane_pid" ]] || continue
@@ -123,15 +108,10 @@ main() {
         has_active=true
         break
       fi
-      pane_cmds+=("$(pane_fg_cmd "$pane_pid")")
     done < <(tmux list-panes -t "$session" -F '#{pane_pid}' 2>/dev/null)
 
     if ! $has_active; then
       idle_sessions+=("$session")
-      # Join pane commands with ", "
-      local joined
-      joined=$(printf '%s, ' "${pane_cmds[@]}" | sed 's/, $//')
-      session_pane_info["$session"]="${joined:-?}"
     fi
   done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
 

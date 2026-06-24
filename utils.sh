@@ -35,14 +35,14 @@ success() {
 }
 
 symlink() {
-  target_file=$1
-  source_file=$2
+  local target_file=$1
+  local source_file=$2
   if [ -e "$target_file" ]; then
     if [ "$(readlink "$target_file")" != "$source_file" ]; then
       question "'$target_file' already exists, do you want to overwrite it?"
       if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        rm -rf "$target_file"
-        info "remove $target_file"
+        mv "$target_file" "$target_file.old"
+        info "backed up $target_file → $target_file.old"
         ln -fs "$source_file" "$target_file"
         info "$target_file -> $source_file"
       else
@@ -57,31 +57,19 @@ symlink() {
   fi
 }
 
-is_darwin() {
-  [[ "$OSTYPE" == "darwin"* ]]
-}
-
 is_osx() {
   [ "$(uname)" == "Darwin" ]
 }
 
-is_linux() {
-  [ "$(uname)" == "Linux" ]
-}
-
 command_exists() {
-  local command="$1"
-  command -v "$command" &>/dev/null
+  local cmd="$1"
+  command -v "$cmd" &>/dev/null
 }
 
 check_string_in_file() {
-  string=$1
-  filename=$2
-  grep -qF "$string" "$2" &>/dev/null
+  grep -qF "$1" "$2" &>/dev/null
 }
 
 append_string_in_file() {
-  string=$1
-  filename=$2
-  echo "$string" >>"$filename"
+  echo "$1" >>"$2"
 }

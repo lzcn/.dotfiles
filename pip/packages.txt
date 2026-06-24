@@ -1,3 +1,0 @@
-Pygments
-neovim
-trash-cli

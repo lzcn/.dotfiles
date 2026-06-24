@@ -637,7 +637,11 @@ private final class TerminalMenu {
 
     private func readByte(fd: Int32) -> UInt8? {
         var buffer: UInt8 = 0
+        #if os(macOS)
         let bytesRead = Darwin.read(fd, &buffer, 1)
+        #else
+        let bytesRead = Glibc.read(fd, &buffer, 1)
+        #endif
         return bytesRead == 1 ? buffer : nil
     }
 }
