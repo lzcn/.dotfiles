@@ -56,8 +56,8 @@ zinit ice wait lucid blockf atpull'zinit creinstall -q .'
 zinit light zsh-users/zsh-completions
 
 # Multi-word, syntax-highlighted history searching for Zsh
-zinit ice wait lucid
-zinit light zdharma-continuum/history-search-multi-word
+# zinit ice wait lucid
+# zinit light zdharma-continuum/history-search-multi-word
 
 # Open the GitHub page or website for a repository
 zinit ice wait lucid
@@ -103,8 +103,8 @@ zinit snippet PZT::modules/utility     # general aliases and utility functions
 zinit snippet PZT::modules/completion  # Prezto completion setup and styles
 
 # --- Atuin ---
-# Load Atuin widgets/hooks and keep Ctrl-R owned by history-search-multi-word.
-(( $+commands[atuin] )) && _evalcache atuin init zsh --disable-ctrl-r
+# Atuin owns Ctrl-R history search.
+(( $+commands[atuin] )) && _evalcache atuin init zsh
 
 # --- Completion ---
 # zinit ice wait lucid

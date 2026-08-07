@@ -1,7 +1,7 @@
 # see https://docs.atuin.sh/configuration/config
 auto_sync = true
 filter_mode = "host"
-search_mode = "skim"
+search_mode = "fuzzy"
 style = "compact"
 update_check = false
 inline_height = 15
