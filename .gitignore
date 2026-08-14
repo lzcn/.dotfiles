@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+*.swp
+*.swo
+.idea/
+
+# Compiled artifacts
+bin/clrgen
+bin/OllamaTranslator
+
+# Nvim local state
+nvim/lazy-lock.json
+nvim/lazyvim.json

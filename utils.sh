@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 COLOR_BLUE="\033[1;34m"
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_GREEN="\033[1;32m"
@@ -42,7 +44,7 @@ symlink() {
       question "'$target_file' already exists, do you want to overwrite it?"
       if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         mv "$target_file" "$target_file.old"
-        info "backed up $target_file → $target_file.old"
+        info "backed up $target_file -> $target_file.old"
         ln -fs "$source_file" "$target_file"
         info "$target_file -> $source_file"
       else

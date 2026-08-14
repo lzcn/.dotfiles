@@ -1,43 +1,57 @@
 # Personal Dotfiles
 
-This repository contains my personal configuration files, scripts etc., which includes:
+Configuration for my macOS setup. Managed via [GNU Make](https://www.gnu.org/software/make/).
 
-- Alacritty. Terminal app.
-- Git. Aliases and configurations for git are included.
-- Brew. A reference list of recommended packages (brew/brew.txt, not auto-installed).
-- Tmux. Tmux is a terminal multiplexer that allows you to run multiple programs in one terminal.
-- Zsh. Oh-my-zsh and Zinit are used for the zsh shell.
-- Nvim. LazyVim is used.
-- Scripts. Some scripts I use for my daily work.
+## What's inside
 
-## Installation
+| Dir | Purpose |
+| --- | --- |
+| `atuin/` | Atuin shell history search/sync config |
+| `bin/` | Small daily-use scripts (on `PATH`) |
+| `git/` | Git config, aliases, commit template, global gitignore |
+| `nvim/` | Neovim config (LazyVim) + Lua tooling |
+| `swift/` | Sources for compiled `bin/` tools |
+| `tmux/` | Oh My Tmux config |
+| `zsh/` | Zsh config powered by Zinit + Powerlevel10k |
 
-1.  Clone the repository.
+## Quick start
 
-    ```bash
-    git clone https://www.github.com/lzcn/.dotfiles.git
-    cd .dotfiles
-    ```
+```bash
+git clone https://www.github.com/lzcn/.dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+make all    # install deps → symlink configs → run validation
+```
 
-2.  Install dependencies
+## Make targets
 
-    ```bash
-    ./install.sh
-    ```
+Run `make help` for the full list.
 
-3.  Setup
+| Target | Description |
+| --- | --- |
+| `make install` | Install dependencies (Homebrew, Zinit) |
+| `make setup` | Symlink config files into place |
+| `make update` | `git pull --rebase` then re-apply symlinks |
+| `make validate` | Syntax checks + shellcheck + git config sanity |
+| `make all` | `install` → `setup` → `validate` |
 
-    1. Since different OS use different installation for homebrew and conda, we manually add the path to `~/.zshenv` or run `./setup.sh env` for `brew` and `conda`:
+### Individual components
 
-    ```bash
-    # for $HOMEBREW_PREFIX/brew
-    export HOMEBREW_PREFIX=
-    # for $CONDA_PREFIX/conda
-    export CONDA_PREFIX=
-    ```
+`install.sh` accepts: `homebrew`, `zinit`, `all`
+`setup.sh` accepts: `atuin`, `env`, `git`, `swift`, `nvim`, `zsh`, `all`
 
-    2. Setup the configuration for different software:
+Both scripts accept multiple targets, e.g. `./setup.sh git zsh`.
 
-    ```bash
-    ./setup.sh
-    ```
+## Manual prerequisites
+
+- **Homebrew / conda prefixes** are written to `~/.zshenv` by `./setup.sh env`.
+  If Homebrew isn't installed yet, install it first (see `make install`).
+- Most CLI tools (e.g. `zoxide`) are installed separately; this repo only tracks
+  *configuration*, not package lists.
+- `tmux/` expects the Oh My Tmux base config; only `.tmux.conf.local` is tracked.
+- `nvim/` requires LazyVim's bootstrap (handled by `init.lua`).
+
+## Layout conventions
+
+- `.luarc.json` / `.stylua.toml` live inside `nvim/` since they configure Lua tooling.
+- Compiled Swift binaries in `bin/` are gitignored (built via `./setup.sh swift`).
+- Nvim-local state (`lazy-lock.json`, `lazyvim.json`) is gitignored.

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-DOTFILES="$(pwd)"
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "$DOTFILES/utils.sh"
 
@@ -21,31 +23,23 @@ install_zinit() {
   fi
 }
 
-install_fnm() {
-  title "Installing Fast Node Manager"
-  if command_exists fnm; then
-    success "FNM already installed"
-  else
-    curl -fsSL https://fnm.vercel.app/install | bash
-  fi
+usage() {
+  echo "Usage: $0 {homebrew|zinit|all}"
+  exit 1
 }
 
-case "$1" in
-  fnm)
-    install_fnm
-    ;;
-  homebrew)
-    install_homebrew
-    ;;
-  zinit)
-    install_zinit
-    ;;
-  all)
-    install_homebrew
-    install_zinit
-    ;;
-  *)
-    echo "Usage: $0 {homebrew|zinit|fnm|all}"
-    exit 1
-    ;;
-esac
+if [[ $# -eq 0 ]]; then
+  usage
+fi
+
+for target in "$@"; do
+  case "$target" in
+    homebrew) install_homebrew ;;
+    zinit) install_zinit ;;
+    all)
+      install_homebrew
+      install_zinit
+      ;;
+    *) usage ;;
+  esac
+done

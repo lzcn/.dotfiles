@@ -4,12 +4,12 @@
 [core]
 	editor = nvim
 	excludesfile = ~/.dotfiles/git/gitignore_global
-[include]
-	path = ~/.gitalias/gitalias.txt
 [alias]
 	st = status -sb
+	co = checkout
 	unstage = restore --staged
 	get = !git fetch --prune && git pull --rebase && git submodule update --init --recursive
+	cleanup = !git clean -df && git checkout -- .
 	lg = log --graph --oneline --decorate --all
 	last = log -1 HEAD --stat
 	amend = commit --amend --no-edit

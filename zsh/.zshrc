@@ -82,10 +82,11 @@ zinit light mroth/evalcache
 (( $+commands[zoxide] )) && _evalcache zoxide init zsh
 
 # Source fnm
-if [ -z "$TMUX" ]; then
-  [ -d "$HOME/.fnm" ] && export PATH="$HOME/.fnm:$PATH"
-  (( $+commands[fnm] )) && _evalcache fnm env --use-on-cd
-fi
+# fnm is not used anymore; uncomment to re-enable.
+# if [ -z "$TMUX" ]; then
+#   [ -d "$HOME/.fnm" ] && export PATH="$HOME/.fnm:$PATH"
+#   (( $+commands[fnm] )) && _evalcache fnm env --use-on-cd
+# fi
 
 # Oh My Zsh
 # zinit snippet OMZL::completion.zsh  # completion defaults
