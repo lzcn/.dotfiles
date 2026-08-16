@@ -140,9 +140,13 @@ update_git_repo() {
         make update
         ok_code=$?
     elif [[ "$2" == "full" ]]; then
-        git fetch --unshallow --prune \
-        && git pull --rebase \
-        && git submodule update --init --recursive
+        if [[ "$(git rev-parse --is-shallow-repository)" == "true" ]]; then
+            git fetch --unshallow --prune
+        else
+            git fetch --prune
+        fi
+        ok_code=$?
+        (( ok_code == 0 )) && git pull --rebase && git submodule update --init --recursive
         ok_code=$?
     else
         git fetch --depth 1 --prune \
@@ -177,8 +181,7 @@ setup_proxy
 if (( UPDATE_BREW )); then
     if (( ${+commands[brew]} )); then
         section "Homebrew"
-        brew update && brew outdated && brew upgrade --greedy --yes && brew cleanup --yes && brew cleanup --prune=all --yes
-        brew autoremove --yes
+        brew update && brew outdated && brew upgrade --greedy --yes && brew cleanup --prune=all && brew autoremove
         ok "Homebrew updated"
     else
         warn "brew not found, skipping Homebrew update"
