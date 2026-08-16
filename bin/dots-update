@@ -3,8 +3,8 @@
 # ============================================================
 # Configuration
 # ============================================================
-# Which tools to update: auto-detected by installation (set to 0/1 to force)
-(( ${+commands[brew]} )) && UPDATE_BREW=1 || UPDATE_BREW=0
+# Which tools to update: brew is on by default (UPDATE_BREW=0 or --no-brew to disable)
+UPDATE_BREW=${UPDATE_BREW:-1}
 [[ -d "$HOME/.local/share/zinit/zinit.git" ]] && UPDATE_ZINIT=1 || UPDATE_ZINIT=0
 
 # Proxy mode: off (default) | hardcoded | auto
@@ -18,10 +18,11 @@ PROXY_HTTP_PORTS=(7890 7897 6152 1087)
 PROXY_SOCKS_PORTS=(7891 7897 6153 1087)
 
 # Git repositories to update.
-# Suffix ":full" keeps full history (own repos); default is shallow (depth=1).
+# Suffix ":full" keeps full history (own repos); ":make" runs `make update`
+# (git pull --rebase + re-apply symlinks, see README); default is shallow (depth=1).
 # Existence check makes this work on any machine.
 GIT_REPOS=(
-    "$HOME/.dotfiles:full"
+    "$HOME/.dotfiles:make"
     "$HOME/.tmux"
 )
 [[ -d "$HOME/.gitalias" ]] && GIT_REPOS+=("$HOME/.gitalias")
@@ -113,16 +114,18 @@ setup_proxy() {
 }
 
 usage() {
-    echo "Usage: dots-update [--proxy|--auto-proxy|--no-proxy]"
+    echo "Usage: dots-update [--proxy|--auto-proxy|--no-proxy] [--no-brew]"
     echo "  --proxy       enable proxy with a hardcoded port"
     echo "  --auto-proxy  enable proxy with auto-detected port"
     echo "  --no-proxy    disable proxy (default)"
+    echo "  --no-brew     skip the Homebrew update (brew is on by default)"
 }
 
 # ============================================================
 # Functions
 # ============================================================
-# Update a git repository; mode "full" keeps full history, otherwise shallow (depth=1)
+# Update a git repository; mode "make" runs `make update`, "full" keeps full
+# history, otherwise shallow (depth=1)
 update_git_repo() {
     local repo_path=$1
     local repo_name=${2:-$(basename "$repo_path")}
@@ -133,7 +136,10 @@ update_git_repo() {
     fi
     info "updating $repo_name"
     cd "$repo_path" || { fail "$repo_name: cd failed"; return 1 }
-    if [[ "$2" == "full" ]]; then
+    if [[ "$2" == "make" ]]; then
+        make update
+        ok_code=$?
+    elif [[ "$2" == "full" ]]; then
         git fetch --unshallow --prune \
         && git pull --rebase \
         && git submodule update --init --recursive
@@ -159,6 +165,7 @@ for arg in "$@"; do
         --proxy)      PROXY_MODE="hardcoded" ;;
         --auto-proxy) PROXY_MODE="auto" ;;
         --no-proxy)   PROXY_MODE="off" ;;
+        --no-brew)    UPDATE_BREW=0 ;;
         --help|-h)    usage; exit 0 ;;
         *) echo "Unknown option: $arg"; usage; exit 1 ;;
     esac
@@ -168,10 +175,14 @@ banner "DOTS UPDATE"
 setup_proxy
 
 if (( UPDATE_BREW )); then
-    section "Homebrew"
-    brew update && brew outdated && brew upgrade --greedy && brew cleanup && brew cleanup --prune=all
-    brew autoremove
-    ok "Homebrew updated"
+    if (( ${+commands[brew]} )); then
+        section "Homebrew"
+        brew update && brew outdated && brew upgrade --greedy --yes && brew cleanup --yes && brew cleanup --prune=all --yes
+        brew autoremove --yes
+        ok "Homebrew updated"
+    else
+        warn "brew not found, skipping Homebrew update"
+    fi
 fi
 
 if (( UPDATE_ZINIT )); then
@@ -186,7 +197,9 @@ fi
 
 section "Git Repos"
 for repo in "${GIT_REPOS[@]}"; do
-    if [[ "$repo" == *:full ]]; then
+    if [[ "$repo" == *:make ]]; then
+        update_git_repo "${repo%:make}" "make"
+    elif [[ "$repo" == *:full ]]; then
         update_git_repo "${repo%:full}" "full"
     else
         update_git_repo "$repo"
