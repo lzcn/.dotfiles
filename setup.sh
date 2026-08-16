@@ -13,11 +13,11 @@ ensure_zshenv() {
 
 append_if_missing() {
   local pattern="$1"
-  local line="$2"
   if check_string_in_file "$pattern" "$ZSENV"; then
     success "Found $pattern in $ZSENV"
   else
-    append_string_in_file "$line" "$ZSENV"
+    cat >>"$ZSENV" <&0
+    success "Appended $pattern to $ZSENV"
   fi
 }
 
@@ -25,14 +25,29 @@ setup_env() {
   title "Configuring environment"
   ensure_zshenv
 
-  # add bin to PATH (unless inside tmux)
-  append_if_missing "PATH=$DOTFILES/bin" "[[ -n \$TMUX ]] || export PATH=$DOTFILES/bin:\$PATH"
+  # add bin to PATH (unless inside tmux).
+  # zsh-only: use the `path` array; the one-liner form errors under `nounset`
+  # (`TMUX: parameter not set`) and is redundant with the block below.
+  append_if_missing "dotfiles/bin" <<'BLOCK'
+
+# dotfiles helper binaries.
+# Do not prepend them again inside tmux; the tmux server/session inherits
+# the environment from the shell that launched it.
+if [[ -z ${TMUX:-} ]]; then
+  path=(
+    "$HOME/.dotfiles/bin"
+    $path
+  )
+fi
+BLOCK
 
   # homebrew prefix
   if check_string_in_file HOMEBREW_PREFIX "$ZSENV"; then
     success "Found HOMEBREW_PREFIX in $ZSENV"
   elif command_exists brew; then
-    append_if_missing "HOMEBREW_PREFIX" "export HOMEBREW_PREFIX=\"$(brew --prefix)\""
+    append_if_missing "HOMEBREW_PREFIX" <<EOF
+export HOMEBREW_PREFIX="$(brew --prefix)"
+EOF
   else
     info "Homebrew not found; HOMEBREW_PREFIX will not be set."
   fi
@@ -41,7 +56,9 @@ setup_env() {
   if check_string_in_file CONDA_PREFIX "$ZSENV"; then
     success "Found CONDA_PREFIX in $ZSENV"
   elif command_exists conda; then
-    append_if_missing "CONDA_PREFIX" "export CONDA_PREFIX=\"$(conda info --base)\""
+    append_if_missing "CONDA_PREFIX" <<EOF
+export CONDA_PREFIX="$(conda info --base)"
+EOF
   else
     info "Conda not found; CONDA_PREFIX will not be set."
   fi
