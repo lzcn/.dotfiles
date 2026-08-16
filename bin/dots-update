@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+source "${0:A:h}/lib.sh"
+
 # ============================================================
 # Configuration
 # ============================================================
@@ -27,45 +29,6 @@ GIT_REPOS=(
 )
 [[ -d "$HOME/.gitalias" ]] && GIT_REPOS+=("$HOME/.gitalias")
 [[ -d "$HOME/Library/Rime" ]] && GIT_REPOS+=("$HOME/Library/Rime")
-
-# ============================================================
-# Output helpers (colors auto-disabled when piped or NO_COLOR)
-# ============================================================
-if [[ -t 1 ]] && [[ -z "${NO_COLOR:-}" ]]; then
-    C_RESET=$'\e[0m'   C_BOLD=$'\e[1m'  C_DIM=$'\e[2m'
-    C_RED=$'\e[31m'    C_GREEN=$'\e[32m' C_YELLOW=$'\e[33m'
-    C_BLUE=$'\e[34m'   C_MAGENTA=$'\e[35m' C_CYAN=$'\e[36m'
-else
-    C_RESET= C_BOLD= C_DIM=
-    C_RED= C_GREEN= C_YELLOW= C_BLUE= C_MAGENTA= C_CYAN=
-fi
-
-hrule()   { print -r -- "${C_CYAN}──────────────────────────────────────────────${C_RESET}" }
-ok()      { print -r -- "${C_GREEN}  ✓ $*${C_RESET}" }
-warn()    { print -r -- "${C_YELLOW}  ⚠ $*${C_RESET}" }
-fail()    { print -r -- "${C_RED}  ✗ $*${C_RESET}" }
-info()    { print -r -- "${C_CYAN}  ● $*${C_RESET}" }
-
-banner() {
-    print -r -- ""
-    hrule
-    print -r -- "${C_BOLD}${C_CYAN}   ◈  ${C_YELLOW}$1${C_RESET}${C_BOLD}${C_CYAN}  ◈${C_RESET}"
-    hrule
-}
-
-section() {
-    print -r -- ""
-    print -r -- "${C_BOLD}${C_BLUE}▸ $1${C_RESET}"
-    print -r -- "${C_DIM}──────────────────────────────${C_RESET}"
-}
-
-finish() {
-    print -r -- ""
-    hrule
-    print -r -- "${C_BOLD}${C_GREEN}   ✓  DOTS UPDATE COMPLETE   ${C_DIM}(${SECONDS}s)${C_RESET}"
-    hrule
-    print -r -- ""
-}
 
 # ============================================================
 # Proxy
@@ -128,7 +91,8 @@ usage() {
 # history, otherwise shallow (depth=1)
 update_git_repo() {
     local repo_path=$1
-    local repo_name=${2:-$(basename "$repo_path")}
+    local mode=${2:-shallow}
+    local repo_name=$(basename "$repo_path")
     local ok_code
     if [[ ! -d "$repo_path/.git" ]]; then
         warn "$repo_name: not a git repo, skipping"
@@ -136,24 +100,28 @@ update_git_repo() {
     fi
     info "updating $repo_name"
     cd "$repo_path" || { fail "$repo_name: cd failed"; return 1 }
-    if [[ "$2" == "make" ]]; then
-        make update
-        ok_code=$?
-    elif [[ "$2" == "full" ]]; then
-        if [[ "$(git rev-parse --is-shallow-repository)" == "true" ]]; then
-            git fetch --unshallow --prune
-        else
-            git fetch --prune
-        fi
-        ok_code=$?
-        (( ok_code == 0 )) && git pull --rebase && git submodule update --init --recursive
-        ok_code=$?
-    else
-        git fetch --depth 1 --prune \
-        && git pull --depth 1 --rebase \
-        && git submodule update --init --recursive --depth 1
-        ok_code=$?
-    fi
+    case "$mode" in
+        make)
+            make update
+            ok_code=$?
+            ;;
+        full)
+            if [[ "$(git rev-parse --is-shallow-repository)" == "true" ]]; then
+                git fetch --unshallow --prune
+            else
+                git fetch --prune
+            fi
+            ok_code=$?
+            (( ok_code == 0 )) && git pull --rebase && git submodule update --init --recursive
+            ok_code=$?
+            ;;
+        shallow)
+            git fetch --depth 1 --prune \
+            && git pull --depth 1 --rebase \
+            && git submodule update --init --recursive --depth 1
+            ok_code=$?
+            ;;
+    esac
     if (( ok_code == 0 )); then
         ok "$repo_name updated"
     else
@@ -200,13 +168,11 @@ fi
 
 section "Git Repos"
 for repo in "${GIT_REPOS[@]}"; do
-    if [[ "$repo" == *:make ]]; then
-        update_git_repo "${repo%:make}" "make"
-    elif [[ "$repo" == *:full ]]; then
-        update_git_repo "${repo%:full}" "full"
-    else
-        update_git_repo "$repo"
-    fi
+    case "$repo" in
+        *:make)  update_git_repo "${repo%:make}" "make" ;;
+        *:full)  update_git_repo "${repo%:full}" "full" ;;
+        *)       update_git_repo "$repo" ;;
+    esac
 done
 
-finish
+finish "DOTS UPDATE"

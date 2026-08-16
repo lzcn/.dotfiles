@@ -1,43 +1,33 @@
-#!/usr/bin/env bash
-# Filename: intruder_detect.sh
-# Description: Intruder reporting tool with auth.log input
+#!/usr/bin/env zsh
+# intruder-detect — report failed login attempts from auth.log
 
-set -euo pipefail
+source "${0:A:h}/lib.sh"
 
-AUTHLOG=/var/log/auth.log
-if [[ -n "${1:-}" ]]; then
-  AUTHLOG=$1
-  echo "Using Log file: $AUTHLOG"
-fi
+authlog=${1:-/var/log/auth.log}
+[[ -r "$authlog" ]] || die "log not readable: $authlog"
+info "analyzing $authlog"
 
 tmpfile=$(mktemp)
 trap 'rm -f "$tmpfile"' EXIT
 
-# Collect the failed login attempts
-grep "Failed pass" "$AUTHLOG" >"$tmpfile"
+grep "Failed pass" "$authlog" >"$tmpfile"
 
-# extract the users who failed
 users=$(awk '{ print $(NF-5) }' "$tmpfile" | sort -u)
-
-# extract the IP addresses of failed attempts
 ip_list=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' "$tmpfile" | sort -u)
 
 printf "%-10s|%-3s|%-16s|%-33s|%s\n" "User" "Attempts" "IP address" "Host" "Time range"
 
-# Loop through IPs and users who failed
 for ip in $ip_list; do
-  for user in $users; do
-    # Count attempts by this user from this IP
-    attempts=$(grep -F "$ip" "$tmpfile" | grep -c " $user ")
-    if [ "$attempts" -ne 0 ]; then
-      first_time=$(grep -F "$ip" "$tmpfile" | grep " $user " | head -1 | cut -c-16)
-      time="$first_time"
-      if [ "$attempts" -gt 1 ]; then
-        last_time=$(grep -F "$ip" "$tmpfile" | grep " $user " | tail -1 | cut -c-16)
-        time="$first_time -> $last_time"
-      fi
-      HOST=$(host "$ip" 8.8.8.8 | tail -1 | awk '{ print $NF }')
-      printf "%-10s|%-3s|%-16s|%-33s|%-s\n" "$user" "$attempts" "$ip" "$HOST" "$time"
-    fi
-  done
+    for user in $users; do
+        attempts=$(grep -F "$ip" "$tmpfile" | grep -c " $user ")
+        (( attempts == 0 )) && continue
+        first_time=$(grep -F "$ip" "$tmpfile" | grep " $user " | head -1 | cut -c-16)
+        time="$first_time"
+        if (( attempts > 1 )); then
+            last_time=$(grep -F "$ip" "$tmpfile" | grep " $user " | tail -1 | cut -c-16)
+            time="$first_time -> $last_time"
+        fi
+        HOST=$(host "$ip" 8.8.8.8 | tail -1 | awk '{ print $NF }')
+        printf "%-10s|%-3s|%-16s|%-33s|%-s\n" "$user" "$attempts" "$ip" "$HOST" "$time"
+    done
 done

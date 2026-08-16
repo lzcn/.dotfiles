@@ -1,38 +1,34 @@
-#!/usr/bin/env bash
-# Filename: active_users.sh
-# Description: Reporting tool to find out active users
+#!/usr/bin/env zsh
+# active-users — report who has been active on this system (from wtmp)
 
-set -euo pipefail
+source "${0:A:h}/lib.sh"
 
-log=/var/log/wtmp
-if [[ -n "${1:-}" ]]; then
-  log=$1
-fi
+log=${1:-/var/log/wtmp}
+[[ -r "$log" ]] || die "log not readable: $log"
+info "scanning $log"
 
 tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 ulog="$tmpdir/ulog"
-users_file="$tmpdir/users"
-user_file="$tmpdir/user"
+
+# last prints a two-line footer ("wtmp begins..."); strip it (portable: BSD
+# head has no negative line counts)
+last -f "$log" | awk 'NR > 2 { print prev } { prev = $0 }' >"$ulog"
 
 printf "%-4s %-10s %-12s %-6s %-8s\n" "Rank" "User" "Start" "Logins" "Hours"
 
-last -f "$log" | head -n -2 >"$ulog"
-cut -d' ' -f1 "$ulog" | sort | uniq >"$users_file"
-
-(
-  while IFS= read -r user; do
-    grep "^$user" "$ulog" >"$user_file"
+while IFS= read -r user; do
+    [[ -n "$user" ]] || continue
+    grep "^$user" "$ulog" >"$tmpdir/user"
 
     minutes=0
     while IFS= read -r t; do
-      s=$(echo "$t" | awk -F: '{ print ($1 * 60) + $2 }')
-      (( minutes += s ))
-    done < <(awk '{ print $NF }' "$user_file" | tr -d ')(')
+        t=${t//[()]/}
+        [[ "$t" == *:* ]] && (( minutes += ${t%%:*} * 60 + ${t##*:} ))
+    done < <(awk '{ print $NF }' "$tmpdir/user")
 
-    firstlog=$(tail -n 1 "$user_file" | awk '{ print $5, $6 }')
-    nlogins=$(wc -l <"$user_file")
-    hours=$(echo "$minutes / 60.0" | bc)
+    firstlog=$(tail -n 1 "$tmpdir/user" | awk '{ print $5, $6 }')
+    nlogins=$(wc -l <"$tmpdir/user" | tr -d ' ')
+    hours=$(printf "%.2f" $(( minutes / 60.0 )))
     printf "%-10s %-12s %-6s %-8s\n" "$user" "$firstlog" "$nlogins" "$hours"
-  done <"$users_file"
-) | sort -nrk 4 | awk '{ printf("%-4s %s\n", NR, $0) }'
+done < <(cut -d' ' -f1 "$ulog" | sort -u) | sort -nr -k4 | awk '{ printf("%-4s %s\n", NR, $0) }'
