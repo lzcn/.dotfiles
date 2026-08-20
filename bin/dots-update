@@ -5,8 +5,12 @@ source "${0:A:h}/lib.sh"
 # ============================================================
 # Configuration
 # ============================================================
-# Which tools to update: brew is on by default (UPDATE_BREW=0 or --no-brew to disable)
-UPDATE_BREW=${UPDATE_BREW:-1}
+# Which tools to update. Default: brew + zinit + git repos.
+# --all enables everything incl. nvim; --light runs git repos only.
+# Each can be disabled individually with --no-<name>.
+UPDATE_BREW=1
+UPDATE_GIT=1
+UPDATE_NVIM=0
 [[ -d "$HOME/.local/share/zinit/zinit.git" ]] && UPDATE_ZINIT=1 || UPDATE_ZINIT=0
 
 # Proxy mode: off (default) | hardcoded | auto
@@ -77,11 +81,17 @@ setup_proxy() {
 }
 
 usage() {
-    echo "Usage: dots-update [--proxy|--auto-proxy|--no-proxy] [--no-brew]"
+    echo "Usage: dots-update [MODE] [FLAGS]"
+    echo "Modes:"
+    echo "  (default)  brew + zinit + git repos"
+    echo "  --all      everything, incl. nvim (LazyVim) plugins"
+    echo "  --light    git repos only"
+    echo "Flags:"
+    echo "  --no-brew --no-zinit --no-git --no-nvim   skip a component"
     echo "  --proxy       enable proxy with a hardcoded port"
     echo "  --auto-proxy  enable proxy with auto-detected port"
     echo "  --no-proxy    disable proxy (default)"
-    echo "  --no-brew     skip the Homebrew update (brew is on by default)"
+    echo "  --help, -h    show this help"
 }
 
 # ============================================================
@@ -127,6 +137,7 @@ update_git_repo() {
     else
         fail "$repo_name: update failed"
     fi
+    return "$ok_code"
 }
 
 # ============================================================
@@ -134,10 +145,17 @@ update_git_repo() {
 # ============================================================
 for arg in "$@"; do
     case "$arg" in
+        --all)        UPDATE_BREW=1; UPDATE_GIT=1; UPDATE_NVIM=1
+                      [[ -d "$HOME/.local/share/zinit/zinit.git" ]] && UPDATE_ZINIT=1 ;;
+        --light)      UPDATE_BREW=0; UPDATE_ZINIT=0; UPDATE_GIT=1; UPDATE_NVIM=0 ;;
+        --nvim)       UPDATE_NVIM=1 ;;
+        --no-brew)    UPDATE_BREW=0 ;;
+        --no-zinit)   UPDATE_ZINIT=0 ;;
+        --no-git)     UPDATE_GIT=0 ;;
+        --no-nvim)    UPDATE_NVIM=0 ;;
         --proxy)      PROXY_MODE="hardcoded" ;;
         --auto-proxy) PROXY_MODE="auto" ;;
         --no-proxy)   PROXY_MODE="off" ;;
-        --no-brew)    UPDATE_BREW=0 ;;
         --help|-h)    usage; exit 0 ;;
         *) echo "Unknown option: $arg"; usage; exit 1 ;;
     esac
@@ -145,12 +163,17 @@ done
 
 banner "DOTS UPDATE"
 setup_proxy
+failures=0
 
 if (( UPDATE_BREW )); then
     if (( ${+commands[brew]} )); then
         section "Homebrew"
-        brew update && brew outdated && brew upgrade --greedy --yes && brew cleanup --prune=all && brew autoremove
-        ok "Homebrew updated"
+        if brew update && brew outdated && brew upgrade --greedy --yes && brew cleanup --prune=all && brew autoremove; then
+            ok "Homebrew updated"
+        else
+            fail "Homebrew update failed"
+            (( failures++ ))
+        fi
     else
         warn "brew not found, skipping Homebrew update"
     fi
@@ -161,18 +184,42 @@ if (( UPDATE_ZINIT )); then
     source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
     autoload -Uz _zinit
     (( ${+_comps} )) && _comps[zinit]=_zinit
-    zinit self-update
-    zinit update --parallel
-    ok "Zinit updated"
+    if zinit self-update && zinit update --parallel; then
+        ok "Zinit updated"
+    else
+        fail "Zinit update failed"
+        (( failures++ ))
+    fi
 fi
 
-section "Git Repos"
-for repo in "${GIT_REPOS[@]}"; do
-    case "$repo" in
-        *:make)  update_git_repo "${repo%:make}" "make" ;;
-        *:full)  update_git_repo "${repo%:full}" "full" ;;
-        *)       update_git_repo "$repo" ;;
-    esac
-done
+if (( UPDATE_GIT )); then
+    section "Git Repos"
+    for repo in "${GIT_REPOS[@]}"; do
+        case "$repo" in
+            *:make)  update_git_repo "${repo%:make}" "make" || (( failures++ )) ;;
+            *:full)  update_git_repo "${repo%:full}" "full" || (( failures++ )) ;;
+            *)       update_git_repo "$repo" || (( failures++ )) ;;
+        esac
+    done
+fi
+
+if (( UPDATE_NVIM )); then
+    section "Neovim"
+    if (( ${+commands[nvim]} )); then
+        if nvim --headless '+Lazy! sync' +qa; then
+            ok "Neovim plugins updated"
+        else
+            fail "Neovim plugin update failed"
+            (( failures++ ))
+        fi
+    else
+        warn "nvim not found, skipping plugin update"
+    fi
+fi
+
+if (( failures > 0 )); then
+    fail "$failures update(s) failed"
+    exit 1
+fi
 
 finish "DOTS UPDATE"

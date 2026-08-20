@@ -8,7 +8,7 @@
 *.swo
 .idea/
 
-# Compiled artifacts
+# Legacy in-tree build artifacts. setup.sh now installs these to ~/.local/bin.
 bin/clrgen
 bin/OllamaTranslator
 

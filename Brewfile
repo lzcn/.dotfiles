@@ -1,0 +1,10 @@
+# Tools directly used by the tracked shell/editor/tmux configuration.
+brew "atuin"
+brew "coreutils"
+brew "direnv"
+brew "git-lfs"
+brew "lazygit"
+brew "neovim"
+brew "shellcheck"
+brew "tmux"
+brew "zoxide"

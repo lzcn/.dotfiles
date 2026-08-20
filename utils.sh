@@ -1,77 +1,106 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-COLOR_BLUE="\033[1;34m"
-COLOR_GRAY="\033[1;38;5;243m"
-COLOR_GREEN="\033[1;32m"
-COLOR_NONE="\033[0m"
-COLOR_PURPLE="\033[0;35m"
-COLOR_RED="\033[0;31m"
-COLOR_YELLOW="\033[0;33m"
+# Colors are disabled automatically when output is piped or NO_COLOR is set.
+if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
+  COLOR_RESET=$'\e[0m'
+  COLOR_BOLD=$'\e[1m'
+  COLOR_DIM=$'\e[2m'
+  COLOR_RED=$'\e[31m'
+  COLOR_GREEN=$'\e[32m'
+  COLOR_YELLOW=$'\e[33m'
+  COLOR_BLUE=$'\e[34m'
+  COLOR_CYAN=$'\e[36m'
+else
+  COLOR_RESET=''
+  COLOR_BOLD=''
+  COLOR_DIM=''
+  COLOR_RED=''
+  COLOR_GREEN=''
+  COLOR_YELLOW=''
+  COLOR_BLUE=''
+  COLOR_CYAN=''
+fi
 
-title() {
-  echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
-  echo -e "${COLOR_GRAY}====================${COLOR_NONE}\n"
+hrule() { printf '%b\n' "${COLOR_CYAN}──────────────────────────────────────────────${COLOR_RESET}"; }
+ok() { printf '%b\n' "${COLOR_GREEN}  ✓ $*${COLOR_RESET}"; }
+warn() { printf '%b\n' "${COLOR_YELLOW}  ⚠ $*${COLOR_RESET}"; }
+fail() { printf '%b\n' "${COLOR_RED}  ✗ $*${COLOR_RESET}"; }
+info() { printf '%b\n' "${COLOR_CYAN}  ● $*${COLOR_RESET}"; }
+die() { fail "$*"; exit 1; }
+
+banner() {
+  printf '\n'
+  hrule
+  printf '%b\n' "${COLOR_BOLD}${COLOR_CYAN}   ◈  ${COLOR_YELLOW}$1${COLOR_RESET}${COLOR_BOLD}${COLOR_CYAN}  ◈${COLOR_RESET}"
+  hrule
+}
+
+section() {
+  printf '\n'
+  printf '%b\n' "${COLOR_BOLD}${COLOR_BLUE}▸ $1${COLOR_RESET}"
+  printf '%b\n' "${COLOR_DIM}──────────────────────────────${COLOR_RESET}"
+}
+
+finish() {
+  printf '\n'
+  hrule
+  printf '%b\n' "${COLOR_BOLD}${COLOR_GREEN}   ✓  $1 COMPLETE   ${COLOR_DIM}(${SECONDS}s)${COLOR_RESET}"
+  hrule
+  printf '\n'
 }
 
 question() {
-  echo -e -n "${COLOR_YELLOW} [?] $1 (y/n): ${COLOR_NONE}"
-  read -n 1 -r REPLY
-  echo
+  if [[ ${ASSUME_YES:-0} == 1 ]]; then
+    REPLY='y'
+    info "$1 (automatic: yes)"
+    return
+  fi
+  printf '%b' "${COLOR_YELLOW}  ? $1 (y/n): ${COLOR_RESET}"
+  REPLY=''
+  read -n 1 -r REPLY || true
+  printf '\n'
 }
 
-warning() {
-  echo -e "${COLOR_YELLOW} [!] $1${COLOR_NONE}"
-}
+backup_path() {
+  local path=$1
+  local backup_file="$path.old"
 
-info() {
-  echo -e "${COLOR_BLUE} [*] $1${COLOR_NONE}"
-}
-
-fail() {
-  echo -e "${COLOR_RED} [x] $1${COLOR_NONE}"
-}
-
-success() {
-  echo -e "${COLOR_GREEN} [+] $1${COLOR_NONE}"
+  [[ -e $path || -L $path ]] || return 0
+  [[ ! -e $backup_file && ! -L $backup_file ]] || backup_file="$path.old.$(date +%Y%m%d%H%M%S)"
+  mv "$path" "$backup_file"
+  info "Backed up $path -> $backup_file"
 }
 
 symlink() {
   local target_file=$1
   local source_file=$2
-  if [ -e "$target_file" ]; then
-    if [ "$(readlink "$target_file")" != "$source_file" ]; then
+
+  mkdir -p "$(dirname "$target_file")"
+  if [[ -e $target_file || -L $target_file ]]; then
+    if [[ -L $target_file && $(readlink "$target_file") == "$source_file" ]]; then
+      info "Found $target_file -> $source_file"
+    else
       question "'$target_file' already exists, do you want to overwrite it?"
       if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        mv "$target_file" "$target_file.old"
-        info "backed up $target_file -> $target_file.old"
-        ln -fs "$source_file" "$target_file"
-        info "$target_file -> $source_file"
+        backup_path "$target_file"
+        ln -s "$source_file" "$target_file"
+        ok "Created $target_file -> $source_file"
       else
-        fail "$target_file -> $source_file"
+        warn "Kept existing $target_file"
       fi
-    else
-      info "Found $target_file -> $source_file"
     fi
   else
-    ln -fs "$source_file" "$target_file"
-    success "Created $target_file -> $source_file"
+    ln -s "$source_file" "$target_file"
+    ok "Created $target_file -> $source_file"
   fi
 }
 
 is_osx() {
-  [ "$(uname)" == "Darwin" ]
+  [[ $(uname) == Darwin ]]
 }
 
 command_exists() {
   local cmd="$1"
   command -v "$cmd" &>/dev/null
-}
-
-check_string_in_file() {
-  grep -qF "$1" "$2" &>/dev/null
-}
-
-append_string_in_file() {
-  echo "$1" >>"$2"
 }

@@ -3,9 +3,20 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# --- Environment ---
+# Machine-local environment belongs in ~/.zshenv. Secrets stay in one private
+# file loaded by ~/.zshenv.
+export LANG="${LANG:-en_US.UTF-8}"
+[[ ${LC_CTYPE:-} != UTF-8 ]] || export LC_CTYPE="${LANG:-en_US.UTF-8}"
+[[ ! -d "$HOME/.opencode/bin" ]] || path=("$HOME/.opencode/bin" $path)
+
 # --- Zinit ---
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-source "${ZINIT_HOME}/zinit.zsh"
+if [[ ! -r "$ZINIT_HOME/zinit.zsh" ]]; then
+  print -u2 -- "zinit is not installed; run ~/.dotfiles/install.sh zinit"
+  return
+fi
+source "$ZINIT_HOME/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
@@ -27,12 +38,6 @@ setopt hist_ignore_dups       # ignore consecutive duplicates
 setopt hist_ignore_space      # ignore commands starting with space
 setopt hist_verify            # show expanded command before executing
 setopt share_history          # share history across sessions
-
-# --- Envs ---
-# Only prepend ~/.local/bin to PATH if not in TMUX
-if [ -z "$TMUX" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
 
 # --- Theme ---
 
@@ -69,14 +74,24 @@ zinit light paulirish/git-open
 # Cache the output of an initialization command to speed up startup
 zinit light mroth/evalcache
 
-# Homebrew init with _evalcache
-[ -n "$TMUX" ] || [ ! -f "$HOMEBREW_PREFIX/bin/brew" ] || _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
+# Homebrew init with _evalcache. A tmux session inherits this from its parent.
+if [[ -z ${TMUX:-} ]]; then
+  if [[ -n ${HOMEBREW_PREFIX:-} && -x "$HOMEBREW_PREFIX/bin/brew" ]]; then
+    _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
+  fi
+fi
 
-# Conda init with _evalcache
-[ ! -f "$CONDA_PREFIX/bin/conda" ] || _evalcache "$CONDA_PREFIX/bin/conda" shell.zsh hook
+# Conda manages CONDA_PREFIX at runtime; CONDA_ROOT is the installation root.
+conda_command=''
+if [[ -n ${CONDA_ROOT:-} && -x "$CONDA_ROOT/bin/conda" ]]; then
+  conda_command="$CONDA_ROOT/bin/conda"
+fi
+[[ -z $conda_command ]] || _evalcache "$conda_command" shell.zsh hook
+unset conda_command
 
-# Mamba init with _evalcache
-[ ! -f "$CONDA_PREFIX/bin/mamba" ] || _evalcache "$CONDA_PREFIX/bin/mamba" shell hook --shell zsh
+if [[ -n ${CONDA_ROOT:-} && -x "$CONDA_ROOT/bin/mamba" ]]; then
+  _evalcache "$CONDA_ROOT/bin/mamba" shell hook --shell zsh
+fi
 
 # Direnv hook for project-local environments
 (( $+commands[direnv] )) && _evalcache direnv hook zsh
@@ -131,6 +146,21 @@ bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
 
 # --- Aliases ---
 
+# Proxy helpers. Override the host and ports in the machine-local ~/.zshenv.
+set-proxy() {
+  local host=${PROXY_HOST:-127.0.0.1}
+  local http_port=${PROXY_HTTP_PORT:-7890}
+  local socks_port=${PROXY_SOCKS_PORT:-$http_port}
+
+  export http_proxy="http://${host}:${http_port}"
+  export https_proxy=$http_proxy
+  export all_proxy="socks5://${host}:${socks_port}"
+}
+
+unset-proxy() {
+  unset http_proxy https_proxy all_proxy
+}
+
 # Rsync aliases
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
@@ -165,5 +195,11 @@ alias cntfile='ls -1 | wc -l'
 # Use nvim or lvim for vim
 (( ! $+commands[nvim] )) || alias vim='nvim'
 
-# Use colored output for ls
-alias ls="ls --color=auto"
+# Use colored output for ls on both GNU and macOS/BSD systems.
+if (( $+commands[gls] )); then
+  alias ls='gls --color=auto'
+elif [[ $OSTYPE == darwin* ]]; then
+  alias ls='ls -G'
+else
+  alias ls='ls --color=auto'
+fi

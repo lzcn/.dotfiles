@@ -3,31 +3,34 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+source "$DOTFILES/utils.sh"
+
 failures=0
 
 check() {
   local name="$1"
   shift
-  echo -n "checking ${name}... "
   if "$@" >/dev/null 2>&1; then
-    echo "OK"
+    ok "$name"
   else
-    echo "FAIL"
+    fail "$name"
+    "$@" || true
     failures=$((failures + 1))
   fi
 }
 
+banner "DOTFILES VALIDATE"
+
 # Shell syntax checks
+section "Shell syntax"
 for f in "$DOTFILES"/{install,setup,utils,validate}.sh "$DOTFILES"/bin/*; do
   case "$f" in
     *.swift) continue ;;
   esac
   # Skip compiled binaries / non-shell files
   [[ -f "$f" ]] || continue
-  local_shebang=$(head -1 "$f")
-  if [[ "$local_shebang" != \#!* ]]; then
-    continue
-  fi
+  LC_ALL=C grep -Iq '^#!' "$f" || continue
+  IFS= read -r local_shebang <"$f"
   if [[ "$local_shebang" == *zsh* ]]; then
     check "$(basename "$f")" zsh -n "$f"
   else
@@ -40,27 +43,35 @@ check "p10k" zsh -n "$DOTFILES/zsh/.p10k.zsh"
 
 # ShellCheck (bash scripts)
 if command -v shellcheck >/dev/null 2>&1; then
+  section "ShellCheck"
   check "shellcheck(install.sh)" shellcheck -x "$DOTFILES/install.sh"
   check "shellcheck(setup.sh)" shellcheck -x "$DOTFILES/setup.sh"
   check "shellcheck(utils.sh)" shellcheck -x "$DOTFILES/utils.sh"
   check "shellcheck(validate.sh)" shellcheck -x "$DOTFILES/validate.sh"
 else
-  echo "shellcheck not installed; skipping (brew install shellcheck)"
+  warn "shellcheck not installed; skipping (brew install shellcheck)"
 fi
 
 # Git config sanity
+section "Git config"
 check "gitconfig parse" git config --file "$DOTFILES/git/.gitconfig" --list
+
+# Brewfile syntax (does not require every package to be installed yet)
+if command -v brew >/dev/null 2>&1; then
+  section "Homebrew bundle"
+  check "Brewfile parse" brew bundle list --file "$DOTFILES/Brewfile"
+fi
 
 # Markdown lint if available
 if command -v markdownlint >/dev/null 2>&1; then
+  section "Markdown"
   check "markdownlint" markdownlint "$DOTFILES/README.md"
 fi
 
+echo
 if [[ $failures -gt 0 ]]; then
-  echo
-  echo "FAILED: ${failures} check(s)."
+  fail "$failures check(s) failed."
   exit 1
 fi
-
-echo
-echo "All checks passed."
+ok "All checks passed."
+finish "VALIDATE"
