@@ -45,10 +45,10 @@ check "p10k" zsh -n "$DOTFILES/zsh/.p10k.zsh"
 # ShellCheck (bash scripts)
 if command -v shellcheck >/dev/null 2>&1; then
   section "ShellCheck"
-  check "shellcheck(install.sh)" shellcheck -x "$DOTFILES/install.sh"
-  check "shellcheck(setup.sh)" shellcheck -x "$DOTFILES/setup.sh"
-  check "shellcheck(utils.sh)" shellcheck -x "$DOTFILES/utils.sh"
-  check "shellcheck(validate.sh)" shellcheck -x "$DOTFILES/validate.sh"
+  check "shellcheck(install.sh)" shellcheck -x -P "$DOTFILES" "$DOTFILES/install.sh"
+  check "shellcheck(setup.sh)" shellcheck -x -P "$DOTFILES" "$DOTFILES/setup.sh"
+  check "shellcheck(utils.sh)" shellcheck -x -P "$DOTFILES" "$DOTFILES/utils.sh"
+  check "shellcheck(validate.sh)" shellcheck -x -P "$DOTFILES" "$DOTFILES/validate.sh"
 else
   warn "shellcheck not installed; skipping (brew install shellcheck)"
 fi
