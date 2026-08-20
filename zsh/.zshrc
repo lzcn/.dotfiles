@@ -12,6 +12,9 @@ autoload -Uz _zinit
 # --- Opts ---
 setopt interactive_comments
 
+# Don't highlight pasted text (bracketed paste)
+zle_highlight+=(paste:none)
+
 # --- History configuration ---
 # Follows Oh My Zsh lib/history.zsh
 [ -z "$HISTFILE" ] && HISTFILE="$HOME/.zsh_history"
