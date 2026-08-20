@@ -3,6 +3,7 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# shellcheck source=utils.sh
 source "$DOTFILES/utils.sh"
 
 activate_homebrew() {
