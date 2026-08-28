@@ -1,36 +1,39 @@
 # --- Powerlevel10k instant prompt ---
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # --- Environment ---
-# Machine-local environment belongs in ~/.zshenv. Secrets stay in one private
-# file loaded by ~/.zshenv.
+
 export LANG="${LANG:-en_US.UTF-8}"
 [[ ${LC_CTYPE:-} != UTF-8 ]] || export LC_CTYPE="${LANG:-en_US.UTF-8}"
-[[ ! -d "$HOME/.opencode/bin" ]] || path=("$HOME/.opencode/bin" $path)
+[[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
 
 # --- Zinit ---
+
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 if [[ ! -r "$ZINIT_HOME/zinit.zsh" ]]; then
   print -u2 -- "zinit is not installed; run ~/.dotfiles/install.sh zinit"
   return
 fi
+
 source "$ZINIT_HOME/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# --- Opts ---
+# --- Options ---
+
 setopt interactive_comments
 
-# Don't highlight pasted text (bracketed paste)
+# Don't highlight pasted text.
 zle_highlight+=(paste:none)
 
-# --- History configuration ---
-# Follows Oh My Zsh lib/history.zsh
-[ -z "$HISTFILE" ] && HISTFILE="$HOME/.zsh_history"
-[ "$HISTSIZE" -lt 50000 ] && HISTSIZE=50000
-[ "$SAVEHIST" -lt 10000 ] && SAVEHIST=10000
+# --- History ---
+
+[[ -z "$HISTFILE" ]] && HISTFILE="$HOME/.zsh_history"
+(( HISTSIZE < 50000 )) && HISTSIZE=50000
+(( SAVEHIST < 10000 )) && SAVEHIST=10000
 
 setopt extended_history       # record timestamps in history
 setopt hist_expire_dups_first # expire duplicate entries first
@@ -44,7 +47,7 @@ setopt share_history          # share history across sessions
 # Powerlevel10k
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # --- Plugins ---
 
@@ -74,23 +77,24 @@ zinit light paulirish/git-open
 # Cache the output of an initialization command to speed up startup
 zinit light mroth/evalcache
 
-# Homebrew init with _evalcache. A tmux session inherits this from its parent.
-if [[ -z ${TMUX:-} ]]; then
-  if [[ -n ${HOMEBREW_PREFIX:-} && -x "$HOMEBREW_PREFIX/bin/brew" ]]; then
-    _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
-  fi
+# --- Homebrew ---
+
+# tmux sessions normally inherit this from their parent shell.
+if [[ -z ${TMUX:-} && -n ${HOMEBREW_PREFIX:-} &&
+      -x "$HOMEBREW_PREFIX/bin/brew" ]]; then
+  _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
 fi
+
+# --- Conda ---
 
 # Conda manages CONDA_PREFIX at runtime; CONDA_ROOT is the installation root.
-conda_command=''
 if [[ -n ${CONDA_ROOT:-} && -x "$CONDA_ROOT/bin/conda" ]]; then
-  conda_command="$CONDA_ROOT/bin/conda"
+  _evalcache "$CONDA_ROOT/bin/conda" shell.zsh hook
 fi
-[[ -z $conda_command ]] || _evalcache "$conda_command" shell.zsh hook
-unset conda_command
 
-if [[ -n ${CONDA_ROOT:-} && -x "$CONDA_ROOT/bin/mamba" ]]; then
-  _evalcache "$CONDA_ROOT/bin/mamba" shell hook --shell zsh
+if [[ -n ${CONDA_DEFAULT_START_ENV:-} &&
+      ${CONDA_DEFAULT_ENV:-} != "$CONDA_DEFAULT_START_ENV" ]]; then
+  conda activate "$CONDA_DEFAULT_START_ENV"
 fi
 
 # Direnv hook for project-local environments
@@ -122,14 +126,17 @@ zinit snippet PZT::modules/utility     # general aliases and utility functions
 zinit snippet PZT::modules/completion  # Prezto completion setup and styles
 
 # --- Atuin ---
+
 # Atuin owns Ctrl-R history search.
 (( $+commands[atuin] )) && _evalcache atuin init zsh
 
 # --- Completion ---
+
 # zinit ice wait lucid
 # zinit light esc/conda-zsh-completion
 
 # --- Scripts ---
+
 # OMZP::autojump / mfaerevaag/wd were previous directory-jump helpers.
 # Keep zoxide as the primary replacement.
 # zinit snippet OMZP::autojump
@@ -138,7 +145,8 @@ zinit snippet PZT::modules/completion  # Prezto completion setup and styles
 #   atpull'!git reset --hard'
 # zinit light mfaerevaag/wd
 
-# --- Key-bindings ---
+# --- Key bindings ---
+
 bindkey -M viins '^[p' up-line-or-search   # Alt+p for searching backward in history
 bindkey -M viins '^[n' down-line-or-search # Alt+n for searching forward in history
 bindkey -M viins '^[f' forward-word        # Alt+f for moving forward by word
@@ -162,10 +170,10 @@ unset-proxy() {
 }
 
 # Rsync aliases
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-synchronize="rsync -avzu --delete --progress -h"
+alias rsync-copy='rsync -avz --progress -h'
+alias rsync-move='rsync -avz --progress -h --remove-source-files'
+alias rsync-update='rsync -avzu --progress -h'
+alias rsync-synchronize='rsync -avzu --delete --progress -h'
 
 # Tmux aliases
 alias ta='tmux attach -t'
@@ -193,7 +201,7 @@ alias lg='lazygit'
 alias cntfile='ls -1 | wc -l'
 
 # Use nvim or lvim for vim
-(( ! $+commands[nvim] )) || alias vim='nvim'
+(( $+commands[nvim] )) && alias vim='nvim'
 
 # Use colored output for ls on both GNU and macOS/BSD systems.
 if (( $+commands[gls] )); then
