@@ -1,5 +1,6 @@
 # Tools directly used by the tracked shell/editor/tmux configuration.
 brew "atuin"
+brew "beautysh"
 brew "coreutils"
 brew "direnv"
 brew "git-lfs"

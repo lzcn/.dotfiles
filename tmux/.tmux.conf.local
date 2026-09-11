@@ -397,6 +397,16 @@ bind C-s set-window-option synchronize-panes
 bind | split-window -h
 bind - split-window -v
 
+# -- Neovim in tmux ------------------------------------------------------------
+
+# fast Esc; focus events let Neovim autoread when switching panes
+set -sg escape-time 1
+set -g focus-events on
+
+# pass through undercurl and cursor shape from Neovim
+set -sa terminal-overrides ',*:Smulx=\E[4::%p1%dm'
+set -sa terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
+
 # -- tpm -----------------------------------------------------------------------
 
 # while I don't use tpm myself, many people requested official support so here

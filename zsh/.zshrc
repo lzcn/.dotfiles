@@ -56,8 +56,10 @@ zinit ice wait'0a' lucid
 zinit light hlissner/zsh-autopair
 
 # Autosuggestions: suggest commands from history.
+# Loads after the completion system (see the Prezto snippets below) so that
+# Tab clears the suggestion instead of appending its remainder.
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-zinit ice wait'0b' lucid
+zinit ice wait'0c' lucid
 zinit light zsh-users/zsh-autosuggestions
 
 # Fast syntax highlighting: load after other editor widgets.
@@ -116,18 +118,19 @@ fi
 # Disabled for now; history search (Ctrl-R, up-arrow) stays with Atuin only.
 # (( $+commands[fzf] )) && source <(fzf --zsh)
 
-# Completion is initialized once by fast-syntax-highlighting after this block.
 # Keep the plugin set small; project-specific tools can add their own completions.
 
 # Prezto helper: shared functions used by utility and completion.
-zinit ice lucid
+zinit ice wait'0a' lucid
 zinit snippet PZT::modules/helper
 
 # Prezto utility: safe correction/globbing defaults and shell helpers.
+zinit ice wait'0a' lucid
 zinit snippet PZT::modules/utility
 
 # Prezto completion: menu colors, grouping, fuzzy matching, and context rules.
-# This is the only completion initializer.
+# This is the only completion initializer; turbo keeps compinit off startup.
+zinit ice wait'0b' lucid
 zinit snippet PZT::modules/completion
 
 # Shell helpers and completion styles.

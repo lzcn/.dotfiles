@@ -62,10 +62,14 @@ Set `CONDA_DEFAULT_START_ENV` in `~/.zshenv` to activate an environment on start
 Use `proxy on`, `proxy off`, or `proxy` to toggle or inspect the shell proxy;
 set `PROXY_HOST`, `PROXY_HTTP_PORT`, and `PROXY_SOCKS_PORT` in `~/.zshenv`.
 
-Powerlevel10k and Tmux use Dracula colors with transparent backgrounds
-and a lean layout: cyan paths, orange Git, cyan environments, and a green `❯`.
-P10k preserves full prompts in scrollback and shows failed exit codes,
-background job counts, active Python environments, and durations over 3 seconds.
+Key bindings: Alt+p / Alt+n walk history, Alt+f / Alt+b move by word; Ctrl-R
+searches history with Atuin. P10k preserves full prompts in scrollback and
+shows failed exit codes, background job counts, active Python environments,
+and durations over 3 seconds. Zsh scripts are formatted with `beautysh`
+(`<leader>cf` in Neovim).
+
+For CJK text on macOS, run `brew install --cask font-sarasa-gothic` and select
+the "Sarasa Term SC Nerd" font in the terminal app.
 
 ### Neovim
 
@@ -85,6 +89,18 @@ make tmux
 
 Installs Oh My Tmux if needed. Customize
 [`tmux/.tmux.conf.local`](tmux/.tmux.conf.local), linked to `~/.tmux.conf.local`.
+
+Prefix is `C-a`; `C-a C-a` sends a literal `C-a`.
+
+| Key | Action |
+| --- | --- |
+| `prefix \|` / `prefix -` | Split pane right / below |
+| `prefix C-s` | Toggle synchronize-panes |
+| `prefix m` | Toggle mouse mode |
+| `prefix e` / `prefix r` | Edit / reload this config |
+
+Escape delay, focus events, true color, undercurl, and cursor shapes are
+configured, so Neovim behaves the same inside tmux as outside.
 
 ### Git
 

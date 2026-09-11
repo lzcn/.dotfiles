@@ -116,6 +116,7 @@ fi
 
 if (( update_nvim )); then
     if (( $+commands[nvim] )); then
+        # Mason v2 refreshes its registry automatically on startup.
         run_update Neovim nvim --headless '+Lazy! sync' +qa
     else
         warn "nvim not found, skipping"
