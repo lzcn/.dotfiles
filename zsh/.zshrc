@@ -44,38 +44,36 @@ setopt share_history          # share history across sessions
 
 # --- Theme ---
 
-# Powerlevel10k
+# Powerlevel10k: fast, customizable prompt.
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # --- Plugins ---
 
-# Auto-close matching delimiters in the shell editor
-zinit ice wait lucid
+# Autopair: close matching quotes and brackets.
+zinit ice wait'0a' lucid
 zinit light hlissner/zsh-autopair
 
-# Syntax-highlighting for Zsh
-zinit ice wait lucid atinit"zicompinit; zicdreplay"
-zinit light zdharma-continuum/fast-syntax-highlighting
-
-# Fish-like autosuggestions for Zsh
-zinit ice wait lucid atload'_zsh_autosuggest_start'
+# Autosuggestions: suggest commands from history.
+typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+zinit ice wait'0b' lucid
 zinit light zsh-users/zsh-autosuggestions
 
-# Additional completion definitions for Zsh
-zinit ice wait lucid blockf atpull'zinit creinstall -q .'
-zinit light zsh-users/zsh-completions
+# Fast syntax highlighting: load after other editor widgets.
+zinit ice wait'0c' lucid atload'_zsh_autosuggest_start'
+zinit light zdharma-continuum/fast-syntax-highlighting
 
-# Multi-word, syntax-highlighted history searching for Zsh
-# zinit ice wait lucid
-# zinit light zdharma-continuum/history-search-multi-word
+# Zsh completions: command definitions and completion initialization.
+# Prezto's completion module supplies menu colors, grouping, fuzzy matching,
+# and context rules; it is loaded once below.
 
-# Open the GitHub page or website for a repository
+# Git-open: open the current repository in a browser.
+# Usage: git open
 zinit ice wait lucid
 zinit light paulirish/git-open
 
-# Cache the output of an initialization command to speed up startup
+# Evalcache: cache tool initialization to speed up startup.
 zinit light mroth/evalcache
 
 # --- Homebrew ---
@@ -88,65 +86,62 @@ fi
 
 # --- Conda ---
 
-# Conda manages CONDA_PREFIX at runtime; CONDA_ROOT is the installation root.
-if [[ -n ${CONDA_ROOT:-} && -x "$CONDA_ROOT/bin/conda" ]]; then
-  _evalcache "$CONDA_ROOT/bin/conda" shell.zsh hook
+# Load Conda without automatically activating base.
+if [[ -n ${CONDA_ROOT:-} && -r "$CONDA_ROOT/etc/profile.d/conda.sh" ]]; then
+  source "$CONDA_ROOT/etc/profile.d/conda.sh"
+elif [[ -n ${CONDA_ROOT:-} && -x "$CONDA_ROOT/bin/conda" ]]; then
+  _evalcache CONDA_AUTO_ACTIVATE_BASE=false "$CONDA_ROOT/bin/conda" shell.zsh hook
 fi
 
-if [[ -n ${CONDA_DEFAULT_START_ENV:-} &&
+if (( $+functions[conda] )) && [[ -n ${CONDA_DEFAULT_START_ENV:-} &&
       ${CONDA_DEFAULT_ENV:-} != "$CONDA_DEFAULT_START_ENV" ]]; then
   conda activate "$CONDA_DEFAULT_START_ENV"
 fi
 
-# Direnv hook for project-local environments
+# Keep the active Conda environment first in PATH.
+if [[ -n ${CONDA_PREFIX:-} && ${CONDA_SHLVL:-0} -gt 0 &&
+      -d "$CONDA_PREFIX/bin" ]]; then
+  path=("$CONDA_PREFIX/bin" ${path:#"$CONDA_PREFIX/bin"})
+fi
+
+# Direnv: load project-local environment variables.
+# Usage: edit .envrc, then run direnv allow.
 (( $+commands[direnv] )) && _evalcache direnv hook zsh
 
-# Zoxide for smarter directory jumping
+# Zoxide: jump to frequently used directories.
+# Usage: z <directory name>
 (( $+commands[zoxide] )) && _evalcache zoxide init zsh
 
-# Source fnm
-# fnm is not used anymore; uncomment to re-enable.
-# if [ -z "$TMUX" ]; then
-#   [ -d "$HOME/.fnm" ] && export PATH="$HOME/.fnm:$PATH"
-#   (( $+commands[fnm] )) && _evalcache fnm env --use-on-cd
-# fi
+# FZF: Ctrl-T picks files, Alt-C picks directories.
+# Disabled for now; history search (Ctrl-R, up-arrow) stays with Atuin only.
+# (( $+commands[fzf] )) && source <(fzf --zsh)
 
-# Oh My Zsh
-# zinit snippet OMZL::completion.zsh  # completion defaults
-# zinit snippet OMZL::spectrum.zsh    # color preview helpers: spectrum_ls / spectrum_bls
+# Completion is initialized once by fast-syntax-highlighting after this block.
+# Keep the plugin set small; project-specific tools can add their own completions.
 
-# zinit snippet OMZP::colorize        # colorized cat/less via ccat / cless
+# Prezto helper: shared functions used by utility and completion.
+zinit ice lucid
+zinit snippet PZT::modules/helper
+
+# Prezto utility: safe correction/globbing defaults and shell helpers.
+zinit snippet PZT::modules/utility
+
+# Prezto completion: menu colors, grouping, fuzzy matching, and context rules.
+# This is the only completion initializer.
+zinit snippet PZT::modules/completion
+
+# Shell helpers and completion styles.
+# Command-not-found: suggest a package when a command is missing.
 zinit ice wait lucid
-zinit snippet OMZP::command-not-found # missing-command suggestions
-# zinit snippet OMZP::dotenv          # replaced by direnv hook
+zinit snippet OMZP::command-not-found
+
+# Extract: unpack common archive formats with `extract <file>`.
 zinit ice wait lucid
-zinit snippet OMZP::extract           # extract archives via x / extract
+zinit snippet OMZP::extract
 
-# Plugins from Prezto (order matters)
-zinit snippet PZT::modules/helper      # helper functions used by other Prezto modules
-zinit snippet PZT::modules/gnu-utility # wrap GNU tools on non-GNU systems
-zinit snippet PZT::modules/utility     # general aliases and utility functions
-zinit snippet PZT::modules/completion  # Prezto completion setup and styles
-
-# --- Atuin ---
-
-# Atuin owns Ctrl-R history search.
+# Atuin: searchable shell history.
+# Usage: Ctrl-R to search.
 (( $+commands[atuin] )) && _evalcache atuin init zsh
-
-# --- Completion ---
-
-# zinit ice wait lucid
-# zinit light esc/conda-zsh-completion
-
-# --- Scripts ---
-
-# OMZP::autojump / mfaerevaag/wd were previous directory-jump helpers.
-# Keep zoxide as the primary replacement.
-# zinit snippet OMZP::autojump
-# zinit ice wait lucid as"program" pick"wd.sh" mv"_wd.sh -> _wd" \
-#   atload="wd() { . wd.sh }" \
-#   atpull'!git reset --hard'
-# zinit light mfaerevaag/wd
 
 # --- Key bindings ---
 
@@ -157,19 +152,21 @@ bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
 
 # --- Aliases ---
 
-# Proxy helpers. Override the host and ports in the machine-local ~/.zshenv.
-set-proxy() {
-  local host=${PROXY_HOST:-127.0.0.1}
-  local http_port=${PROXY_HTTP_PORT:-7890}
-  local socks_port=${PROXY_SOCKS_PORT:-$http_port}
-
-  export http_proxy="http://${host}:${http_port}"
-  export https_proxy=$http_proxy
-  export all_proxy="socks5://${host}:${socks_port}"
-}
-
-unset-proxy() {
-  unset http_proxy https_proxy all_proxy
+# Proxy: toggle the current shell's proxy; endpoints are set in ~/.zshenv.
+# Usage: proxy on | off | status
+proxy() {
+  case "${1:-status}" in
+    on)
+      local host=${PROXY_HOST:-127.0.0.1}
+      export http_proxy="http://$host:${PROXY_HTTP_PORT:-7890}"
+      export https_proxy=$http_proxy
+      export all_proxy="socks5://$host:${PROXY_SOCKS_PORT:-${PROXY_HTTP_PORT:-7890}}"
+      export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy ALL_PROXY=$all_proxy
+      ;;
+    off) unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY ;;
+    status) [[ -n ${http_proxy:-}${https_proxy:-}${all_proxy:-}${HTTP_PROXY:-}${HTTPS_PROXY:-}${ALL_PROXY:-} ]] && print 'Proxy: on' || print 'Proxy: off' ;;
+    *) print -u2 'Usage: proxy [on|off|status]'; return 2 ;;
+  esac
 }
 
 # Rsync aliases
@@ -203,10 +200,10 @@ alias lg='lazygit'
 # Count number of files in current directory
 alias cntfile='ls -1 | wc -l'
 
-# Use nvim or lvim for vim
+# Use Neovim for vim.
 (( $+commands[nvim] )) && alias vim='nvim'
 
-# Use colored output for ls on both GNU and macOS/BSD systems.
+# Enable colored ls output.
 if (( $+commands[gls] )); then
   alias ls='gls --color=auto'
 elif [[ $OSTYPE == darwin* ]]; then
@@ -214,32 +211,3 @@ elif [[ $OSTYPE == darwin* ]]; then
 else
   alias ls='ls --color=auto'
 fi
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/zhi/miniforge/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/zhi/miniforge/etc/profile.d/conda.sh" ]; then
-        . "/home/zhi/miniforge/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/zhi/miniforge/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-
-# >>> mamba initialize >>>
-# !! Contents within this block are managed by 'mamba shell init' !!
-export MAMBA_EXE='/home/zhi/miniforge/bin/mamba';
-export MAMBA_ROOT_PREFIX='/home/zhi/miniforge';
-__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__mamba_setup"
-else
-    alias mamba="$MAMBA_EXE"  # Fallback on help from mamba activate
-fi
-unset __mamba_setup
-# <<< mamba initialize <<<

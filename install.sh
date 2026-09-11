@@ -1,80 +1,94 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# shellcheck source=utils.sh
-source "$DOTFILES/utils.sh"
+# This file can run on its own to bootstrap a machine, before cloning the repo.
+info() { printf '  · %s\n' "$*"; }
+die() { printf '  ✗ %s\n' "$*" >&2; exit 1; }
+command_exists() { command -v "$1" >/dev/null 2>&1; }
 
 activate_homebrew() {
-  local brew_bin=''
-
-  if command_exists brew; then
-    brew_bin=$(command -v brew)
-  elif [[ -x /opt/homebrew/bin/brew ]]; then
-    brew_bin=/opt/homebrew/bin/brew
-  elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    brew_bin=/home/linuxbrew/.linuxbrew/bin/brew
-  elif [[ -x $HOME/.linuxbrew/bin/brew ]]; then
-    brew_bin=$HOME/.linuxbrew/bin/brew
-  elif [[ -x /usr/local/bin/brew ]]; then
-    brew_bin=/usr/local/bin/brew
-  fi
-
-  [[ -n $brew_bin ]] || return 1
-  eval "$("$brew_bin" shellenv)"
+  local brew_bin
+  for brew_bin in "${HOMEBREW_PREFIX:-}/bin/brew" /opt/homebrew/bin/brew \
+    /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew" /usr/local/bin/brew; do
+    if [[ -x $brew_bin ]]; then
+      eval "$("$brew_bin" shellenv)"
+      return
+    fi
+  done
+  if command_exists brew; then eval "$(brew shellenv)"; else return 1; fi
 }
 
 install_homebrew() {
-  section "Installing Homebrew"
   if activate_homebrew; then
-    ok "Homebrew already installed"
+    info "Homebrew ready"
   else
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    activate_homebrew || die "Homebrew installed but could not be activated"
-    ok "Homebrew installed"
+    local installer
+    installer=$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
+    bash -c "$installer"
+    activate_homebrew || die "Homebrew could not be activated"
   fi
 }
 
+bootstrap() {
+  local destination=${DOTFILES_DIR:-$HOME/.dotfiles}
+  printf '\nDotfiles · bootstrap\n\n'
+  case $(uname -s) in
+    Linux)
+      command_exists apt-get || die "Bootstrap supports Ubuntu and macOS"
+      local elevate=()
+      if [[ $EUID != 0 ]]; then elevate=(sudo); fi
+      info "Preparing Ubuntu prerequisites"
+      "${elevate[@]}" apt-get update
+      "${elevate[@]}" apt-get install -y build-essential procps curl file git make zsh
+      ;;
+    Darwin) info "Preparing macOS (Homebrew may request Command Line Tools or sudo)" ;;
+    *) die "Bootstrap supports Ubuntu and macOS" ;;
+  esac
+  install_homebrew
+  if [[ ! -e $destination ]]; then
+    git clone https://github.com/lzcn/.dotfiles.git "$destination"
+  elif [[ ! -d $destination/.git || ! -f $destination/Makefile ]]; then
+    die "$destination exists but is not a dotfiles checkout"
+  fi
+  make -C "$destination" all
+  info "Open a new Zsh session to use the configuration"
+}
+
+if [[ ${1:-bootstrap} == bootstrap ]]; then
+  bootstrap
+  exit
+fi
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bin/lib.sh
+source "$DOTFILES/bin/lib.sh"
+trap 'fail "Installation stopped at line $LINENO; fix the error above and rerun make all"' ERR
+
 install_packages() {
-  section "Installing command-line tools"
+  section "Homebrew packages"
   activate_homebrew || die "Homebrew is required before packages"
-  brew bundle --file "$DOTFILES/Brewfile"
-  ok "Homebrew packages installed"
+  brew bundle --no-upgrade --file "$DOTFILES/Brewfile"
+  ok "Packages ready"
 }
 
 install_zinit() {
-  section "Installing Zinit"
-  if [[ ! -f "$HOME/.local/share/zinit/zinit.git/zinit.zsh" ]]; then
-    bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
-  else
-    ok "Zinit already installed."
+  section "Zinit"
+  local zinit_home="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+  if [[ ! -f $zinit_home/zinit.zsh ]]; then
+    mkdir -p "$(dirname "$zinit_home")"
+    git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$zinit_home"
   fi
+  ok "Zinit ready"
 }
 
-usage() {
-  echo "Usage: $0 {homebrew|packages|zinit|all}"
-  exit 1
-}
-
-banner "DOTFILES INSTALL"
-
-if [[ $# -eq 0 ]]; then
-  usage
-fi
-
+banner "Dotfiles · install"
 for target in "$@"; do
   case "$target" in
     homebrew) install_homebrew ;;
     packages) install_packages ;;
     zinit) install_zinit ;;
-    all)
-      install_homebrew
-      install_packages
-      install_zinit
-      ;;
-    *) usage ;;
+    all) install_homebrew; install_packages; install_zinit ;;
+    *) die "Usage: $0 [bootstrap|homebrew|packages|zinit|all]" ;;
   esac
 done
-
-finish "INSTALL"
+finish "Installation complete"

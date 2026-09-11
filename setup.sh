@@ -3,8 +3,48 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# shellcheck source=utils.sh
-source "$DOTFILES/utils.sh"
+# shellcheck source=bin/lib.sh
+source "$DOTFILES/bin/lib.sh"
+trap 'fail "Setup stopped at line $LINENO; fix the error above and rerun make setup"' ERR
+
+# A fresh installation may not have loaded .zshenv yet.
+for brew_prefix in "${HOMEBREW_PREFIX:-}" /opt/homebrew /home/linuxbrew/.linuxbrew "$HOME/.linuxbrew" /usr/local; do
+  if [[ -n $brew_prefix && -x $brew_prefix/bin/brew ]]; then
+    eval "$("$brew_prefix/bin/brew" shellenv)"
+    break
+  fi
+done
+unset brew_prefix
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+question() {
+  REPLY=y
+  if [[ ${ASSUME_YES:-0} != 1 ]]; then
+    read -r -p "$1 [y/N] " REPLY || REPLY=n
+  fi
+}
+
+backup_path() {
+  local backup="$1.old"
+  while [[ -e $backup || -L $backup ]]; do backup="$backup.old"; done
+  mv "$1" "$backup"
+  info "Backed up $1 -> $backup"
+}
+
+symlink() {
+  local target=$1 source=$2
+  mkdir -p "$(dirname "$target")"
+  if [[ -L $target && $(readlink "$target") == "$source" ]]; then
+    return 0
+  fi
+  if [[ -e $target || -L $target ]]; then
+    question "Back up '$target' and replace it with a symlink?"
+    [[ $REPLY =~ ^[Yy]$ ]] || { info "Kept $target"; return 0; }
+    backup_path "$target"
+  fi
+  ln -s "$source" "$target"
+  info "Linked $target -> $source"
+}
 
 ASSUME_YES=${ASSUME_YES:-0}
 
@@ -15,7 +55,7 @@ ensure_private_file() {
     info "Found $path"
   else
     install -m 600 /dev/null "$path"
-    ok "Created $path"
+    info "Created $path"
   fi
 }
 
@@ -98,11 +138,11 @@ setup_zshenv() {
 
   chmod 600 "$tmp"
   mv -f "$tmp" "$zshenv"
-  ok "Updated $zshenv"
+  info "Updated $zshenv"
 }
 
 setup_atuin() {
-  section "Configuring Atuin"
+  section "Atuin"
   if command_exists atuin; then
     symlink "$HOME/.config/atuin/config.toml" "$DOTFILES/atuin/config.toml"
   else
@@ -111,21 +151,21 @@ setup_atuin() {
 }
 
 setup_git() {
-  section "Configuring Git"
+  section "Git"
   symlink ~/.gitconfig "$DOTFILES/git/.gitconfig"
-  command_exists git-lfs && git lfs install --skip-repo
+  if command_exists git-lfs; then git lfs install --skip-repo; fi
 }
 
 setup_tmux() {
-  section "Configuring tmux"
+  section "tmux"
   if [[ ! -d $HOME/.tmux/.git ]]; then
     if [[ -e $HOME/.tmux ]]; then
       question "'$HOME/.tmux' exists but is not Oh My Tmux; back it up?"
-      [[ $REPLY =~ ^[Yy]$ ]] || { warn "Skipped tmux"; return; }
+      [[ $REPLY =~ ^[Yy]$ ]] || { info "Skipped tmux"; return; }
       backup_path "$HOME/.tmux"
     fi
     git clone --depth 1 https://github.com/gpakosz/.tmux.git "$HOME/.tmux"
-    ok "Installed Oh My Tmux"
+    info "Installed Oh My Tmux"
   else
     info "Found Oh My Tmux"
   fi
@@ -134,13 +174,19 @@ setup_tmux() {
 }
 
 setup_swift() {
-  section "Configuring Swift"
-  if is_osx && command_exists swift; then
+  section "Swift"
+  local swift_file filename output
+  if [[ $(uname) == Darwin ]] && command_exists swiftc; then
     mkdir -p "$HOME/.local/bin"
     for swift_file in "$DOTFILES/swift"/*.swift; do
       filename=$(basename "$swift_file" .swift)
-      swiftc "$swift_file" -o "$HOME/.local/bin/$filename"
-      ok "Installed $filename -> $HOME/.local/bin/$filename"
+      output="$HOME/.local/bin/$filename"
+      if [[ ! -x $output || $swift_file -nt $output ]]; then
+        swiftc "$swift_file" -o "$output"
+        info "Built $output"
+      else
+        info "Up to date: $filename"
+      fi
     done
   else
     info "Swift setup requires macOS and Swift compiler"
@@ -148,7 +194,7 @@ setup_swift() {
 }
 
 setup_zsh() {
-  section "Configuring Zsh"
+  section "Zsh"
   mkdir -p "$HOME/.config/zsh"
   ensure_private_file "$HOME/.config/zsh/secrets.zsh"
   setup_zshenv
@@ -157,7 +203,7 @@ setup_zsh() {
 }
 
 setup_nvim() {
-  section "Configuring Neovim"
+  section "Neovim"
   symlink "$HOME/.config/nvim" "$DOTFILES/nvim"
 }
 
@@ -166,7 +212,7 @@ usage() {
   exit 1
 }
 
-banner "DOTFILES SETUP"
+banner "Dotfiles · setup"
 
 targets=()
 for arg in "$@"; do
@@ -201,4 +247,4 @@ for target in "$@"; do
   esac
 done
 
-finish "SETUP"
+finish "Configuration complete"

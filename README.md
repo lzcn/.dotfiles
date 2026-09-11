@@ -4,67 +4,125 @@ Dotfiles for macOS and Ubuntu, managed with GNU Make.
 
 ## Install
 
+On a fresh macOS or Ubuntu machine (requires Bash and curl):
+
 ```bash
-git clone https://github.com/lzcn/.dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/lzcn/.dotfiles/master/install.sh)" -- bootstrap
+```
+
+Bootstrap installs prerequisites and Homebrew, clones into `~/.dotfiles`, and
+runs `make all`. System installers may request sudo or Command Line Tools.
+If curl is missing on Ubuntu, install it with `sudo apt-get update && sudo apt-get install -y curl`.
+
+For an existing checkout:
+
+```bash
 make all
 ```
 
-`make all` installs, configures, and validates everything. It is safe to rerun.
+This installs [`Brewfile`](Brewfile) dependencies, configures components, and
+checks the result. Existing configuration is backed up; reruns are supported.
+Open a new Zsh session afterward. Conda environments and API keys are machine-local
+and are not installed automatically.
 
-On a fresh Ubuntu installation, install the bootstrap dependencies first:
+## Update
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y build-essential procps curl file git make zsh
+dots-update
+# Or, from ~/.dotfiles:
+make update
 ```
 
-## Commands
+Updates dotfiles, installed Homebrew packages/apps, Zinit, and Neovim plugins.
+Run `make install` or `make all` to install new Brewfile dependencies.
+Updates do not run setup or compile Swift.
+Use `--no-nvim`, `--no-brew`, `--no-zinit`, or `--no-git` to skip a component.
+The current proxy is inherited. Failed components are summarized at the end.
+Zinit updates Git plugins by default; `dots-update --snippets` also refreshes
+the snippets declared in `.zshrc`, excluding old unused snippets.
 
-| Command         | Purpose                                      |
-| --------------- | -------------------------------------------- |
-| `make all`      | Install, configure, and validate everything  |
-| `make install`  | Install Homebrew packages and Zinit          |
-| `make setup`    | Apply configuration and symlinks             |
-| `make update`   | Pull changes and reapply configuration       |
-| `make validate` | Run syntax, ShellCheck, Git, and Brew checks |
+## Components
 
-Dependencies are declared in [`Brewfile`](Brewfile). Oh My Tmux is installed automatically.
+Run the setup commands below from `~/.dotfiles`.
 
-## Zsh configuration
+### Zsh
 
-| File                        | Purpose                                       |
-| --------------------------- | --------------------------------------------- |
-| `zsh/.zshrc`                | Plugins, options, aliases, and keybindings    |
-| `~/.zshenv`                 | Machine-local PATH, tool roots, and overrides |
-| `~/.config/zsh/secrets.zsh` | API keys, tokens, and passwords               |
-
-Setup manages `.zshrc`, creates `secrets.zsh` when missing, and updates a marked
-block in the user's `~/.zshenv`. That block loads `secrets.zsh` and configures
-PATH and tool roots. Content outside it is left untouched. Both local files are
-private, untracked, and use mode `600`.
-
-Example `~/.zshenv`:
-
-```zsh
-export PROXY_HTTP_PORT=7897
-export PROXY_SOCKS_PORT=7897
-
-if [[ -o interactive ]]; then
-  alias work='cd ~/work'
-fi
+```bash
+make zsh
 ```
 
-Example `~/.config/zsh/secrets.zsh`:
+- [`zsh/.zshrc`](zsh/.zshrc): Zinit plugins, aliases, and keybindings.
+- [`zsh/.p10k.zsh`](zsh/.p10k.zsh): Powerlevel10k prompt.
+- `~/.zshenv`: machine-local paths and overrides; edit outside the managed block.
+- `~/.config/zsh/secrets.zsh`: API keys and tokens; private and untracked.
 
-```zsh
-export OPENAI_API_KEY="..."
+Setup detects Homebrew and Conda locations. For custom paths, set
+`DOTFILES_HOMEBREW_PREFIX` or `DOTFILES_CONDA_ROOT` when running setup.
+Set `CONDA_DEFAULT_START_ENV` in `~/.zshenv` to activate an environment on startup.
+Use `proxy on`, `proxy off`, or `proxy` to toggle or inspect the shell proxy;
+set `PROXY_HOST`, `PROXY_HTTP_PORT`, and `PROXY_SOCKS_PORT` in `~/.zshenv`.
+
+Powerlevel10k and Tmux use Dracula colors with transparent backgrounds
+and a lean layout: cyan paths, orange Git, cyan environments, and a green `❯`.
+P10k preserves full prompts in scrollback and shows failed exit codes,
+background job counts, active Python environments, and durations over 3 seconds.
+
+### Neovim
+
+```bash
+make nvim
 ```
 
-Setup detects Homebrew/Linuxbrew and Conda/Mamba installation roots by location
-and writes them to `~/.zshenv`; shell startup performs no detection commands.
-For a custom location, pass `DOTFILES_HOMEBREW_PREFIX` or `DOTFILES_CONDA_ROOT`
-when running setup. Do not set `CONDA_PREFIX`; Conda manages the active environment.
+Links [`nvim/`](nvim/) to `~/.config/nvim`.
+Edit [`nvim/lua/config/`](nvim/lua/config/) for options and keybindings,
+and [`nvim/lua/plugins/`](nvim/lua/plugins/) for plugins.
 
-Swift tools are skipped when the compiler is unavailable. Secrets, caches,
-generated binaries, and Neovim local state are not committed.
+### Tmux
+
+```bash
+make tmux
+```
+
+Installs Oh My Tmux if needed. Customize
+[`tmux/.tmux.conf.local`](tmux/.tmux.conf.local), linked to `~/.tmux.conf.local`.
+
+### Git
+
+```bash
+make git
+```
+
+Links [`git/.gitconfig`](git/.gitconfig) to `~/.gitconfig`
+and initializes Git LFS if installed.
+
+### Atuin
+
+```bash
+make atuin
+```
+
+Links [`atuin/config.toml`](atuin/config.toml) to `~/.config/atuin/config.toml`.
+Zsh uses Atuin for Ctrl-R history search.
+
+### Swift tools (macOS)
+
+```bash
+make swift
+```
+
+Compiles [`swift/`](swift/) into `~/.local/bin` when the Swift compiler is
+available. Setup rebuilds only missing binaries or changed sources; updates do
+not compile these tools.
+
+## Maintenance
+
+| Command | Purpose |
+| --- | --- |
+| `make install` | Install dependencies |
+| `make setup` | Configure all components, including Swift compilation |
+| `make update` / `dots-update` | Update software, plugins, and dotfiles |
+| `make check` | Check syntax and configuration |
+
+`Makefile` is the main entry point. `install.sh` installs dependencies;
+`setup.sh` applies configuration. Components can be configured individually
+with `make zsh`, `make nvim`, `make tmux`, `make git`, `make atuin`, or `make swift`.
