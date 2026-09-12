@@ -25,6 +25,9 @@ autoload -Uz _zinit
 # --- Options ---
 
 setopt interactive_comments
+setopt auto_cd               # Type directory name directly to cd into it
+setopt auto_pushd            # Make cd push old directory onto directory stack
+setopt pushd_ignore_dups     # Don't push duplicate directories onto stack
 
 # Don't highlight pasted text.
 zle_highlight+=(paste:none)
@@ -33,12 +36,14 @@ zle_highlight+=(paste:none)
 
 [[ -z "$HISTFILE" ]] && HISTFILE="$HOME/.zsh_history"
 (( HISTSIZE < 50000 )) && HISTSIZE=50000
-(( SAVEHIST < 10000 )) && SAVEHIST=10000
+(( SAVEHIST < 50000 )) && SAVEHIST=50000
 
 setopt extended_history       # record timestamps in history
 setopt hist_expire_dups_first # expire duplicate entries first
+setopt hist_find_no_dups      # do not display duplicates when searching
 setopt hist_ignore_dups       # ignore consecutive duplicates
 setopt hist_ignore_space      # ignore commands starting with space
+setopt hist_save_no_dups      # do not write duplicate entries to history file
 setopt hist_verify            # show expanded command before executing
 setopt share_history          # share history across sessions
 
@@ -136,12 +141,16 @@ zinit ice wait'0b' lucid atload'
   bindkey -M viins "^R" history-search-multi-word
   bindkey -M vicmd "^R" history-search-multi-word
   if (( $+commands[atuin] )); then
-    _evalcache atuin init zsh --disable-ctrl-r --disable-up-arrow
+    _evalcache atuin init zsh --disable-ctrl-r
   fi
   if (( $+widgets[atuin-search] )); then
     bindkey -M emacs "^X^R" atuin-search
     bindkey -M viins "^X^R" atuin-search-viins
     bindkey -M vicmd "^X^R" atuin-search-vicmd
+    bindkey -M emacs "^[[A" atuin-up-search
+    bindkey -M viins "^[[A" atuin-up-search-viins
+    bindkey -M vicmd "^[[A" atuin-up-search-vicmd
+    bindkey -M vicmd "k" atuin-up-search-vicmd
   fi'
 zinit light zdharma-continuum/history-search-multi-word
 
@@ -156,6 +165,12 @@ bindkey -M viins '^[p' up-line-or-search   # Alt+p for searching backward in his
 bindkey -M viins '^[n' down-line-or-search # Alt+n for searching forward in history
 bindkey -M viins '^[f' forward-word        # Alt+f for moving forward by word
 bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
+
+# Quick directory stack navigation (d shows stack, 1-9 switches)
+alias d='dirs -v'
+for num in {1..9}; do
+  alias "$num"="cd -$num"
+done
 
 # --- Aliases ---
 
