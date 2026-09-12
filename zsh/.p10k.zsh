@@ -903,15 +903,15 @@
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
   typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND='#ff5555'
-  # Context color in SSH without privileges.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND='#f1fa8c'
+  # Context color in SSH without privileges: dimmer than default so it doesn't dominate the prompt.
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND='#ffb86c'
   # Default context color (no privileges, no SSH).
   typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND='#f1fa8c'
 
   # Context format when running with privileges: bold user@hostname.
   typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE='%B%n@%m'
-  # Context format when in SSH without privileges: user@hostname.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE='%B%n@%m'
+  # Context format when in SSH without privileges: plain (not bold) user@hostname.
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE='%n@%m'
   # Default context format (no privileges, no SSH): user@hostname.
   typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n@%m'
 

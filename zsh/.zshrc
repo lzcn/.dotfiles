@@ -160,18 +160,27 @@ bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
 # --- Aliases ---
 
 # Proxy: toggle the current shell's proxy; endpoints are set in ~/.zshenv.
-# Usage: proxy on | off | status
+# Usage: proxy [on|off|status]; no argument toggles between on and off.
 proxy() {
-  case "${1:-status}" in
+  local is_set=0
+  [[ -n ${http_proxy:-}${https_proxy:-}${all_proxy:-}${HTTP_PROXY:-}${HTTPS_PROXY:-}${ALL_PROXY:-} ]] && is_set=1
+
+  local action=${1:-toggle}
+  if [[ $action == toggle ]]; then
+    (( is_set )) && action=off || action=on
+  fi
+
+  case "$action" in
     on)
       local host=${PROXY_HOST:-127.0.0.1}
       export http_proxy="http://$host:${PROXY_HTTP_PORT:-7890}"
       export https_proxy=$http_proxy
       export all_proxy="socks5://$host:${PROXY_SOCKS_PORT:-${PROXY_HTTP_PORT:-7890}}"
       export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy ALL_PROXY=$all_proxy
+      print 'Proxy: on'
       ;;
-    off) unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY ;;
-    status) [[ -n ${http_proxy:-}${https_proxy:-}${all_proxy:-}${HTTP_PROXY:-}${HTTPS_PROXY:-}${ALL_PROXY:-} ]] && print 'Proxy: on' || print 'Proxy: off' ;;
+    off) unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY; print 'Proxy: off' ;;
+    status) (( is_set )) && print 'Proxy: on' || print 'Proxy: off' ;;
     *) print -u2 'Usage: proxy [on|off|status]'; return 2 ;;
   esac
 }
