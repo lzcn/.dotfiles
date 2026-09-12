@@ -1,4 +1,3 @@
-# SpaceShip-style icons and colors; prompt layout stays lean.
 # Type `p10k configure` to generate another config.
 #
 # Config for Powerlevel10k with lean prompt style. Type `p10k configure` to generate

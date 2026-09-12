@@ -129,16 +129,15 @@ zinit snippet OMZP::command-not-found
 zinit ice wait lucid
 zinit snippet OMZP::extract
 
-# Atuin: record history; Ctrl-X Ctrl-R opens database search.
-if (( $+commands[atuin] )); then
-  _evalcache atuin init zsh --disable-ctrl-r --disable-up-arrow
-fi
-
 # Multi-word history: Ctrl-R; load before autosuggestions and highlighting.
+# Atuin init runs in the same deferred block so it stays off the startup critical path.
 zinit ice wait'0b' lucid atload'
   bindkey -M emacs "^R" history-search-multi-word
   bindkey -M viins "^R" history-search-multi-word
   bindkey -M vicmd "^R" history-search-multi-word
+  if (( $+commands[atuin] )); then
+    _evalcache atuin init zsh --disable-ctrl-r --disable-up-arrow
+  fi
   if (( $+widgets[atuin-search] )); then
     bindkey -M emacs "^X^R" atuin-search
     bindkey -M viins "^X^R" atuin-search-viins

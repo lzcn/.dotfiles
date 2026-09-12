@@ -67,10 +67,6 @@ Run from `~/.dotfiles`.
 | `Ctrl-X Ctrl-R` | Open Atuin |
 | `Ctrl-T` / `Alt-C` | Fuzzy-select files / directories |
 
-Powerlevel10k keeps full prompts in scrollback and shows failed exit codes, background job counts, active Python environments, and durations over 3 seconds.
-
-For CJK text on macOS: `brew install --cask font-sarasa-gothic`, then select "Sarasa Term SC Nerd" in your terminal app.
-
 ### Tmux
 
 Prefix is `C-a`; `C-a C-a` sends a literal `C-a`.
