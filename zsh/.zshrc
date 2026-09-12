@@ -56,8 +56,7 @@ zinit ice wait'0a' lucid
 zinit light hlissner/zsh-autopair
 
 # Autosuggestions: suggest commands from history.
-# Loads after the completion system (see the Prezto snippets below) so that
-# Tab clears the suggestion instead of appending its remainder.
+# Load after completion so Tab clears suggestions correctly.
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 zinit ice wait'0c' lucid
 zinit light zsh-users/zsh-autosuggestions
@@ -65,10 +64,6 @@ zinit light zsh-users/zsh-autosuggestions
 # Fast syntax highlighting: load after other editor widgets.
 zinit ice wait'0c' lucid atload'_zsh_autosuggest_start'
 zinit light zdharma-continuum/fast-syntax-highlighting
-
-# Zsh completions: command definitions and completion initialization.
-# Prezto's completion module supplies menu colors, grouping, fuzzy matching,
-# and context rules; it is loaded once below.
 
 # Git-open: open the current repository in a browser.
 # Usage: git open
@@ -114,12 +109,6 @@ fi
 # Usage: z <directory name>
 (( $+commands[zoxide] )) && _evalcache zoxide init zsh
 
-# FZF: Ctrl-T picks files, Alt-C picks directories.
-# Disabled for now; history search (Ctrl-R, up-arrow) stays with Atuin only.
-# (( $+commands[fzf] )) && source <(fzf --zsh)
-
-# Keep the plugin set small; project-specific tools can add their own completions.
-
 # Prezto helper: shared functions used by utility and completion.
 zinit ice wait'0a' lucid
 zinit snippet PZT::modules/helper
@@ -128,12 +117,10 @@ zinit snippet PZT::modules/helper
 zinit ice wait'0a' lucid
 zinit snippet PZT::modules/utility
 
-# Prezto completion: menu colors, grouping, fuzzy matching, and context rules.
-# This is the only completion initializer; turbo keeps compinit off startup.
+# Prezto completion: colored menus and fuzzy matching; initializes completion.
 zinit ice wait'0b' lucid
 zinit snippet PZT::modules/completion
 
-# Shell helpers and completion styles.
 # Command-not-found: suggest a package when a command is missing.
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
@@ -142,9 +129,27 @@ zinit snippet OMZP::command-not-found
 zinit ice wait lucid
 zinit snippet OMZP::extract
 
-# Atuin: searchable shell history.
-# Usage: Ctrl-R to search.
-(( $+commands[atuin] )) && _evalcache atuin init zsh
+# Atuin: record history; Ctrl-X Ctrl-R opens database search.
+if (( $+commands[atuin] )); then
+  _evalcache atuin init zsh --disable-ctrl-r --disable-up-arrow
+fi
+
+# Multi-word history: Ctrl-R; load before autosuggestions and highlighting.
+zinit ice wait'0b' lucid atload'
+  bindkey -M emacs "^R" history-search-multi-word
+  bindkey -M viins "^R" history-search-multi-word
+  bindkey -M vicmd "^R" history-search-multi-word
+  if (( $+widgets[atuin-search] )); then
+    bindkey -M emacs "^X^R" atuin-search
+    bindkey -M viins "^X^R" atuin-search-viins
+    bindkey -M vicmd "^X^R" atuin-search-vicmd
+  fi'
+zinit light zdharma-continuum/history-search-multi-word
+
+# Fzf: Ctrl-T files, Alt-C directories; retain Prezto's Tab completion.
+if [[ -r ${HOMEBREW_PREFIX:-}/opt/fzf/shell/key-bindings.zsh ]]; then
+  FZF_CTRL_R_COMMAND= source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
+fi
 
 # --- Key bindings ---
 
