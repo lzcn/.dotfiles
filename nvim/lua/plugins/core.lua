@@ -1,5 +1,37 @@
 return {
   {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
+  {
+    "catppuccin/nvim",
+    opts = {
+      flavour = "mocha",
+    },
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      completion = {
+        list = {
+          -- Don't preselect the first item on menu open;
+          -- the first <Tab> press selects the first item.
+          selection = { preselect = false, auto_insert = false },
+        },
+      },
+      keymap = {
+        -- Enter accepts: completion menu > Copilot ghost text (ai.copilot-native) > plain newline
+        ["<CR>"] = {
+          "accept",
+          function() return LazyVim.cmp.actions.ai_accept and LazyVim.cmp.actions.ai_accept() end,
+          "fallback",
+        },
+      },
+    },
+  },
+  {
     "stevearc/conform.nvim",
     optional = true,
     opts = {
@@ -10,87 +42,26 @@ return {
         beautysh = {
           prepend_args = { "-i", "2" },
         },
-        black = {
+        ruff_format = {
           prepend_args = { "--line-length", "120" },
         },
       },
       formatters_by_ft = {
-        ["python"] = { "isort", "black" },
+        ["python"] = { "ruff_organize_imports", "ruff_format" },
         ["sh"] = { "shfmt" },
         ["zsh"] = { "beautysh" },
       },
     },
   },
   {
-    "nvim-neo-tree/neo-tree.nvim",
+    "mfussenegger/nvim-lint",
+    optional = true,
     opts = {
-      filesystem = {
-        filtered_items = {
-          hide_dotfiles = true,
-          hide_gitignored = true,
-        },
+      linters_by_ft = {
+        -- No markdown linting: hide markdownlint (MD0xx) diagnostics entirely
+        markdown = false,
       },
     },
-    init = function()
-      -- Show dotfiles that Git tracks; keep untracked ones hidden.
-      -- hide_dotfiles marks every dotfile; this wrapper strips the mark when
-      -- the path is known to Git. Cache is one `git ls-files` per repo root.
-      local file_items = require("neo-tree.sources.common.file-items")
-      local base_create_item = file_items.create_item
-      local tracked_cache = {}
-
-      local function tracked_dots(root)
-        local cached = tracked_cache[root]
-        if cached then
-          return cached
-        end
-        cached = {}
-        local out = vim.fn.systemlist({ "git", "-C", root, "ls-files", "--full-name" })
-        if vim.v.shell_error == 0 then
-          for _, rel in ipairs(out) do
-            local prefix = ""
-            for part in rel:gmatch("[^/]+") do
-              if part:sub(1, 1) == "." then
-                cached[prefix .. part] = true
-              end
-              prefix = prefix .. part .. "/"
-            end
-          end
-        end
-        tracked_cache[root] = cached
-        return cached
-      end
-
-      file_items.create_item = function(context, path, _type, bufnr)
-        local item = base_create_item(context, path, _type, bufnr)
-        local fby = item.filtered_by
-        if fby and fby.dotfiles then
-          local root = context.state.path or vim.fn.getcwd()
-          if path:sub(1, #root + 1) == root .. "/" then
-            local rel = path:sub(#root + 2)
-            local tracked = tracked_dots(root)
-            local hit = tracked[rel] ~= nil
-            if not hit then -- directories like .github
-              local prefix = ""
-              for part in rel:gmatch("[^/]+") do
-                prefix = prefix .. part .. "/"
-                if tracked[prefix:sub(1, -2)] then
-                  hit = true
-                  break
-                end
-              end
-            end
-            if hit then
-              fby.dotfiles = nil
-              if next(fby) == nil then
-                item.filtered_by = nil
-              end
-            end
-          end
-        end
-        return item
-      end
-    end,
   },
   {
     "neovim/nvim-lspconfig",
@@ -99,10 +70,10 @@ return {
         pyright = {
           settings = {
             pyright = { disableOrganizeImports = true },
-            python = { analysis = { typeCheckingMode = "basic", ignore = { "*" } } },
+            python = { analysis = { typeCheckingMode = "off" } },
           },
         },
-        ruff_lsp = { settings = { lint = { enable = false } } },
+        ruff = { settings = { lint = { enable = false } } },
       },
     },
   },

@@ -1,94 +1,75 @@
 # Personal Dotfiles
 
-Dotfiles for macOS and Linux, managed with GNU Make.
+macOS and Linux configuration, managed with GNU Make.
 
 ## Install
+
+On a fresh machine:
 
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/lzcn/.dotfiles/master/install.sh)" -- bootstrap
 ```
 
-Installs prerequisites and Homebrew, clones into `~/.dotfiles`, and runs `make all`.
+This installs prerequisites, clones the repo to `~/.dotfiles`, and runs `make all`.
 
-<details>
-<summary>Manual install</summary>
+For an existing machine:
 
 ```bash
-git clone https://github.com/lzcn/.dotfiles.git
-cd ~/.dotfiles
-make all
+git clone https://github.com/lzcn/.dotfiles.git ~/.dotfiles
+cd ~/.dotfiles && make all
 ```
-
-</details>
 
 ## Update
 
 ```bash
-dots-update   # or: make update
+dots-update
 ```
 
-Pulls this repo (and `~/.tmux`, `~/.gitalias`, `~/Library/Rime` if present), then updates Homebrew packages/apps, Zinit plugins, and Neovim plugins. It never runs setup or compiles Swift — use `make install` after adding to `Brewfile`.
+Updates dotfiles, Git repositories, Homebrew, Zinit, and Neovim. It does not run setup or compile Swift.
 
-- `--light` — Git repos only
-- `--no-brew` / `--no-zinit` / `--no-git` / `--no-nvim` — skip a component
-- `--snippets` — also refresh snippets declared in `.zshrc` (skipped by default)
-- `--proxy` / `--no-proxy` — use `PROXY_HOST`/`PROXY_HTTP_PORT`/`PROXY_SOCKS_PORT` or clear proxy vars; otherwise the current proxy is inherited
-- failed components are reported but don't stop the rest; see `dots-update --help` for details
+Common options:
+
+```text
+--light       Git repositories only
+--no-brew     Skip Homebrew
+--no-zinit    Skip Zinit
+--no-git      Skip Git repositories
+--no-nvim     Skip Neovim
+--snippets    Update active Zsh snippets
+```
+
+Run `dots-update --help` for all options.
 
 ## Components
 
-Run from `~/.dotfiles`.
+Run these from `~/.dotfiles`:
 
-| Command | Links | Notes |
-| --- | --- | --- |
-| `make zsh` | [`zsh/.zshrc`](zsh/.zshrc), [`zsh/.p10k.zsh`](zsh/.p10k.zsh) | See [Zsh](#zsh) below |
-| `make nvim` | [`nvim/`](nvim/) → `~/.config/nvim` | Config in [`nvim/lua/config/`](nvim/lua/config/), plugins in [`nvim/lua/plugins/`](nvim/lua/plugins/) |
-| `make tmux` | [`tmux/.tmux.conf.local`](tmux/.tmux.conf.local) → `~/.tmux.conf.local` | Installs Oh My Tmux if needed |
-| `make git` | [`git/.gitconfig`](git/.gitconfig) → `~/.gitconfig` | Initializes Git LFS if installed |
-| `make atuin` | [`atuin/config.toml`](atuin/config.toml) → `~/.config/atuin/config.toml` | Shell history search |
-| `make swift` | [`swift/`](swift/) → `~/.local/bin` | Rebuilds only missing/changed binaries; skipped on update |
-
-### Zsh
-
-- `~/.zshenv` — machine-local paths and overrides; edit outside the managed block
-- `~/.config/zsh/secrets.zsh` — API keys and tokens; private and untracked
-- Setup auto-detects Homebrew/Conda; override with `DOTFILES_HOMEBREW_PREFIX` / `DOTFILES_CONDA_ROOT`
-- Set `CONDA_DEFAULT_START_ENV` in `~/.zshenv` to auto-activate an environment
-- `proxy on` / `proxy off` / `proxy` — toggle or inspect the shell proxy (configure via `PROXY_HOST`, `PROXY_HTTP_PORT`, `PROXY_SOCKS_PORT`)
-- Scripts are formatted with `beautysh` (`<leader>cf` in Neovim)
-
-**Key bindings**
-
-| Key | Action |
+| Command | Purpose |
 | --- | --- |
-| `Alt+p` / `Alt+n` | Walk history |
-| `Alt+f` / `Alt+b` | Move by word |
-| `Ctrl-R` | Multi-word history search |
-| `Ctrl-X Ctrl-R` | Open Atuin |
-| `Ctrl-T` / `Alt-C` | Fuzzy-select files / directories |
+| `make zsh` | Zsh, Powerlevel10k, aliases, and keybindings |
+| `make nvim` | Neovim configuration and plugins; see [`lazyvim/manual.md`](lazyvim/manual.md) |
+| `make tmux` | Tmux configuration and Oh My Tmux |
+| `make git` | Git configuration and Git LFS |
+| `make atuin` | Atuin shell history |
+| `make swift` | Build macOS Swift tools |
 
-### Tmux
+`make all` runs `install`, `setup`, and `check`.
 
-Prefix is `C-a`; `C-a C-a` sends a literal `C-a`.
+## Shortcuts
 
-| Key | Action |
+| Shortcut | Action |
 | --- | --- |
-| `prefix \|` / `prefix -` | Split pane right / below |
-| `prefix C-s` | Toggle synchronize-panes |
-| `prefix m` | Toggle mouse mode |
-| `prefix e` / `prefix r` | Edit / reload this config |
+| `Ctrl-R` | Search shell history |
+| `Ctrl-X Ctrl-R` | Search Atuin history |
+| `Ctrl-T` / `Alt-C` | Select files / directories with `fzf` |
+| `C-a \|` / `C-a -` | Split a Tmux pane |
 
-Escape delay, focus events, true color, undercurl, and cursor shapes are configured so Neovim behaves the same inside tmux as outside.
+For local settings, edit `~/.zshenv`. Secrets belong in `~/.config/zsh/secrets.zsh`; setup creates it with private permissions.
 
 ## Maintenance
 
 | Command | Purpose |
 | --- | --- |
-| `make help` | List all targets (default) |
-| `make all` | `install` + `setup` + `check` |
-| `make install` | Install Homebrew packages and Zinit |
-| `make setup` | Configure all components; back up conflicting files |
-| `make update` / `dots-update` | Update software, plugins, and dotfiles |
-| `make check` | Lint shell scripts, `.gitconfig`, `Brewfile`, and `README.md` |
-
-`Makefile` is the entry point: `install.sh` installs dependencies, `setup.sh` applies configuration. Each component can also be run individually, e.g. `make zsh`.
+| `make help` | List available targets |
+| `make check` | Check shell syntax and configuration |
+| `make setup` | Apply configuration and back up conflicts |
