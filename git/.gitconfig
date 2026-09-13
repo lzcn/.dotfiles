@@ -10,11 +10,7 @@
 	unstage = restore --staged
 	get = !git fetch --prune && git pull --rebase && git submodule update --init --recursive
 	skim = !git fetch --depth=1 --prune origin && git reset --hard @{u} && git reflog expire --expire=now --all && git gc --prune=now
-	cleanup = "!f() { \
-		printf 'Discard all local changes and untracked files? [y/N] '; read -r r; \
-		[ \"$r\" = y ] || return 1; \
-		git clean -df && git checkout -- .; \
-	}; f"
+	cleanup = "!f() { printf 'Discard all local changes and untracked files? [y/N] '; read -r r; [ \"$r\" = y ] || return 1; git clean -df && git checkout -- .; }; f"
 	lg = log --graph --oneline --decorate --all
 	last = log -1 HEAD --stat
 	amend = commit --amend --no-edit

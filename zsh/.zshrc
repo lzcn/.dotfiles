@@ -63,6 +63,38 @@ zinit light hlissner/zsh-autopair
 # Autosuggestions: suggest commands from history.
 # Load after completion so Tab clears suggestions correctly.
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+# Tab completes only what was actually typed: drop the ghost suggestion and
+# call the original completion widget directly, so no new suggestion is
+# fetched mid-completion and stale history text can't merge into the results.
+# Keep the widget out of autosuggestions' reach (it would otherwise re-wrap it
+# and re-fetch a suggestion right after completing). Mirror the plugin's
+# default ignore list, because setting the variable suppresses the defaults.
+typeset -ga ZSH_AUTOSUGGEST_IGNORE_WIDGETS=(
+  orig-\*
+  beep
+  run-help
+  set-local-history
+  which-command
+  yank
+  yank-pop
+  zle-\*
+  tab-complete
+)
+
+tab-complete() {
+  local -i retval
+  local orig
+  POSTDISPLAY=
+  orig=${${(M)${(k)widgets}:#autosuggest-orig-*-expand-or-complete}[-1]}
+  zle ${orig:-expand-or-complete}
+  retval=$?
+  return $retval
+}
+zle -N tab-complete
+bindkey -M emacs '^I' tab-complete
+bindkey -M viins '^I' tab-complete
+
 zinit ice wait'0c' lucid
 zinit light zsh-users/zsh-autosuggestions
 

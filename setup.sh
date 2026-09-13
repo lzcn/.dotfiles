@@ -173,6 +173,15 @@ setup_tmux() {
   symlink "$HOME/.tmux.conf.local" "$DOTFILES/tmux/.tmux.conf.local"
 }
 
+setup_kitty() {
+  section "Kitty"
+  if command_exists kitty; then
+    symlink "$HOME/.config/kitty" "$DOTFILES/kitty"
+  else
+    info 'kitty is not installed'
+  fi
+}
+
 setup_swift() {
   section "Swift"
   local swift_file filename output
@@ -208,7 +217,7 @@ setup_nvim() {
 }
 
 usage() {
-  echo "Usage: $0 [--yes] {atuin|git|tmux|swift|nvim|zsh|all}"
+  echo "Usage: $0 [--yes] {atuin|git|tmux|kitty|swift|nvim|zsh|all}"
   exit 1
 }
 
@@ -232,6 +241,7 @@ for target in "$@"; do
     atuin) setup_atuin ;;
     git) setup_git ;;
     tmux) setup_tmux ;;
+    kitty) setup_kitty ;;
     swift) setup_swift ;;
     nvim) setup_nvim ;;
     zsh) setup_zsh ;;
@@ -239,6 +249,7 @@ for target in "$@"; do
       setup_atuin
       setup_git
       setup_tmux
+      setup_kitty
       setup_swift
       setup_nvim
       setup_zsh

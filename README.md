@@ -49,6 +49,7 @@ Run these from `~/.dotfiles`:
 | `make zsh` | Zsh, Powerlevel10k, aliases, and keybindings |
 | `make nvim` | Neovim configuration and plugins; see [`lazyvim/manual.md`](lazyvim/manual.md) |
 | `make tmux` | Tmux configuration and Oh My Tmux |
+| `make kitty` | Kitty terminal configuration |
 | `make git` | Git configuration and Git LFS |
 | `make atuin` | Atuin shell history |
 | `make swift` | Build macOS Swift tools |

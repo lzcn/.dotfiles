@@ -5,7 +5,7 @@ SHELL := /bin/bash
 # Make tools installed earlier in `make all` available to subsequent steps.
 export PATH := $(HOME)/.local/bin:$(if $(HOMEBREW_PREFIX),$(HOMEBREW_PREFIX)/bin:)/opt/homebrew/bin:/home/linuxbrew/.linuxbrew/bin:$(HOME)/.linuxbrew/bin:/usr/local/bin:$(PATH)
 
-COMPONENTS := zsh nvim tmux git atuin swift
+COMPONENTS := zsh nvim tmux kitty git atuin swift
 
 .PHONY: help all install setup update check validate $(COMPONENTS)
 
