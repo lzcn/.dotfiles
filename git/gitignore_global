@@ -1,14 +1,31 @@
 # AI assistant local state
-#
-# Personal AI assistant files. If a repository intentionally wants to commit
-# one of these, add it explicitly with `git add -f`.
+# Per-machine agent files. To commit one intentionally, use `git add -f`.
 AGENTS.md
+AGENTS.local.md
+AGENT.md
 CLAUDE.md
-.codex/
-.claude/
+CLAUDE.local.md
+GEMINI.md
+.agents/
 .aider*
+.claude/
+.cline/
+.clinerules
+.codex/
 .continue/
+.cursor/
+.cursorrules
+.gemini/
+.goose/
+.kiro/
+.opencode/
+.roo/
+.roorules
+.specstory/
+.trae/
 .windsurf/
+.windsurfrules
+.workbuddy/
 
 # ----------------------------------------------
 # --- Common local/editor artifacts ------------
