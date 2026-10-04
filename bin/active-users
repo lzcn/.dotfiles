@@ -1,34 +1,69 @@
-#!/usr/bin/env zsh
-# active-users — report who has been active on this system (from wtmp)
+#!/usr/bin/env python3
+"""Rank recorded logins by completed session duration in a wtmp file."""
+import argparse
+import os
+from dataclasses import dataclass
+import platform
+import re
+import sys
 
-source "${0:A:h}/lib.sh"
+from lib import capture, cli, readable_file, require_command
 
-log=${1:-/var/log/wtmp}
-[[ -r "$log" ]] || die "log not readable: $log"
-info "scanning $log"
+DURATION = re.compile(r'\((?:(\d+)\+)?(\d+):(\d{2})\)\s*$')
+START = re.compile(r'\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+\w{3}\s+\d{1,2}\s+\d{2}:\d{2}')
 
-tmpdir=$(mktemp -d)
-trap 'rm -rf "$tmpdir"' EXIT
-ulog="$tmpdir/ulog"
 
-# last prints a two-line footer ("wtmp begins..."); strip it (portable: BSD
-# head has no negative line counts)
-last -f "$log" | awk 'NR > 2 { print prev } { prev = $0 }' >"$ulog"
+@dataclass
+class Activity:
+    logins: int = 0
+    minutes: int = 0
+    open_sessions: int = 0
+    oldest: str = ''
 
-printf "%-4s %-10s %-12s %-6s %-8s\n" "Rank" "User" "Start" "Logins" "Hours"
 
-while IFS= read -r user; do
-    [[ -n "$user" ]] || continue
-    grep "^$user" "$ulog" >"$tmpdir/user"
+def summarize(text):
+    users = {}
+    for line in text.splitlines():
+        start = START.search(line)
+        fields = line.split()
+        if not start or not fields or fields[0] in {'reboot', 'shutdown', 'runlevel', 'wtmp', 'btmp', 'utmp'}:
+            continue
+        activity = users.setdefault(fields[0], Activity())
+        activity.logins += 1
+        # last emits newest first; the final record is the oldest in this file.
+        activity.oldest = start.group()
+        duration = DURATION.search(line)
+        if duration:
+            days, hours, minutes = duration.groups()
+            activity.minutes += int(days or 0) * 1440 + int(hours) * 60 + int(minutes)
+        else:
+            activity.open_sessions += 1
+    return users
 
-    minutes=0
-    while IFS= read -r t; do
-        t=${t//[()]/}
-        [[ "$t" == *:* ]] && (( minutes += ${t%%:*} * 60 + ${t##*:} ))
-    done < <(awk '{ print $NF }' "$tmpdir/user")
 
-    firstlog=$(tail -n 1 "$tmpdir/user" | awk '{ print $5, $6 }')
-    nlogins=$(wc -l <"$tmpdir/user" | tr -d ' ')
-    hours=$(printf "%.2f" $(( minutes / 60.0 )))
-    printf "%-10s %-12s %-6s %-8s\n" "$user" "$firstlog" "$nlogins" "$hours"
-done < <(cut -d' ' -f1 "$ulog" | sort -u) | sort -nr -k4 | awk '{ printf("%-4s %s\n", NR, $0) }'
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, epilog=
+        'Hours exclude sessions with unknown duration (ongoing, crashed, etc.). '
+        'This reports retained login records, not current CPU activity. '
+        'Exit: 0 report complete, 1 read/command error, 2 invalid arguments.')
+    parser.add_argument('log', nargs='?', default='/var/log/wtmp', help='wtmp file (default: /var/log/wtmp)')
+    args = parser.parse_args()
+    log = readable_file(args.log)
+    require_command('last')
+    command = ['last']
+    if platform.system() == 'Linux':
+        command.append('-w')  # preserve full user/host names on util-linux
+    command.extend(['-f', str(log)])
+    # Keep last's weekday/month labels stable on localized hosts.
+    users = summarize(capture(command, env=dict(os.environ, LC_ALL='C')))
+    if not users:
+        print('No login records.'); return 0
+    print(f"{'Rank':<5} {'User':<20} {'Oldest recorded start':<22} {'Logins':>6} {'Hours':>9} {'Unknown':>7}")
+    ranked = sorted(users.items(), key=lambda item: (-item[1].minutes, item[0]))
+    for rank, (user, activity) in enumerate(ranked, 1):
+        print(f'{rank:<5} {user:<20} {activity.oldest:<22} {activity.logins:>6} '
+              f'{activity.minutes / 60:>9.2f} {activity.open_sessions:>7}')
+
+
+if __name__ == '__main__':
+    sys.exit(cli(main))

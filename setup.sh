@@ -7,14 +7,6 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DOTFILES/bin/lib.sh"
 trap 'fail "Setup stopped at line $LINENO; fix the error above and rerun make setup"' ERR
 
-# A fresh installation may not have loaded .zshenv yet.
-for brew_prefix in "${HOMEBREW_PREFIX:-}" /opt/homebrew /home/linuxbrew/.linuxbrew "$HOME/.linuxbrew" /usr/local; do
-  if [[ -n $brew_prefix && -x $brew_prefix/bin/brew ]]; then
-    eval "$("$brew_prefix/bin/brew" shellenv)"
-    break
-  fi
-done
-unset brew_prefix
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
 question() {
@@ -217,45 +209,40 @@ setup_nvim() {
 }
 
 usage() {
-  echo "Usage: $0 [--yes] {atuin|git|tmux|kitty|swift|nvim|zsh|all}"
-  exit 1
+  cat <<'HELP'
+Usage: setup.sh [--yes] [COMPONENT ...]
+  (default)  Configure all components
+  COMPONENT  zsh, nvim, tmux, kitty, git, atuin, swift
+  --yes, -y  Back up conflicting files without prompting
+  --help, -h Show help
+HELP
 }
-
-banner "Dotfiles · setup"
 
 targets=()
 for arg in "$@"; do
-  case "$arg" in
+  case $arg in
     --yes|-y) ASSUME_YES=1 ;;
-    *) targets+=("$arg") ;;
+    --help|-h) usage; exit 0 ;;
+    atuin|git|tmux|kitty|swift|nvim|zsh) targets+=("$arg") ;;
+    *) fail "Unknown component or option: $arg"; usage >&2; exit 2 ;;
   esac
 done
-set -- "${targets[@]}"
 
-if [[ $# -eq 0 ]]; then
-  usage
+if [[ ${#targets[@]} -eq 0 ]]; then
+  targets=(atuin git tmux kitty swift nvim zsh)
 fi
 
-for target in "$@"; do
-  case "$target" in
-    atuin) setup_atuin ;;
-    git) setup_git ;;
-    tmux) setup_tmux ;;
-    kitty) setup_kitty ;;
-    swift) setup_swift ;;
-    nvim) setup_nvim ;;
-    zsh) setup_zsh ;;
-    all)
-      setup_atuin
-      setup_git
-      setup_tmux
-      setup_kitty
-      setup_swift
-      setup_nvim
-      setup_zsh
-      ;;
-    *) usage ;;
-  esac
+# A fresh installation may not have loaded .zshenv yet.
+for brew_prefix in "${HOMEBREW_PREFIX:-}" /opt/homebrew /home/linuxbrew/.linuxbrew "$HOME/.linuxbrew" /usr/local; do
+  if [[ -n $brew_prefix && -x $brew_prefix/bin/brew ]]; then
+    eval "$("$brew_prefix/bin/brew" shellenv)"
+    break
+  fi
 done
+unset brew_prefix
 
+banner "Dotfiles · setup"
+for target in "${targets[@]}"; do
+  "setup_$target"
+done
 finish "Configuration complete"

@@ -1,151 +1,140 @@
-#!/usr/bin/env zsh
-# tmux-kill-idle — find and kill idle tmux sessions
-#
-# An "idle" session has no pane running a foreground process —
-# only interactive shells (bash, zsh, fish, etc.) sitting at a prompt.
-# Any editor, compiler, interpreter, or long-running command makes a
-# session "active". Sessions are listed and confirmed before killing.
+#!/usr/bin/env python3
+"""Remove detached tmux sessions only when all windows contain idle shells."""
+import argparse
+from dataclasses import dataclass
+import os
+from pathlib import Path
+import subprocess
+import sys
 
-source "${0:A:h}/lib.sh"
+from lib import CommandError, capture, cli, require_command
 
-# Processes that count as "nothing running"
-IDLE_COMMS='^(bash|zsh|fish|sh|dash|tmux|tmux:.*)$'
 
-SCRIPT_NAME="${0##*/}"
+@dataclass(frozen=True)
+class Process:
+    parent: int
+    state: str
+    command: str
 
-usage() {
-    cat <<EOF
-Usage: $SCRIPT_NAME [-v] [-f]
 
-Find idle tmux sessions (no active foreground process) and kill them
-after confirmation.
+def process_snapshot():
+    processes = {}
+    for line in capture(['ps', '-axo', 'pid=,ppid=,stat=,comm=']).splitlines():
+        fields = line.split(None, 3)
+        if len(fields) != 4:
+            raise CommandError('Incomplete process snapshot; refusing to classify sessions')
+        pid, parent, state, command = fields
+        processes[int(pid)] = Process(int(parent), state, command)
+    return processes
 
-Options:
-  -v, --verbose   Show pane-level details for each idle session
-  -f, --force     Skip confirmation (kill immediately)
-  -h, --help      Show this help
 
-An "idle" session is one where every pane is just a shell at a prompt
-— no editors, compilers, interpreters, or other active programs.
+def shell_names():
+    # Discover shells from the host, rather than maintain a list of applications.
+    names = set()
+    for line in Path('/etc/shells').read_text().splitlines():
+        line = line.strip()
+        if line.startswith('/'):
+            names.add(Path(line).name)
+    if os.environ.get('SHELL'):
+        names.add(Path(os.environ['SHELL']).name)
+    return names
 
-EOF
-    exit 0
-}
 
-# Recursively check if a process tree is idle (only contains idle shells).
-# Returns 0 if idle, 1 if any non-idle process is found.
-proc_tree_idle() {
-    local pid=$1
-    [[ -d "/proc/$pid" ]] || return 0
+def pane_idle(pid, command, processes, shells):
+    root = processes.get(pid)
+    if root is None or root.state.startswith(('Z', 'T')):
+        return False
+    if Path(root.command).name.lstrip('-') not in shells or command not in shells:
+        return False
+    # Every live descendant protects the pane, including background jobs and
+    # programs whose foreground title happens to resemble a shell.
+    children = {}
+    for child, process in processes.items():
+        children.setdefault(process.parent, []).append(child)
+    pending = list(children.get(pid, []))
+    seen = {pid}
+    while pending:
+        child = pending.pop()
+        if child in seen:
+            return False
+        seen.add(child)
+        if not processes[child].state.startswith('Z'):
+            return False
+        pending.extend(children.get(child, []))
+    return True
 
-    # Skip zombies — they're dead and won't do work
-    local state
-    state=$(awk '/^State:/ {print $2}' /proc/"$pid"/status 2>/dev/null)
-    [[ "$state" == "Z" ]] && return 0
 
-    local comm
-    comm=$(cat /proc/"$pid"/comm 2>/dev/null) || return 0
+def session_idle(session_id, processes, shells):
+    metadata = capture(['tmux', 'display-message', '-p', '-t', session_id,
+                        '#{session_attached}\t#{@keep}']).rstrip('\n').split('\t')
+    if len(metadata) != 2 or metadata[0] != '0' or metadata[1] not in ('', '0', 'off', 'false'):
+        return False, 'attached or marked @keep'
+    # -s is essential: without it tmux lists only the current window.
+    panes = capture(['tmux', 'list-panes', '-s', '-t', session_id,
+                     '-F', '#{pane_pid}\t#{pane_current_command}\t#{pane_dead}']).splitlines()
+    if not panes:
+        return False, 'no inspectable panes'
+    for pane in panes:
+        fields = pane.split('\t')
+        if len(fields) != 3 or fields[2] != '0' or not fields[0].isdigit():
+            return False, 'unknown or dead pane'
+        if not pane_idle(int(fields[0]), fields[1], processes, shells):
+            return False, f'active or uninspectable pane ({fields[1]})'
+    return True, f'{len(panes)} idle pane(s)'
 
-    # If this process itself is non-idle, the tree is active
-    if ! echo "$comm" | grep -qE "$IDLE_COMMS"; then
-        return 1
-    fi
 
-    # Recurse into children
-    local children
-    children=$(cat /proc/"$pid"/task/"$pid"/children 2>/dev/null)
-    for cpid in $children; do
-        if ! proc_tree_idle "$cpid"; then
-            return 1
-        fi
-    done
-    return 0
-}
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, epilog=
+        'Any live child process protects a session (editors, agents, background jobs, etc.). '
+        'Attached sessions and @keep sessions are always retained. '
+        'Protect a session explicitly: tmux set-option -t SESSION @keep 1. '
+        'Exit: 0 completed/cancelled, 1 inspection or deletion error, 2 invalid arguments.')
+    parser.add_argument('--dry-run', action='store_true', help='list candidates without deleting or prompting')
+    parser.add_argument('-v', '--verbose', action='store_true', help='also explain retained sessions')
+    parser.add_argument('-f', '--force', action='store_true', help='skip confirmation; protection and recheck still apply')
+    args = parser.parse_args()
+    require_command('tmux')
+    require_command('ps')
+    # No server is an ordinary no-op; other tmux errors remain errors.
+    result = subprocess.run(['tmux', 'list-sessions', '-F', '#{session_id}\t#{session_name}'],
+                            text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode:
+        if 'no server running' in result.stderr or 'No such file or directory' in result.stderr:
+            print('No tmux sessions.'); return 0
+        raise CommandError(result.stderr.strip())
+    processes, shells = process_snapshot(), shell_names()
+    candidates = []
+    for line in result.stdout.splitlines():
+        session_id, name = line.split('\t', 1)
+        idle, reason = session_idle(session_id, processes, shells)
+        if idle:
+            candidates.append((session_id, name))
+            print(f'candidate: {name} ({reason})')
+        elif args.verbose:
+            print(f'kept: {name} ({reason})')
+    if not candidates:
+        print('No idle detached sessions.'); return 0
+    if args.dry_run:
+        print(f'{len(candidates)} candidate(s); nothing deleted.'); return 0
+    if not args.force:
+        if not sys.stdin.isatty():
+            raise CommandError('Confirmation requires a terminal; use --dry-run or --force')
+        if input(f'Delete {len(candidates)} session(s)? [y/N] ').strip().lower() not in ('y', 'yes'):
+            print('Cancelled.'); return 0
+    errors = 0
+    for session_id, name in candidates:
+        try:
+            # Recheck attachment, all panes and processes after confirmation.
+            idle, reason = session_idle(session_id, process_snapshot(), shells)
+            if not idle:
+                print(f'kept: {name} ({reason})'); continue
+            capture(['tmux', 'kill-session', '-t', session_id])
+            print(f'deleted: {name}')
+        except CommandError as error:
+            print(f'error: {name}: {error}', file=sys.stderr)
+            errors += 1
+    return int(bool(errors))
 
-main() {
-    local verbose=false
-    local force=false
 
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            -v|--verbose) verbose=true; shift ;;
-            -f|--force)   force=true;  shift ;;
-            -h|--help)    usage ;;
-            -*) die "unknown option: $1" ;;
-            *)  die "unexpected argument: $1" ;;
-        esac
-    done
-
-    [[ "$(uname)" == "Linux" ]] || die "requires /proc (Linux only)"
-
-    tmux has-session 2>/dev/null || die "no tmux server running"
-
-    # Detect current session (if running inside tmux) to note it
-    local current_session=""
-    [[ -n "${TMUX:-}" ]] && current_session=$(tmux display-message -p '#S' 2>/dev/null)
-
-    local -a idle_sessions=()
-
-    while IFS= read -r session; do
-        [[ -n "$session" ]] || continue
-
-        local has_active=false
-        while IFS= read -r pane_pid; do
-            [[ -n "$pane_pid" ]] || continue
-            if ! proc_tree_idle "$pane_pid"; then
-                has_active=true
-                break
-            fi
-        done < <(tmux list-panes -t "$session" -F '#{pane_pid}' 2>/dev/null)
-
-        if ! $has_active; then
-            idle_sessions+=("$session")
-        fi
-    done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
-
-    if (( ${#idle_sessions[@]} == 0 )); then
-        ok "no idle tmux sessions found"
-        return 0
-    fi
-
-    section "Idle tmux sessions"
-    local idx=1
-    for session in "${idle_sessions[@]}"; do
-        local nw np
-        nw=$(tmux list-windows -t "$session" -F 'x' 2>/dev/null | wc -l | tr -d ' ')
-        np=$(tmux list-panes -t "$session" -F 'x' 2>/dev/null | wc -l | tr -d ' ')
-        print -r -- "[$idx] $session  (${nw}w, ${np}p)"
-
-        if $verbose; then
-            local pane_idx=1
-            while IFS=$'\t' read -r pane_cmd pane_cwd; do
-                printf '    pane %s: %-20s  %s\n' "$pane_idx" "$pane_cmd" "$pane_cwd"
-                ((pane_idx++))
-            done < <(tmux list-panes -t "$session" \
-                -F '#{pane_current_command}'$'\t''#{pane_current_path}' 2>/dev/null)
-        fi
-
-        if [[ -n "$current_session" ]] && [[ "$session" == "$current_session" ]]; then
-            warn "this is your current session"
-        fi
-        ((idx++))
-    done
-    print -r -- ""
-
-    if ! $force; then
-        printf "Kill these %d session(s)? [y/N] " "${#idle_sessions[@]}"
-        read -r answer
-        case "${answer:-}" in
-            [Yy]|[Yy][Ee][Ss]) ;;
-            *) warn "aborted"; return 0 ;;
-        esac
-    fi
-
-    for session in "${idle_sessions[@]}"; do
-        info "killing: $session"
-        tmux kill-session -t "$session"
-    done
-    ok "killed ${#idle_sessions[@]} session(s)"
-}
-
-main "$@"
+if __name__ == '__main__':
+    sys.exit(cli(main))

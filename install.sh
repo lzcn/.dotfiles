@@ -39,7 +39,7 @@ bootstrap() {
       if [[ $EUID != 0 ]]; then elevate=(sudo); fi
       info "Preparing Ubuntu prerequisites"
       "${elevate[@]}" apt-get update
-      "${elevate[@]}" apt-get install -y build-essential procps curl file git make zsh
+      "${elevate[@]}" apt-get install -y build-essential procps curl file git make python3 zsh
       ;;
     Darwin) info "Preparing macOS (Homebrew may request Command Line Tools or sudo)" ;;
     *) die "Bootstrap supports Ubuntu and macOS" ;;
@@ -50,19 +50,32 @@ bootstrap() {
   elif [[ ! -d $destination/.git || ! -f $destination/Makefile ]]; then
     die "$destination exists but is not a dotfiles checkout"
   fi
-  make -C "$destination" all
+  make -C "$destination" install
   info "Open a new Zsh session to use the configuration"
 }
 
-if [[ ${1:-bootstrap} == bootstrap ]]; then
-  bootstrap
-  exit
+usage() {
+  printf '%s\n' 'Usage: install.sh [bootstrap]' \
+    '  (default)  Install dependencies for this checkout' \
+    '  bootstrap  Prepare a new machine, clone dotfiles, and run make install' \
+    '  -h, --help Show help'
+}
+
+if [[ $# -gt 1 ]]; then
+  usage >&2
+  exit 2
 fi
+case ${1:-} in
+  bootstrap) bootstrap; exit ;;
+  "") ;;
+  --help|-h) usage; exit 0 ;;
+  *) usage >&2; exit 2 ;;
+esac
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bin/lib.sh
 source "$DOTFILES/bin/lib.sh"
-trap 'fail "Installation stopped at line $LINENO; fix the error above and rerun make all"' ERR
+trap 'fail "Installation stopped at line $LINENO; fix the error above and rerun make install"' ERR
 
 install_packages() {
   section "Homebrew packages"
@@ -81,14 +94,8 @@ install_zinit() {
   ok "Zinit ready"
 }
 
-banner "Dotfiles · install"
-for target in "$@"; do
-  case "$target" in
-    homebrew) install_homebrew ;;
-    packages) install_packages ;;
-    zinit) install_zinit ;;
-    all) install_homebrew; install_packages; install_zinit ;;
-    *) die "Usage: $0 [bootstrap|homebrew|packages|zinit|all]" ;;
-  esac
-done
-finish "Installation complete"
+banner "Dotfiles · dependencies"
+install_homebrew
+install_packages
+install_zinit
+finish "Dependencies ready"

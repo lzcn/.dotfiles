@@ -7,6 +7,10 @@ fi
 # --- Environment ---
 
 export LANG="${LANG:-en_US.UTF-8}"
+# Preserve Kitty truecolor over SSH before plugins load.
+if [[ $TERM == xterm-kitty && -z ${COLORTERM:-} ]]; then
+  export COLORTERM=truecolor
+fi
 [[ ${LC_CTYPE:-} != UTF-8 ]] || export LC_CTYPE="${LANG:-en_US.UTF-8}"
 [[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
 
@@ -25,9 +29,9 @@ autoload -Uz _zinit
 # --- Options ---
 
 setopt interactive_comments
-setopt auto_cd               # Type directory name directly to cd into it
-setopt auto_pushd            # Make cd push old directory onto directory stack
-setopt pushd_ignore_dups     # Don't push duplicate directories onto stack
+setopt auto_cd                  # Change directory by typing its name.
+setopt auto_pushd               # Keep previous directories on the stack.
+setopt pushd_ignore_dups        # Avoid duplicate stack entries.
 
 # Don't highlight pasted text.
 zle_highlight+=(paste:none)
@@ -38,38 +42,32 @@ zle_highlight+=(paste:none)
 (( HISTSIZE < 50000 )) && HISTSIZE=50000
 (( SAVEHIST < 50000 )) && SAVEHIST=50000
 
-setopt extended_history       # record timestamps in history
-setopt hist_expire_dups_first # expire duplicate entries first
-setopt hist_find_no_dups      # do not display duplicates when searching
-setopt hist_ignore_dups       # ignore consecutive duplicates
-setopt hist_ignore_space      # ignore commands starting with space
-setopt hist_save_no_dups      # do not write duplicate entries to history file
-setopt hist_verify            # show expanded command before executing
-setopt share_history          # share history across sessions
+setopt extended_history         # Record timestamps.
+setopt hist_expire_dups_first   # Expire duplicates first.
+setopt hist_find_no_dups        # Hide duplicates in searches.
+setopt hist_ignore_dups         # Ignore consecutive duplicates.
+setopt hist_ignore_space        # Ignore commands starting with a space.
+setopt hist_save_no_dups        # Save unique history entries.
+setopt hist_verify              # Preview history expansions.
+setopt share_history            # Share history across sessions.
 
 # --- Theme ---
 
-# Powerlevel10k: fast, customizable prompt.
+# Powerlevel10k: shell prompt.
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # --- Plugins ---
 
-# Autopair: close matching quotes and brackets.
+# Autopair: matching quotes and brackets.
 zinit ice wait'0a' lucid
 zinit light hlissner/zsh-autopair
 
-# Autosuggestions: suggest commands from history.
-# Load after completion so Tab clears suggestions correctly.
+# Autosuggestions: history suggestions; load after completion.
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
-# Tab completes only what was actually typed: drop the ghost suggestion and
-# call the original completion widget directly, so no new suggestion is
-# fetched mid-completion and stale history text can't merge into the results.
-# Keep the widget out of autosuggestions' reach (it would otherwise re-wrap it
-# and re-fetch a suggestion right after completing). Mirror the plugin's
-# default ignore list, because setting the variable suppresses the defaults.
+# Keep default exclusions and prevent Tab from accepting ghost text.
 typeset -ga ZSH_AUTOSUGGEST_IGNORE_WIDGETS=(
   orig-\*
   beep
@@ -83,13 +81,10 @@ typeset -ga ZSH_AUTOSUGGEST_IGNORE_WIDGETS=(
 )
 
 tab-complete() {
-  local -i retval
-  local orig
+  local original_widget
   POSTDISPLAY=
-  orig=${${(M)${(k)widgets}:#autosuggest-orig-*-expand-or-complete}[-1]}
-  zle ${orig:-expand-or-complete}
-  retval=$?
-  return $retval
+  original_widget=${${(M)${(k)widgets}:#autosuggest-orig-*-expand-or-complete}[-1]}
+  zle "${original_widget:-expand-or-complete}"
 }
 zle -N tab-complete
 bindkey -M emacs '^I' tab-complete
@@ -98,16 +93,15 @@ bindkey -M viins '^I' tab-complete
 zinit ice wait'0c' lucid
 zinit light zsh-users/zsh-autosuggestions
 
-# Fast syntax highlighting: load after other editor widgets.
+# Fast syntax highlighting: command colors; load after other widgets.
 zinit ice wait'0c' lucid atload'_zsh_autosuggest_start'
 zinit light zdharma-continuum/fast-syntax-highlighting
 
-# Git-open: open the current repository in a browser.
-# Usage: git open
+# Git-open: open the repository in a browser with `git open`.
 zinit ice wait lucid
 zinit light paulirish/git-open
 
-# Evalcache: cache tool initialization to speed up startup.
+# Evalcache: cached tool initialization.
 zinit light mroth/evalcache
 
 # --- Homebrew ---
@@ -138,36 +132,34 @@ if [[ -n ${CONDA_PREFIX:-} && ${CONDA_SHLVL:-0} -gt 0 &&
   path=("$CONDA_PREFIX/bin" ${path:#"$CONDA_PREFIX/bin"})
 fi
 
-# Direnv: load project-local environment variables.
-# Usage: edit .envrc, then run direnv allow.
+# Direnv: project environment from .envrc; enable with `direnv allow`.
 (( $+commands[direnv] )) && _evalcache direnv hook zsh
 
-# Zoxide: jump to frequently used directories.
-# Usage: z <directory name>
+# Zoxide: directory navigation with `z <directory>`.
 (( $+commands[zoxide] )) && _evalcache zoxide init zsh
 
-# Prezto helper: shared functions used by utility and completion.
+# Prezto helper: shared shell functions.
 zinit ice wait'0a' lucid
 zinit snippet PZT::modules/helper
 
-# Prezto utility: safe correction/globbing defaults and shell helpers.
+# Prezto utility: correction, globbing, and shell helpers.
 zinit ice wait'0a' lucid
 zinit snippet PZT::modules/utility
 
-# Prezto completion: colored menus and fuzzy matching; initializes completion.
+# Prezto completion: completion menus and fuzzy matching.
 zinit ice wait'0b' lucid
 zinit snippet PZT::modules/completion
 
-# Command-not-found: suggest a package when a command is missing.
+# Command-not-found: package suggestions for missing commands.
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 
-# Extract: unpack common archive formats with `extract <file>`.
+# Extract: archive extraction with `extract <file>`.
 zinit ice wait lucid
 zinit snippet OMZP::extract
 
-# Multi-word history: Ctrl-R; load before autosuggestions and highlighting.
-# Atuin init runs in the same deferred block so it stays off the startup critical path.
+# Multi-word history: Ctrl-R; load before autosuggestions.
+# Atuin: Ctrl-X Ctrl-R; initialize in the same deferred block.
 zinit ice wait'0b' lucid atload'
   bindkey -M emacs "^R" history-search-multi-word
   bindkey -M viins "^R" history-search-multi-word
@@ -186,7 +178,7 @@ zinit ice wait'0b' lucid atload'
   fi'
 zinit light zdharma-continuum/history-search-multi-word
 
-# Fzf: Ctrl-T files, Alt-C directories; retain Prezto's Tab completion.
+# Fzf: Ctrl-T for files, Alt-C for directories.
 if [[ -r ${HOMEBREW_PREFIX:-}/opt/fzf/shell/key-bindings.zsh ]]; then
   FZF_CTRL_R_COMMAND= source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
 fi

@@ -1,130 +1,223 @@
 #!/usr/bin/env zsh
-
+# Update selected components; never stash, reset, or rebase local work.
+emulate -LR zsh
+setopt pipefail
 source "${0:A:h}/lib.sh"
 
-update_brew=1 update_zinit=1 update_git=1 update_nvim=1
-update_snippets=0
-dotfiles="${0:A:h:h}"
-zinit_home="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+typeset -r dotfiles="${0:A:h:h}"
+typeset -r zinit_home="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+typeset -aU targets
+typeset -a failed_components
+typeset -i dry_run=0 successes=0 skipped=0 failures=0
 
 usage() {
-    cat <<'HELP'
-Usage: dots-update [OPTIONS]
-  (default)    Update Homebrew packages/apps, Zinit, Git repos, and Neovim
-  --all        Update all components (default)
-  --snippets   Also refresh snippets declared in .zshrc
-  --light      Update Git repos only
-  --nvim       Include Neovim plugins
-  --no-brew --no-zinit --no-git --no-nvim   Skip a component
-  --proxy      Use PROXY_HOST/PROXY_HTTP_PORT/PROXY_SOCKS_PORT
-  --no-proxy   Clear proxy variables; otherwise inherit the current proxy
-  --help, -h   Show help
+  cat <<'HELP'
+Usage: dots-update [OPTIONS] [TARGET ...]
 
-Snippets are skipped by default, including with --all.
-Configuration and Swift compilation are handled separately by make setup.
+Select what to update. Explicit targets REPLACE the default:
+  git           Configuration repos: dotfiles, tmux, Git aliases, Rime (default)
+  brew          Homebrew packages/apps (no greedy upgrade or cleanup)
+  zinit         Zinit itself and its installed plugins
+  nvim          Neovim plugins
+  snippets      Zsh snippets declared in this checkout's .zshrc
+  all           update all
+
+Examples:
+  dots-update                 Update configuration repos only
+  dots-update brew            Update Homebrew only
+  dots-update git nvim        Update repos and Neovim
+  dots-update all             Update every installed component
+
+Options:
+  --dry-run     Show the plan without updating anything
+  --proxy       Use configured PROXY_HOST/PROXY_HTTP_PORT/PROXY_SOCKS_PORT
+  --no-proxy    Clear proxy variables (default: inherit current environment)
+  -h, --help    Show help
+
+Dirty repos, detached HEADs, missing upstreams/components are skipped.
+Updates use fast-forward only; local work is never stashed or discarded.
+Exit status: 0 = completed/skipped, 1 = update error, 2 = invalid arguments.
+Run make setup separately to apply configuration or compile Swift.
 HELP
 }
 
-for arg in "$@"; do
+main() {
+  local arg proxy_mode=inherit
+  for arg in "$@"; do
     case "$arg" in
-        --all) update_brew=1 update_zinit=1 update_git=1 update_nvim=1 ;;
-        --light) update_brew=0 update_zinit=0 update_git=1 update_nvim=0 ;;
-        --nvim) update_nvim=1 ;;
-        --snippets) update_snippets=1 ;;
-        --no-brew) update_brew=0 ;;
-        --no-zinit) update_zinit=0 ;;
-        --no-git) update_git=0 ;;
-        --no-nvim) update_nvim=0 ;;
-        --proxy)
-            export http_proxy="http://${PROXY_HOST:-127.0.0.1}:${PROXY_HTTP_PORT:-7890}"
-            export https_proxy=$http_proxy
-            export all_proxy="socks5://${PROXY_HOST:-127.0.0.1}:${PROXY_SOCKS_PORT:-${PROXY_HTTP_PORT:-7890}}"
-            ;;
-        --no-proxy) unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY ;;
-        --help|-h) usage; exit 0 ;;
-        *) print -u2 -r -- "Unknown option: $arg"; usage; exit 1 ;;
+      git|brew|zinit|nvim|snippets|all) targets+=("$arg") ;;
+      --dry-run) dry_run=1 ;;
+      --proxy|--no-proxy)
+        [[ $proxy_mode == inherit || $proxy_mode == "$arg" ]] || {
+          fail "--proxy and --no-proxy cannot be combined"
+          return 2
+        }
+        proxy_mode=$arg
+        ;;
+      --help|-h)
+        usage
+        return 0
+        ;;
+      *)
+        fail "Unknown target or option: $arg (see dots-update --help)"
+        return 2
+        ;;
     esac
-done
-
-# Report failures but continue updating independent components.
-run_update() {
-    local label=$1
-    shift
-    local started=$SECONDS
-    section "$label"
-    if "$@"; then
-        ok "$label · $(( SECONDS - started ))s"
-        (( successes += 1 ))
-    else
-        fail "$label update failed"
-        failed_components+=("$label")
-        (( failures += 1 ))
+  done
+  (( ${#targets} )) || targets=(git)
+  if (( ${targets[(Ie)all]} )); then
+    if (( ${#targets} != 1 )); then
+      fail "Use all by itself"
+      return 2
     fi
+    targets=(git brew zinit nvim snippets)
+  fi
+  case $proxy_mode in
+    --proxy)
+      export http_proxy="http://${PROXY_HOST:-127.0.0.1}:${PROXY_HTTP_PORT:-7890}"
+      export https_proxy=$http_proxy
+      export all_proxy="socks5://${PROXY_HOST:-127.0.0.1}:${PROXY_SOCKS_PORT:-${PROXY_HTTP_PORT:-7890}}"
+      export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy ALL_PROXY=$all_proxy
+      ;;
+    --no-proxy)
+      unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
+      ;;
+  esac
+  banner "Dotfiles · update"
+  info "Targets: ${(j:, :)targets}"
+  local target repo
+  for target in "${targets[@]}"; do
+    case $target in
+      git)
+        if (( ! $+commands[git] )); then
+          skip_update Git "git not installed"
+          continue
+        fi
+        for repo in "$dotfiles" "$HOME/.tmux" "$HOME/.gitalias" "$HOME/Library/Rime"; do
+          [[ -e "$repo/.git" ]] || continue
+          run_update "Git: ${repo:t}" update_repo "$repo"
+        done
+        ;;
+      brew)
+        if (( $+commands[brew] )); then
+          run_update Homebrew update_homebrew
+        else
+          skip_update Homebrew "brew not installed"
+        fi
+        ;;
+      zinit|snippets)
+        if [[ -r "$zinit_home/zinit.zsh" ]] && (( $+commands[zsh] )); then
+          run_update "$target" update_zinit "$target"
+        else
+          skip_update "$target" "Zinit or zsh not installed"
+        fi
+        ;;
+      nvim)
+        if (( $+commands[nvim] )); then
+          run_update Neovim execute nvim --headless '+Lazy! sync' +qa
+        else
+          skip_update Neovim "nvim not installed"
+        fi
+        ;;
+    esac
+  done
+  if (( failures )); then
+    fail "$successes completed; $skipped skipped; $failures failed: ${(j:, :)failed_components}"
+    return 1
+  fi
+  if (( dry_run )); then
+    finish "Plan complete; $skipped skipped"
+  else
+    finish "$successes completed; $skipped skipped"
+  fi
+}
+
+skip_update() {
+  info "$1: skipped ($2)"
+  (( skipped += 1 ))
+  return 0
+}
+
+# Internal return code 3 denotes an expected skip, not a failed update.
+run_update() {
+  local label=$1 result started=$SECONDS
+  shift
+  section "$label"
+  "$@"
+  result=$?
+  case $result in
+    0)
+      (( successes += 1 ))
+      (( dry_run )) || ok "$label · $(( SECONDS - started ))s"
+      ;;
+    3)
+      (( skipped += 1 ))
+      ;;
+    *)
+      fail "$label update failed"
+      failed_components+=("$label")
+      (( failures += 1 ))
+      ;;
+  esac
+  return 0
+}
+
+execute() {
+  if (( dry_run )); then
+    info "Would run: ${(j: :)${(q)@}}"
+    return 0
+  fi
+  "$@"
 }
 
 update_homebrew() {
-    brew update && brew upgrade --greedy --yes && brew cleanup && brew autoremove
+  execute brew update && execute brew upgrade
 }
 
-update_zinit_plugins() {
-    source "$zinit_home/zinit.zsh" || return
-    zinit self-update && zinit update --plugins || return
-    if (( update_snippets )); then
-        # Read literal snippet declarations without loading the interactive shell.
+update_zinit() {
+  if (( dry_run )); then
+    info "Would update $1 using $zinit_home"
+    return 0
+  fi
+  # Isolate Zinit's shell options/functions from the update coordinator.
+  execute zsh -f -c '
+    source "$1/zinit.zsh" || exit
+    if [[ $2 == zinit ]]; then
+        zinit self-update && zinit update --plugins
+    else
+        # Use download status, not the last hook test (0–3 are update states).
+        source "${ZINIT[BIN_DIR]}/zinit-install.zsh" || exit
+        local boundary=") || return \$?"
+        local completion="return \$(( retval > 3 ? retval : 0 )); ) || return \$?"
+        functions[.zinit-download-snippet]=${functions[.zinit-download-snippet]/$boundary/$completion}
         local line
         local -a words
         while IFS= read -r line; do
             words=(${(z)line})
             [[ ${words[1]:-} == zinit && ${words[2]:-} == snippet ]] || continue
-            zinit update "${words[3]}" || return
-        done < "$dotfiles/zsh/.zshrc"
-    else
-        info "Snippets skipped; use --snippets to refresh active snippets"
+            ( zinit update "${(Q)words[3]}" ) </dev/null || exit
+        done < "$3/zsh/.zshrc"
     fi
+  ' dots-update "$zinit_home" "$1" "$dotfiles"
 }
 
 update_repo() {
-    git -C "$1" pull --ff-only && git -C "$1" submodule update --init --recursive
+  local repo=$1 changes
+  changes=$(git -C "$repo" status --porcelain --untracked-files=normal) || return 1
+  if [[ -n $changes ]]; then
+    info "skipped: local changes (commit or stash them when ready)"
+    return 3
+  fi
+  if ! git -C "$repo" symbolic-ref -q HEAD >/dev/null; then
+    info "skipped: detached HEAD"
+    return 3
+  fi
+  if ! git -C "$repo" rev-parse --verify '@{upstream}' >/dev/null 2>&1; then
+    info "skipped: no upstream branch"
+    return 3
+  fi
+  execute git -C "$repo" -c rebase.autoStash=false -c merge.autoStash=false pull --no-rebase --ff-only || return
+  execute git -C "$repo" submodule update --init --recursive
 }
 
-banner "Dotfiles · update"
-failures=0 successes=0
-failed_components=()
-
-if (( update_git )); then
-    for repo in "$dotfiles" "$HOME/.tmux" "$HOME/.gitalias" "$HOME/Library/Rime"; do
-        [[ -e "$repo/.git" ]] || continue
-        run_update "Git: ${repo:t}" update_repo "$repo"
-    done
-fi
-
-if (( update_brew )); then
-    if (( $+commands[brew] )); then
-        run_update Homebrew update_homebrew
-    else
-        warn "brew not found, skipping"
-    fi
-fi
-
-if (( update_zinit )); then
-    if [[ -r "$zinit_home/zinit.zsh" ]]; then
-        run_update Zinit update_zinit_plugins
-    else
-        warn "Zinit not found, skipping"
-    fi
-fi
-
-if (( update_nvim )); then
-    if (( $+commands[nvim] )); then
-        # Mason v2 refreshes its registry automatically on startup.
-        run_update Neovim nvim --headless '+Lazy! sync' +qa
-    else
-        warn "nvim not found, skipping"
-    fi
-fi
-
-if (( failures )); then
-    fail "$successes succeeded; $failures failed: ${(j:, :)failed_components}"
-    exit 1
-fi
-finish "$successes updates complete"
+main "$@"
