@@ -7,10 +7,6 @@ fi
 # --- Environment ---
 
 export LANG="${LANG:-en_US.UTF-8}"
-# Preserve Kitty truecolor over SSH before plugins load.
-if [[ $TERM == xterm-kitty && -z ${COLORTERM:-} ]]; then
-  export COLORTERM=truecolor
-fi
 [[ ${LC_CTYPE:-} != UTF-8 ]] || export LC_CTYPE="${LANG:-en_US.UTF-8}"
 [[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
 
@@ -150,6 +146,10 @@ zinit snippet PZT::modules/utility
 zinit ice wait'0b' lucid
 zinit snippet PZT::modules/completion
 
+# Fzf-tab: optional fuzzy completion; uncomment to use plugin defaults.
+# zinit ice wait'0b' lucid
+# zinit light Aloxaf/fzf-tab
+
 # Command-not-found: package suggestions for missing commands.
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
@@ -158,19 +158,19 @@ zinit snippet OMZP::command-not-found
 zinit ice wait lucid
 zinit snippet OMZP::extract
 
-# Multi-word history: Ctrl-R; load before autosuggestions.
-# Atuin: Ctrl-X Ctrl-R; initialize in the same deferred block.
+# Multi-word history: Ctrl-X Ctrl-R; load before autosuggestions.
+# Atuin: Ctrl-R and up-arrow search; initialize in the same deferred block.
 zinit ice wait'0b' lucid atload'
-  bindkey -M emacs "^R" history-search-multi-word
-  bindkey -M viins "^R" history-search-multi-word
-  bindkey -M vicmd "^R" history-search-multi-word
+  bindkey -M emacs "^X^R" history-search-multi-word
+  bindkey -M viins "^X^R" history-search-multi-word
+  bindkey -M vicmd "^X^R" history-search-multi-word
   if (( $+commands[atuin] )); then
     _evalcache atuin init zsh --disable-ctrl-r
   fi
   if (( $+widgets[atuin-search] )); then
-    bindkey -M emacs "^X^R" atuin-search
-    bindkey -M viins "^X^R" atuin-search-viins
-    bindkey -M vicmd "^X^R" atuin-search-vicmd
+    bindkey -M emacs "^R" atuin-search
+    bindkey -M viins "^R" atuin-search-viins
+    bindkey -M vicmd "^R" atuin-search-vicmd
     bindkey -M emacs "^[[A" atuin-up-search
     bindkey -M viins "^[[A" atuin-up-search-viins
     bindkey -M vicmd "^[[A" atuin-up-search-vicmd

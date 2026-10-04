@@ -65,8 +65,8 @@ For a single component, use `./setup.sh --yes zsh` (or `nvim`, `tmux`, `kitty`,
 
 | Shortcut | Action |
 | --- | --- |
-| `Ctrl-R` | Search shell history |
-| `Ctrl-X Ctrl-R` | Search Atuin history |
+| `Ctrl-R` | Search Atuin history |
+| `Ctrl-X Ctrl-R` | Multi-word shell history search |
 | `Ctrl-T` / `Alt-C` | Select files / directories with `fzf` |
 | `C-a \|` / `C-a -` | Split a Tmux pane |
 
