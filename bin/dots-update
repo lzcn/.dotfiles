@@ -171,7 +171,7 @@ execute() {
 }
 
 update_homebrew() {
-  execute brew update && execute brew upgrade
+  execute brew update && execute brew upgrade --no-ask
 }
 
 update_zinit() {
