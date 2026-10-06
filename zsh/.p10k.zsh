@@ -905,12 +905,16 @@
   # Default context color (no privileges, no SSH).
   typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND='#d9c23e'
 
+  # Read the machine hostname independently of Conda toolchain HOST.
+  local prompt_host=$(command hostname)
+  prompt_host=${prompt_host%%.*}
+
   # Context format when running with privileges: bold user@hostname.
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE='%B%n@%m'
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE="%B%n@$prompt_host"
   # Context format when in SSH without privileges: plain (not bold) user@hostname.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE='%n@%m'
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE="%n@$prompt_host"
   # Default context format (no privileges, no SSH): user@hostname.
-  typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n@%m'
+  typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%n@$prompt_host"
 
   # Don't show context unless running with privileges or in SSH.
   # Tip: Remove the next line to always show context.
