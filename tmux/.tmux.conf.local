@@ -175,8 +175,8 @@ tmux_conf_theme_terminal_title="#h 󰊤 #S ● #I #W"
 tmux_conf_theme_window_status_fg="$tmux_conf_theme_colour_3"
 tmux_conf_theme_window_status_bg="$tmux_conf_theme_colour_1"
 tmux_conf_theme_window_status_attr="none"
-# A trailing dot marks background activity without resembling focus.
-tmux_conf_theme_window_status_format="#I #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,,}#{?window_zoomed_flag,,}#{?window_activity_flag, ·,}"
+# Reserve indicator cells so activity, bells, and zoom do not resize tabs.
+tmux_conf_theme_window_status_format=" #I #W #{?window_bell_flag,,#{?window_activity_flag,·, }}#{?window_zoomed_flag,, } "
 #tmux_conf_theme_window_status_format="#{circled_window_index} #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,!,}#{?window_zoomed_flag,Z,}"
 #tmux_conf_theme_window_status_format="#I #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,🔔,}#{?window_zoomed_flag,🔍,}"
 
@@ -190,11 +190,11 @@ tmux_conf_theme_window_status_format="#I #W#{?#{||:#{window_bell_flag},#{window_
 #     - #{hostname_full_ssh}
 #     - #{username}
 #     - #{username_ssh}
-# A filled tab and an ASCII pointer make focus clear even without bold text.
+# Use colour to show focus while keeping the same label and spacing.
 tmux_conf_theme_window_status_current_fg="#282a36"
 tmux_conf_theme_window_status_current_bg="$tmux_conf_theme_colour_4"
 tmux_conf_theme_window_status_current_attr="bold"
-tmux_conf_theme_window_status_current_format="> #I #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,,}#{?window_zoomed_flag,,}"
+tmux_conf_theme_window_status_current_format="$tmux_conf_theme_window_status_format"
 #tmux_conf_theme_window_status_current_format="#{circled_window_index} #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,!,}#{?window_zoomed_flag,Z,}"
 #tmux_conf_theme_window_status_current_format="#I #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,🔔,}#{?window_zoomed_flag,🔍,}"
 
@@ -363,6 +363,10 @@ tmux_conf_urlscan_options="--compact --dedupe"
 # -- user customizations -------------------------------------------------------
 
 # this is the place to override or undo settings
+
+# Oh my tmux adds padding only to the current transparent tab; use equal padding.
+setw -g window-status-format "$tmux_conf_theme_window_status_format" #!important
+setw -g window-status-current-format "$tmux_conf_theme_window_status_current_format" #!important
 
 # true color support
 set -ga terminal-overrides ",xterm-256color*:Tc"
