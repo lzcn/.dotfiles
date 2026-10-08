@@ -83,19 +83,19 @@ tmux_conf_24b_colour=auto
 #   - tmux_conf_theme_synchronized
 tmux_conf_theme=enabled
 
-# Dracula palette: bright accents with a transparent status bar.
+# Dracula palette: slightly softer accents with a transparent status bar.
 tmux_conf_theme_colour_1="default"
 tmux_conf_theme_colour_2="#5c5470"
 tmux_conf_theme_colour_3="#f8f8f2"
-tmux_conf_theme_colour_4="#3ecbd9"
-tmux_conf_theme_colour_5="#d9c23e"
-tmux_conf_theme_colour_6="#4bcf5e"
+tmux_conf_theme_colour_4="#49b6c3"
+tmux_conf_theme_colour_5="#c9b95c"
+tmux_conf_theme_colour_6="#6cbd7a"
 tmux_conf_theme_colour_7="#f8f8f2"
 tmux_conf_theme_colour_8="default"
-tmux_conf_theme_colour_9="#d9c23e"
-tmux_conf_theme_colour_10="#d97d3d"
-tmux_conf_theme_colour_11="#4bcf5e"
-tmux_conf_theme_colour_12="#3ecbd9"
+tmux_conf_theme_colour_9="#c9b95c"
+tmux_conf_theme_colour_10="#c68b5e"
+tmux_conf_theme_colour_11="#6cbd7a"
+tmux_conf_theme_colour_12="#49b6c3"
 tmux_conf_theme_colour_13="#f8f8f2"
 tmux_conf_theme_colour_14="default"
 tmux_conf_theme_colour_15="default"
@@ -175,8 +175,8 @@ tmux_conf_theme_terminal_title="#h 󰊤 #S ● #I #W"
 tmux_conf_theme_window_status_fg="$tmux_conf_theme_colour_3"
 tmux_conf_theme_window_status_bg="$tmux_conf_theme_colour_1"
 tmux_conf_theme_window_status_attr="none"
-# Reserve indicator cells so activity, bells, and zoom do not resize tabs.
-tmux_conf_theme_window_status_format=" #I #W #{?window_bell_flag,,#{?window_activity_flag,·, }}#{?window_zoomed_flag,, } "
+# Compact labels use identical padding in active and inactive states.
+tmux_conf_theme_window_status_format="  #I #W  "
 #tmux_conf_theme_window_status_format="#{circled_window_index} #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,!,}#{?window_zoomed_flag,Z,}"
 #tmux_conf_theme_window_status_format="#I #W#{?#{||:#{window_bell_flag},#{window_zoomed_flag}}, ,}#{?window_bell_flag,🔔,}#{?window_zoomed_flag,🔍,}"
 
@@ -250,12 +250,12 @@ tmux_conf_theme_status_left=" 󰊤 #S "
 tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} "
 
 # status left style
-tmux_conf_theme_status_left_fg="#4bcf5e"
+tmux_conf_theme_status_left_fg="$tmux_conf_theme_colour_6"
 tmux_conf_theme_status_left_bg="default"
 tmux_conf_theme_status_left_attr="bold"
 
 # status right style
-tmux_conf_theme_status_right_fg="#d9c23e,#d97d3d,#3ecbd9"
+tmux_conf_theme_status_right_fg="$tmux_conf_theme_colour_5,$tmux_conf_theme_colour_10,$tmux_conf_theme_colour_4"
 tmux_conf_theme_status_right_bg="default,default,default"
 tmux_conf_theme_status_right_attr="none,none,none"
 
@@ -365,8 +365,11 @@ tmux_conf_urlscan_options="--compact --dedupe"
 # this is the place to override or undo settings
 
 # Oh my tmux adds padding only to the current transparent tab; use equal padding.
-setw -g window-status-format "$tmux_conf_theme_window_status_format" #!important
-setw -g window-status-current-format "$tmux_conf_theme_window_status_current_format" #!important
+# Use literal formats: theme variables are cleared before these overrides reload.
+setw -g window-status-format "  #I #W  " #!important
+setw -g window-status-current-format "  #I #W  " #!important
+# A subdued divider separates neighbouring tabs without changing their width.
+setw -g window-status-separator "#[fg=#5c5470,bg=default,none]│#[default]" #!important
 
 # true color support
 set -ga terminal-overrides ",xterm-256color*:Tc"
