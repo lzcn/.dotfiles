@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Remove detached tmux sessions only when all windows contain idle shells."""
+"""Remove detached tmux sessions when all panes are idle shells or dead."""
 import argparse
 from dataclasses import dataclass
 import os
@@ -74,13 +74,21 @@ def session_idle(session_id, processes, shells):
                      '-F', '#{pane_pid}\t#{pane_current_command}\t#{pane_dead}']).splitlines()
     if not panes:
         return False, 'no inspectable panes'
+    dead = 0
     for pane in panes:
         fields = pane.split('\t')
-        if len(fields) != 3 or fields[2] != '0' or not fields[0].isdigit():
-            return False, 'unknown or dead pane'
+        if len(fields) != 3 or fields[2] not in ('0', '1'):
+            return False, 'unknown pane'
+        # A confirmed dead pane has no running process; its old PID may be
+        # absent from the snapshot or already reused by another process.
+        if fields[2] == '1':
+            dead += 1
+            continue
+        if not fields[0].isdigit():
+            return False, 'unknown pane'
         if not pane_idle(int(fields[0]), fields[1], processes, shells):
             return False, f'active or uninspectable pane ({fields[1]})'
-    return True, f'{len(panes)} idle pane(s)'
+    return True, f'{len(panes) - dead} idle pane(s), {dead} dead pane(s)'
 
 
 def main():

@@ -41,7 +41,8 @@ Run `dots-update --help` for details and `make setup` to apply configuration.
 
 ## Utilities
 
-- `tmux-kill-idle --dry-run`: list idle detached sessions. Active processes and
+- `tmux-kill-idle --dry-run`: list detached sessions containing only idle shells
+  or dead panes. Active processes and
   attached sessions are kept. Use `tmux set-option -t SESSION @keep 1` to protect
   a session explicitly.
 - `active-users [WTMP]`: report recorded login activity.
