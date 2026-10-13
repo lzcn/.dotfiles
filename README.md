@@ -1,74 +1,41 @@
 # Personal Dotfiles
 
-macOS and Linux configuration, managed with GNU Make.
+macOS and Linux dotfiles for Zsh, tmux, Kitty, and Neovim.
 
 ## Install
 
-On a fresh machine:
+Run:
 
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/lzcn/.dotfiles/master/install.sh)" -- bootstrap
 ```
 
-This installs prerequisites, clones the repo to `~/.dotfiles`, and runs `make install`.
+This prepares dependencies, clones the repo to `~/.dotfiles`, and applies the configuration. Conflicting files are backed up. Open a new Zsh session afterward.
 
-For an existing machine:
-
-```bash
-git clone https://github.com/lzcn/.dotfiles.git ~/.dotfiles
-cd ~/.dotfiles && make install
-```
-
-## Update
+## Maintenance
 
 ```bash
-dots-update
+dots-update all # Update configs, tools, and plugins
+make setup      # Apply configuration
+make check      # Check configuration
 ```
 
-With no targets, only configuration Git repos are updated. Explicit targets
-replace this default; they do not add to it:
+## Local settings
 
-```bash
-dots-update brew          # Homebrew only
-dots-update git nvim      # Configuration repos and Neovim
-dots-update all           # All installed components, including Zsh snippets
-dots-update all --dry-run # Inspect the plan without updating anything
-```
+Edit `~/.zshenv`; keep secrets in `~/.config/zsh/secrets.zsh`.
 
-Targets: `git`, `brew`, `zinit`, `nvim`, `snippets`, `all`. `make update` uses the
-default. Repos with local changes are skipped; Git updates use fast-forward only.
-Run `dots-update --help` for details and `make setup` to apply configuration.
-
-## Utilities
-
-- `tmux-kill-idle --dry-run`: list detached sessions containing only idle shells
-  or dead panes. Active processes and
-  attached sessions are kept. Use `tmux set-option -t SESSION @keep 1` to protect
-  a session explicitly.
-- `active-users [WTMP]`: report recorded login activity.
-- `intruder-detect [AUTH_LOG]`: report failed SSH password attempts.
-
-All commands support `--help`. Log and tmux utilities require Python 3.9+.
-
-## Commands
-
-| Command | Purpose |
-| --- | --- |
-| `make install` | Install dependencies, apply configuration, and check |
-| `make setup` | Apply configuration and back up conflicts |
-| `make update` | Update configuration Git repos |
-| `make check` | Check syntax and configuration |
-
-For a single component, use `./setup.sh --yes zsh` (or `nvim`, `tmux`, `kitty`,
-`git`, `atuin`, `swift`). See [`lazyvim/manual.md`](lazyvim/manual.md) for Neovim.
+- `CONDA_DEFAULT_START_ENV=name`: activate `name` in new interactive shells. Unset or empty uses `base`.
+- `PROXY_HOST`, `PROXY_HTTP_PORT`, `PROXY_SOCKS_PORT`: proxy endpoints. Use `proxy on`, `proxy off`, or `proxy status`; activation is manual.
+- `_evalcache_clear`: refresh cached tool initialization on the next shell startup.
 
 ## Shortcuts
 
-| Shortcut | Action |
-| --- | --- |
-| `Ctrl-R` | Search Atuin history |
-| `Ctrl-X Ctrl-R` | Multi-word shell history search |
-| `Ctrl-T` / `Alt-C` | Select files / directories with `fzf` |
-| `C-a \|` / `C-a -` | Split a Tmux pane |
-
-For local settings, edit `~/.zshenv`. Secrets belong in `~/.config/zsh/secrets.zsh`; setup creates it with private permissions.
+| Shortcut           | Action                                    |
+| ------------------ | ----------------------------------------- |
+| `Ctrl-R`           | Search Atuin history                      |
+| `Tab`              | Search completion candidates with fzf-tab |
+| `Ctrl-X Ctrl-R`    | Multi-word shell history search           |
+| `Ctrl-T` / `Alt-C` | Select files / directories with `fzf`     |
+| `C-a \|` / `C-a -` | Split a Tmux pane                         |
+| `C-a r` / `C-a u`  | Reload Tmux / update Tmux plugins         |
+| `Ctrl-Shift-F5`    | Reload Kitty                              |

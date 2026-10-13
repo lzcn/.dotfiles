@@ -9,6 +9,42 @@ return {
     "catppuccin/nvim",
     opts = {
       flavour = "mocha",
+      no_italic = true,
+      custom_highlights = function(colors)
+        return {
+          Cursor = { fg = colors.base, bg = colors.blue },
+          WinSeparator = { fg = colors.surface1 },
+          Visual = { bg = colors.surface0 },
+          PmenuSel = { fg = colors.blue, bg = colors.surface0, bold = true },
+          BlinkCmpMenuSelection = { link = "PmenuSel" },
+        }
+      end,
+    },
+  },
+  {
+    "akinsho/bufferline.nvim",
+    opts = {
+      options = {
+        numbers = "ordinal",
+        separator_style = "thin",
+        show_close_icon = false,
+        show_buffer_close_icons = false,
+      },
+      highlights = {
+        fill = { bg = "#1e1e2e" },
+        background = { fg = "#a6adc8", bg = "#1e1e2e" },
+        buffer_selected = { fg = "#89b4fa", bg = "#313244", bold = true, italic = false },
+        numbers_selected = { fg = "#89b4fa", bg = "#313244", bold = true },
+        separator = { fg = "#45475a", bg = "#1e1e2e" },
+        separator_selected = { fg = "#45475a", bg = "#313244" },
+      },
+    },
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = {
+      options = { component_separators = "·", section_separators = "" },
+      sections = { lualine_b = { { "branch", color = { fg = "#cba6f7" } } } },
     },
   },
   {

@@ -19,7 +19,7 @@ Select what to update. Explicit targets REPLACE the default:
   brew          Homebrew packages/apps (no greedy upgrade or cleanup)
   zinit         Zinit itself and its installed plugins
   nvim          Neovim plugins
-  snippets      Zsh snippets declared in this checkout's .zshrc
+  snippets      Installed Zsh snippets
   all           update all
 
 Examples:
@@ -76,15 +76,18 @@ main() {
     --proxy)
       export http_proxy="http://${PROXY_HOST:-127.0.0.1}:${PROXY_HTTP_PORT:-7890}"
       export https_proxy=$http_proxy
-      export all_proxy="socks5://${PROXY_HOST:-127.0.0.1}:${PROXY_SOCKS_PORT:-${PROXY_HTTP_PORT:-7890}}"
+      export all_proxy="socks5h://${PROXY_HOST:-127.0.0.1}:${PROXY_SOCKS_PORT:-${PROXY_HTTP_PORT:-7890}}"
       export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy ALL_PROXY=$all_proxy
+      set_git_proxy "$http_proxy"
       ;;
     --no-proxy)
-      unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
+      unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY no_proxy NO_PROXY
+      set_git_proxy ''
       ;;
   esac
   banner "Dotfiles · update"
   info "Targets: ${(j:, :)targets}"
+  [[ $proxy_mode != --proxy ]] || info "Proxy: $http_proxy"
   local target repo
   for target in "${targets[@]}"; do
     case $target in
@@ -174,31 +177,84 @@ update_homebrew() {
   execute brew update && execute brew upgrade --no-ask
 }
 
+set_git_proxy() {
+  # Command-scope config overrides stored http.proxy settings for this run.
+  local -i count=${GIT_CONFIG_COUNT:-0}
+  export "GIT_CONFIG_KEY_${count}=http.proxy" "GIT_CONFIG_VALUE_${count}=$1"
+  export GIT_CONFIG_COUNT=$(( count + 1 ))
+}
+
 update_zinit() {
   if (( dry_run )); then
     info "Would update $1 using $zinit_home"
     return 0
   fi
-  # Isolate Zinit's shell options/functions from the update coordinator.
-  execute zsh -f -c '
-    source "$1/zinit.zsh" || exit
-    if [[ $2 == zinit ]]; then
-        zinit self-update && zinit update --plugins
-    else
-        # Use download status, not the last hook test (0–3 are update states).
-        source "${ZINIT[BIN_DIR]}/zinit-install.zsh" || exit
-        local boundary=") || return \$?"
-        local completion="return \$(( retval > 3 ? retval : 0 )); ) || return \$?"
-        functions[.zinit-download-snippet]=${functions[.zinit-download-snippet]/$boundary/$completion}
-        local line
-        local -a words
-        while IFS= read -r line; do
-            words=(${(z)line})
-            [[ ${words[1]:-} == zinit && ${words[2]:-} == snippet ]] || continue
-            ( zinit update "${(Q)words[3]}" ) </dev/null || exit
-        done < "$3/zsh/.zshrc"
+  # Zinit can swallow failed fetch/pull statuses. Record transport failures
+  # without replacing its update hooks or modifying the installed Zinit code.
+  local work result
+  work=$(mktemp -d "${TMPDIR:-/tmp}/dots-update-zinit.XXXXXXXX") || return 1
+  {
+    cat > "$work/git" <<'GIT'
+#!/bin/sh
+"$DOTS_UPDATE_GIT" "$@"
+result=$?
+if [ "$result" -ne 0 ]; then
+  for arg do
+    case "$arg" in
+      fetch|pull|clone|submodule)
+        printf '%s\n' "$result" >> "$DOTS_UPDATE_GIT_ERRORS"
+        break
+        ;;
+    esac
+  done
+fi
+exit "$result"
+GIT
+    chmod +x "$work/git" || return 1
+    # Isolate Zinit's shell options/functions from the update coordinator.
+    DOTS_UPDATE_GIT=$commands[git] DOTS_UPDATE_GIT_ERRORS="$work/errors" \
+      execute zsh -f -c '
+        path=("$3" $path)
+        source "$1/zinit.zsh" || exit
+        if [[ $2 == zinit ]]; then
+          zinit self-update --no-pager
+          result=$?
+          (( result == 0 )) && [[ ! -s $DOTS_UPDATE_GIT_ERRORS ]] || exit 1
+          zinit update --plugins --no-pager
+        else
+          # Bulk updates discard snippet failures. Update each installed snippet
+          # separately, including unloaded snippets and custom id-as names.
+          source "${ZINIT[BIN_DIR]}/zinit-install.zsh" || exit 1
+          # Older Zinit returns the last hook test instead of the download status.
+          # Normalize its successful download states (0-3) in this process only.
+          local boundary=") || return \$?"
+          local completion="return \$(( retval > 3 ? retval : 0 )); ) || return \$?"
+          if [[ ${functions[.zinit-download-snippet]} != *"$boundary"* ]]; then
+            print -u2 -- "Unsupported Zinit snippet downloader; cannot verify update results"
+            exit 1
+          fi
+          functions[.zinit-download-snippet]=${functions[.zinit-download-snippet]/$boundary/$completion}
+          local metadata snippet
+          for metadata in "${ZINIT[SNIPPETS_DIR]}"/**/(._zinit|._zplugin)/mode(DN); do
+            [[ -f ${metadata:h}/url ]] || continue
+            snippet=$(<"${metadata:h}/url")
+            if [[ -s ${metadata:h}/id-as ]]; then
+              snippet=$(<"${metadata:h}/id-as")
+            fi
+            ( zinit update --no-pager "$snippet" ) </dev/null || exit 1
+          done
+          exit 0
+        fi
+      ' dots-update "$zinit_home" "$1" "$work"
+    result=$?
+    if [[ -s "$work/errors" ]]; then
+      fail "Zinit encountered Git errors; check the proxy/GitHub connection"
+      result=1
     fi
-  ' dots-update "$zinit_home" "$1" "$dotfiles"
+    return $result
+  } always {
+    rm -rf -- "$work"
+  }
 }
 
 update_repo() {
