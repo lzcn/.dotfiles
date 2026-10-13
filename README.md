@@ -25,7 +25,7 @@ make check      # Check configuration
 Edit `~/.zshenv`; keep secrets in `~/.config/zsh/secrets.zsh`.
 
 - `CONDA_DEFAULT_START_ENV=name`: activate `name` in new interactive shells. Unset or empty uses `base`.
-- `PROXY_HOST`, `PROXY_HTTP_PORT`, `PROXY_SOCKS_PORT`: proxy endpoints. Use `proxy on`, `proxy off`, or `proxy status`; activation is manual.
+- `PROXY_HOST`, `PROXY_HTTP_PORT`, `PROXY_SOCKS_PORT`: proxy endpoints. Use `proxy` to toggle; `proxy on`, `proxy off`, and `proxy status` are also available.
 - `_evalcache_clear`: refresh cached tool initialization on the next shell startup.
 
 ## Shortcuts

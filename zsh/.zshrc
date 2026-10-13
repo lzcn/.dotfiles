@@ -19,24 +19,34 @@ if [[ ! -r "$ZINIT_HOME/zinit.zsh" ]]; then
 fi
 
 source "$ZINIT_HOME/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
 
 # --- Options ---
 
 setopt interactive_comments
 setopt auto_cd                  # Change directory by typing its name.
-setopt auto_pushd               # Keep previous directories on the stack.
-setopt pushd_ignore_dups        # Avoid duplicate stack entries.
 
 # Don't highlight pasted text.
 zle_highlight+=(paste:none)
 
 # --- History ---
 
-zinit snippet OMZL::history.zsh
+[[ -n ${HISTFILE:-} ]] || HISTFILE="$HOME/.zsh_history"
+(( HISTSIZE < 50000 )) && HISTSIZE=50000
 (( SAVEHIST < 50000 )) && SAVEHIST=50000
-setopt hist_find_no_dups hist_save_no_dups
+setopt extended_history hist_expire_dups_first hist_find_no_dups
+setopt hist_ignore_dups hist_ignore_space hist_save_no_dups
+setopt hist_verify share_history
+
+# --- Completion ---
+
+# Native completion is ready before aliases and deferred plugins.
+autoload -Uz compinit
+compinit -i
+autoload -Uz _zinit
+_comps[zinit]=_zinit
+zstyle ':completion:*' completer _complete
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
 
 # --- Theme ---
 
@@ -57,7 +67,7 @@ zinit ice wait'0c' lucid atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-comple
 zinit light zsh-users/zsh-autosuggestions
 
 # Fast syntax highlighting: command colors; load after other widgets.
-zinit ice wait'0c' lucid atload'_zsh_autosuggest_start'
+zinit ice wait'0c' lucid atload'_zsh_autosuggest_start; zicdreplay'
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 # Git-open: open the repository in a browser with `git open`.
@@ -67,23 +77,27 @@ zinit light paulirish/git-open
 # Evalcache: reuse cached initialization scripts across shell sessions.
 zinit light mroth/evalcache
 
+# Multi-word history: Ctrl-X Ctrl-R; initialize Atuin from the local binary.
+zinit ice wait'0b' lucid atload'
+  if (( $+commands[atuin] )); then
+    _evalcache atuin init zsh
+    bindkey -M vicmd "^R" atuin-search-vicmd
+  fi'
+zinit light zdharma-continuum/history-search-multi-word
+
+# --- Tool initialization ---
+
 # Homebrew: reuse cached shellenv outside tmux.
 if [[ -z ${TMUX:-} && -x "${HOMEBREW_PREFIX:-}/bin/brew" ]]; then
   _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
 fi
 
-# Conda: load shell functions directly; activate the configured environment or base.
-if [[ -x "${CONDA_ROOT:-}/bin/conda" ]]; then
-  if [[ -r "$CONDA_ROOT/etc/profile.d/conda.sh" ]]; then
-    source "$CONDA_ROOT/etc/profile.d/conda.sh"
-  else
-    _evalcache CONDA_AUTO_ACTIVATE_BASE=false "$CONDA_ROOT/bin/conda" shell.zsh hook
-  fi
+# Conda: use its standard shell integration and the configured startup environment.
+if [[ -r "${CONDA_ROOT:-}/etc/profile.d/conda.sh" ]]; then
+  source "$CONDA_ROOT/etc/profile.d/conda.sh"
   [[ ${CONDA_DEFAULT_ENV:-} == "${CONDA_DEFAULT_START_ENV:-base}" ]] ||
     conda activate "${CONDA_DEFAULT_START_ENV:-base}"
-  if [[ -n ${CONDA_PREFIX:-} && -d "$CONDA_PREFIX/bin" ]]; then
-    path=("$CONDA_PREFIX/bin" ${path:#"$CONDA_PREFIX/bin"})
-  fi
+  [[ -z ${CONDA_PREFIX:-} ]] || path=("$CONDA_PREFIX/bin" ${path:#"$CONDA_PREFIX/bin"})
 fi
 
 # Direnv: project environment from .envrc; enable with `direnv allow`.
@@ -92,36 +106,20 @@ fi
 # Zoxide: directory navigation with `z <directory>`.
 (( $+commands[zoxide] )) && _evalcache zoxide init zsh
 
-# Prezto utilities; dependencies load automatically.
-zstyle ':prezto:module:utility' correct no
-zstyle ':prezto:module:utility:ls' color yes
-zinit ice wait'0a' lucid
-zinit snippet PZT::modules/utility
+# --- Helpers ---
 
-# Completion: initialize after Zinit restores its temporary compdef wrapper.
-zinit ice wait'0b' lucid atload'zicompinit; zicdreplay'
-zinit snippet PZT::modules/completion
-
-# OMZ: package suggestions and archive extraction.
+# Keep these snippets: package detection and archive formats need more than aliases.
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 zinit ice wait lucid
 zinit snippet OMZP::extract
 
-# Multi-word history: Ctrl-X Ctrl-R.
-zinit ice wait'0b' lucid
-zinit light zdharma-continuum/history-search-multi-word
-
-# Atuin: use its official integration and default search bindings.
-zinit ice wait'0b' lucid has'atuin' atload'bindkey -M vicmd "^R" atuin-search-vicmd'
-zinit snippet https://raw.githubusercontent.com/atuinsh/atuin/main/atuin.plugin.zsh
+# --- Key bindings ---
 
 # Fzf: Ctrl-T for files, Alt-C for directories.
 if [[ -r ${HOMEBREW_PREFIX:-}/opt/fzf/shell/key-bindings.zsh ]]; then
   FZF_CTRL_R_COMMAND= source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
 fi
-
-# --- Key bindings ---
 
 for keymap in emacs viins vicmd; do
   bindkey -M "$keymap" '^X^R' history-search-multi-word
@@ -132,17 +130,16 @@ bindkey -M viins '^[n' down-line-or-search # Alt+n for searching forward in hist
 bindkey -M viins '^[f' forward-word        # Alt+f for moving forward by word
 bindkey -M viins '^[b' backward-word       # Alt+b for moving backward by word
 
-# Quick directory stack navigation (d shows stack, 1-9 switches)
-alias d='dirs -v'
-for num in {1..9}; do
-  alias "$num"="cd -$num"
-done
+# --- Proxy ---
 
-# --- Aliases ---
-
-# Proxy: `proxy on|off|status`; endpoints come from ~/.zshenv.
+# No argument toggles the current shell; endpoints come from ~/.zshenv.
 proxy() {
-  case ${1:-help} in
+  local action=${1:-toggle} active=off
+  [[ -z ${http_proxy:-}${https_proxy:-}${all_proxy:-}${HTTP_PROXY:-}${HTTPS_PROXY:-}${ALL_PROXY:-} ]] || active=on
+  if [[ $action == toggle ]]; then
+    [[ $active == on ]] && action=off || action=on
+  fi
+  case $action in
     on)
       export http_proxy="http://${PROXY_HOST:-127.0.0.1}:${PROXY_HTTP_PORT:-7890}"
       export https_proxy=$http_proxy
@@ -150,24 +147,41 @@ proxy() {
       export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy ALL_PROXY=$all_proxy
       export no_proxy="${NO_PROXY:-localhost,127.0.0.1,::1}"
       export NO_PROXY=$no_proxy
+      print 'Proxy: on'
       ;;
-    off) unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY no_proxy NO_PROXY ;;
-    status) [[ -n ${http_proxy:-}${https_proxy:-}${all_proxy:-} ]] && print 'Proxy: on' || print 'Proxy: off' ;;
-    *) print 'Usage: proxy on|off|status' ;;
+    off)
+      unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY no_proxy NO_PROXY
+      print 'Proxy: off'
+      ;;
+    status) print "Proxy: $active" ;;
+    *) print -u2 'Usage: proxy [on|off|status]'; return 2 ;;
   esac
 }
 
-# Rsync shortcuts use OMZ's existing definitions.
-zinit ice wait lucid
-zinit snippet OMZP::rsync
+# --- Aliases ---
 
-# Tmux shortcuts; retain normal new-session behavior and the existing config.
-ZSH_TMUX_AUTOCONNECT=false
-ZSH_TMUX_FIXTERM=false
-zinit ice wait'0b' lucid has'tmux' atload'(( $+functions[compdef] )) || zicompinit; zicdreplay'
-zinit snippet OMZP::tmux
+# Rsync aliases.
+alias rsync-copy='rsync -avz --progress -h'
+alias rsync-move='rsync -avz --progress -h --remove-source-files'
+alias rsync-update='rsync -avzu --progress -h'
+alias rsync-synchronize='rsync -avzu --delete --progress -h'
+
+# Tmux aliases; use Oh My Tmux directly.
+alias ta='tmux attach -t'
+alias tad='tmux attach -d -t'
+alias ts='tmux new-session -s'
 alias tls='tmux list-sessions'
 alias tlw='tmux list-windows'
+alias tkss='tmux kill-session -t'
+
+# Colored directory listings without loading an alias library.
+if (( $+commands[gls] )); then
+  alias ls='gls --color=auto'
+elif [[ $OSTYPE == darwin* ]]; then
+  alias ls='ls -G'
+else
+  alias ls='ls --color=auto'
+fi
 
 # Conda aliases
 alias sra='conda activate'
