@@ -53,7 +53,7 @@ zinit light hlissner/zsh-autopair
 
 # Autosuggestions: use the plugin's defaults; Tab clears history suggestions.
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-zinit ice wait'0c' lucid atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(fzf-tab-complete)'
+zinit ice wait'0c' lucid atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete)'
 zinit light zsh-users/zsh-autosuggestions
 
 # Fast syntax highlighting: command colors; load after other widgets.
@@ -99,14 +99,8 @@ zinit ice wait'0a' lucid
 zinit snippet PZT::modules/utility
 
 # Completion: initialize after Zinit restores its temporary compdef wrapper.
-zinit ice wait'0b' lucid atload'
-  zicompinit
-  zicdreplay
-  zstyle ":completion:*:descriptions" format "[%d]"
-  zstyle ":completion:*:*:*:*:*" menu no'
+zinit ice wait'0b' lucid atload'zicompinit; zicdreplay'
 zinit snippet PZT::modules/completion
-zinit ice wait'0b' lucid atinit'(( $+functions[compdef] )) || zicompinit'
-zinit light Aloxaf/fzf-tab
 
 # OMZ: package suggestions and archive extraction.
 zinit ice wait lucid

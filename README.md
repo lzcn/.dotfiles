@@ -33,7 +33,7 @@ Edit `~/.zshenv`; keep secrets in `~/.config/zsh/secrets.zsh`.
 | Shortcut           | Action                                    |
 | ------------------ | ----------------------------------------- |
 | `Ctrl-R`           | Search Atuin history                      |
-| `Tab`              | Search completion candidates with fzf-tab |
+| `Tab`              | Complete commands and paths               |
 | `Ctrl-X Ctrl-R`    | Multi-word shell history search           |
 | `Ctrl-T` / `Alt-C` | Select files / directories with `fzf`     |
 | `C-a \|` / `C-a -` | Split a Tmux pane                         |
