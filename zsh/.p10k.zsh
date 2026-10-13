@@ -900,8 +900,8 @@
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
   typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND='#f38ba8'
-  # SSH context: keep the color stable when highlighting loads.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND='#89b4fa'
+  # SSH context: distinguish the remote host from the blue working directory.
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND='#fab387'
   # Default context color (no privileges, no SSH).
   typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND='#f9e2af'
 
@@ -910,9 +910,9 @@
   prompt_host=${prompt_host%%.*}
 
   # Context format when running with privileges: bold user@hostname.
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE="%B%n@$prompt_host"
-  # Context format when in SSH without privileges: plain (not bold) user@hostname.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE="%n@$prompt_host"
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE="%B%n@$prompt_host%b"
+  # Context format in SSH: bold user@hostname in the remote accent color.
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE="%B%n@$prompt_host%b"
   # Default context format (no privileges, no SSH): user@hostname.
   typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%n@$prompt_host"
 

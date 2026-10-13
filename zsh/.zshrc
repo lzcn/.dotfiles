@@ -72,9 +72,13 @@ if [[ -z ${TMUX:-} && -x "${HOMEBREW_PREFIX:-}/bin/brew" ]]; then
   _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
 fi
 
-# Conda: cache the native hook; activate the configured environment or base.
+# Conda: load shell functions directly; activate the configured environment or base.
 if [[ -x "${CONDA_ROOT:-}/bin/conda" ]]; then
-  _evalcache CONDA_AUTO_ACTIVATE_BASE=false "$CONDA_ROOT/bin/conda" shell.zsh hook
+  if [[ -r "$CONDA_ROOT/etc/profile.d/conda.sh" ]]; then
+    source "$CONDA_ROOT/etc/profile.d/conda.sh"
+  else
+    _evalcache CONDA_AUTO_ACTIVATE_BASE=false "$CONDA_ROOT/bin/conda" shell.zsh hook
+  fi
   [[ ${CONDA_DEFAULT_ENV:-} == "${CONDA_DEFAULT_START_ENV:-base}" ]] ||
     conda activate "${CONDA_DEFAULT_START_ENV:-base}"
   if [[ -n ${CONDA_PREFIX:-} && -d "$CONDA_PREFIX/bin" ]]; then
@@ -94,11 +98,14 @@ zstyle ':prezto:module:utility:ls' color yes
 zinit ice wait'0a' lucid
 zinit snippet PZT::modules/utility
 
-# Completion: Prezto defaults with fzf-tab's own Tab bindings.
-zinit ice atinit'zicompinit' atload'zicdreplay'
+# Completion: initialize after Zinit restores its temporary compdef wrapper.
+zinit ice wait'0b' lucid atload'
+  zicompinit
+  zicdreplay
+  zstyle ":completion:*:descriptions" format "[%d]"
+  zstyle ":completion:*:*:*:*:*" menu no'
 zinit snippet PZT::modules/completion
-zstyle ':completion:*:descriptions' format '[%d]'
-zstyle ':completion:*:*:*:*:*' menu no
+zinit ice wait'0b' lucid atinit'(( $+functions[compdef] )) || zicompinit'
 zinit light Aloxaf/fzf-tab
 
 # OMZ: package suggestions and archive extraction.
@@ -163,7 +170,7 @@ zinit snippet OMZP::rsync
 # Tmux shortcuts; retain normal new-session behavior and the existing config.
 ZSH_TMUX_AUTOCONNECT=false
 ZSH_TMUX_FIXTERM=false
-zinit ice wait lucid has'tmux' atload'zicdreplay'
+zinit ice wait'0b' lucid has'tmux' atload'(( $+functions[compdef] )) || zicompinit; zicdreplay'
 zinit snippet OMZP::tmux
 alias tls='tmux list-sessions'
 alias tlw='tmux list-windows'
