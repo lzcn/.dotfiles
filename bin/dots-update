@@ -117,7 +117,7 @@ main() {
         ;;
       nvim)
         if (( $+commands[nvim] )); then
-          run_update Neovim execute nvim --headless '+Lazy! sync' +qa
+          run_update Neovim update_nvim
         else
           skip_update Neovim "nvim not installed"
         fi
@@ -157,7 +157,7 @@ run_update() {
       (( skipped += 1 ))
       ;;
     *)
-      fail "$label update failed"
+      fail "$label update failed (exit $result)"
       failed_components+=("$label")
       (( failures += 1 ))
       ;;
@@ -175,6 +175,39 @@ execute() {
 
 update_homebrew() {
   execute brew update && execute brew upgrade --no-ask
+}
+
+update_nvim() {
+  if (( dry_run )); then
+    info "Would sync Neovim plugins"
+    return 0
+  fi
+  # Lazy's normal +qa exits successfully even when a plugin task failed.
+  local script='
+    local ok, err = pcall(function()
+      local config = require("lazy.core.config")
+      -- Task logging records failed process exits; raw headless output does not.
+      config.options.headless.process = false
+      require("lazy").sync({ wait = true, show = false })
+      local failed = {}
+      for _, plugins in ipairs({ config.plugins, config.to_clean }) do
+        for _, plugin in pairs(plugins) do
+          if require("lazy.core.plugin").has_errors(plugin) then
+            failed[#failed + 1] = plugin.name
+          end
+        end
+      end
+      if #failed > 0 then
+        table.sort(failed)
+        error("Plugin updates failed: " .. table.concat(failed, ", "))
+      end
+    end)
+    if not ok then
+      io.stderr:write(tostring(err) .. "\n")
+      vim.cmd("cquit 1")
+    end
+  '
+  execute nvim --headless --cmd 'let g:dots_update = v:true' "+lua $script" +qa
 }
 
 set_git_proxy() {
@@ -216,6 +249,12 @@ GIT
       execute zsh -f -c '
         path=("$3" $path)
         source "$1/zinit.zsh" || exit
+        # Zinit pager timers can capture PID 0, which kills this entire job.
+        # Keep the guard in this child shell; do not alter installed Zinit files.
+        kill() {
+          [[ $1 == -9 && ${2:-} == 0 ]] && return 0
+          builtin kill "$@"
+        }
         if [[ $2 == zinit ]]; then
           zinit self-update --no-pager
           result=$?

@@ -10,6 +10,24 @@ import sys
 from lib import CommandError, capture, cli, require_command
 
 
+def styled(text, code, *, file=None):
+    stream = sys.stdout if file is None else file
+    if stream.isatty() and 'NO_COLOR' not in os.environ and os.environ.get('TERM') != 'dumb':
+        return f'\033[{code}m{text}\033[0m'
+    return text
+
+
+def show_candidates(candidates):
+    count = len(candidates)
+    noun = 'session' if count == 1 else 'sessions'
+    print(f'\n  {count} detached {noun} ready to remove\n')
+    width = max(len('SESSION'), *(len(name) for _, name, _ in candidates))
+    print(styled(f'  {"SESSION":<{width}}  PANES', '2'))
+    for _, name, reason in candidates:
+        color = '36' if 'idle' in reason else '2'
+        print(f'  {name:<{width}}  {styled(reason, color)}')
+
+
 @dataclass(frozen=True)
 class Process:
     parent: int
@@ -88,7 +106,12 @@ def session_idle(session_id, processes, shells):
             return False, 'unknown pane'
         if not pane_idle(int(fields[0]), fields[1], processes, shells):
             return False, f'active or uninspectable pane ({fields[1]})'
-    return True, f'{len(panes) - dead} idle pane(s), {dead} dead pane(s)'
+    counts = []
+    if len(panes) > dead:
+        counts.append(f'{len(panes) - dead} idle')
+    if dead:
+        counts.append(f'{dead} exited')
+    return True, ', '.join(counts)
 
 
 def main():
@@ -98,17 +121,19 @@ def main():
         'Protect a session explicitly: tmux set-option -t SESSION @keep 1. '
         'Exit: 0 completed/cancelled, 1 inspection or deletion error, 2 invalid arguments.')
     parser.add_argument('--dry-run', action='store_true', help='list candidates without deleting or prompting')
-    parser.add_argument('-v', '--verbose', action='store_true', help='also explain retained sessions')
+    parser.add_argument('-v', '--verbose', action='store_true', help='show each deletion and explain retained sessions')
     parser.add_argument('-f', '--force', action='store_true', help='skip confirmation; protection and recheck still apply')
     args = parser.parse_args()
     require_command('tmux')
     require_command('ps')
+    print(styled('\nTmux · cleanup', '1'))
+    print(styled('─' * 40, '2'))
     # No server is an ordinary no-op; other tmux errors remain errors.
     result = subprocess.run(['tmux', 'list-sessions', '-F', '#{session_id}\t#{session_name}'],
                             text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode:
         if 'no server running' in result.stderr or 'No such file or directory' in result.stderr:
-            print('No tmux sessions.'); return 0
+            print('  No tmux sessions.'); return 0
         raise CommandError(result.stderr.strip())
     processes, shells = process_snapshot(), shell_names()
     candidates = []
@@ -116,31 +141,45 @@ def main():
         session_id, name = line.split('\t', 1)
         idle, reason = session_idle(session_id, processes, shells)
         if idle:
-            candidates.append((session_id, name))
-            print(f'candidate: {name} ({reason})')
+            candidates.append((session_id, name, reason))
         elif args.verbose:
-            print(f'kept: {name} ({reason})')
+            print(styled(f'  · Kept {name} · {reason}', '2'))
     if not candidates:
-        print('No idle detached sessions.'); return 0
+        print('  No idle detached sessions.'); return 0
+    show_candidates(candidates)
     if args.dry_run:
-        print(f'{len(candidates)} candidate(s); nothing deleted.'); return 0
+        print('\n  Preview only; nothing deleted.'); return 0
     if not args.force:
         if not sys.stdin.isatty():
             raise CommandError('Confirmation requires a terminal; use --dry-run or --force')
-        if input(f'Delete {len(candidates)} session(s)? [y/N] ').strip().lower() not in ('y', 'yes'):
-            print('Cancelled.'); return 0
-    errors = 0
-    for session_id, name in candidates:
+        noun = 'session' if len(candidates) == 1 else 'sessions'
+        if input(styled(f'\n  Delete {len(candidates)} {noun}? [y/N] ', '33')).strip().lower() not in ('y', 'yes'):
+            print('  Cancelled.'); return 0
+    if args.verbose:
+        print()
+    deleted = kept = errors = 0
+    for session_id, name, _ in candidates:
         try:
             # Recheck attachment, all panes and processes after confirmation.
             idle, reason = session_idle(session_id, process_snapshot(), shells)
             if not idle:
-                print(f'kept: {name} ({reason})'); continue
+                print(styled(f'  ! Kept {name} · {reason}', '33'))
+                kept += 1
+                continue
             capture(['tmux', 'kill-session', '-t', session_id])
-            print(f'deleted: {name}')
+            deleted += 1
+            if args.verbose:
+                print(styled(f'  ✓ Deleted {name}', '32'))
         except CommandError as error:
-            print(f'error: {name}: {error}', file=sys.stderr)
+            print(styled(f'  ✗ {name} · {error}', '31', file=sys.stderr), file=sys.stderr)
             errors += 1
+    noun = 'session' if deleted == 1 else 'sessions'
+    summary = [f'Deleted {deleted} {noun}']
+    if kept:
+        summary.append(f'{kept} kept')
+    if errors:
+        summary.append(f'{errors} failed')
+    print(styled('\n  ' + ('✗ ' if errors else '✓ ') + ' · '.join(summary), '31' if errors else '32'))
     return int(bool(errors))
 
 
