@@ -156,7 +156,7 @@ JSON、TOML、YAML 的 extra 提供语言服务；Markdown 使用 Marksman，LaT
 
 ### 折行与中文
 
-默认开启折行。LazyVim 的 `j/k` 按显示行移动，`5j/5k` 按逻辑行移动；VS Code 使用编辑器的折行位置。普通模式和字符可视模式支持显示行移动，VS Code 的整行／块选择仍按逻辑行移动。
+Markdown、纯文本、LaTeX、RST、AsciiDoc、Git 提交和邮件默认折行；代码保持默认不折行，项目设置可另行指定。LazyVim 的 `j/k` 按显示行移动，`5j/5k` 按逻辑行移动；VS Code 使用编辑器的折行位置。普通模式和字符可视模式支持显示行移动，VS Code 的整行／块选择仍按逻辑行移动。
 
 中文使用 [jieba.vim](https://github.com/kkew3/jieba.vim)，本地和 VS Code 共用：
 
@@ -204,7 +204,6 @@ Pyright 提供 Python 语言服务，类型检查关闭；Ruff 的 lint、Markdo
 | --- | --- |
 | 预览 `Shift+h/l`（`H/L`） | 前一个／后一个标签 |
 | `j/k` / `↑/↓` | 按折行移动；带数字时按逻辑行移动 |
-| `u` / `Ctrl+r` | VS Code 原生撤销／重做，与 `Cmd+z`／`Cmd+Shift+z` 共用历史 |
 | `Space ff` / `Space sw` / `Space sr` / `Space ,` | 找文件／搜索光标词／项目替换／文件列表 |
 | `Space e` / `Space E` / `Space ue` | Explorer／定位当前文件／开关侧栏 |
 | `Ctrl+h/j/k/l` / `Space -` / `Space \|` / `Space wd` / `Space wm` | 切换编辑器、侧栏和面板／分屏／关闭或最大化编辑器组 |
@@ -223,4 +222,4 @@ Explorer 的 `p` 和 `a/A` 由 VS Code Neovim 扩展提供。
 
 VS Code 中 `Space ?` 打开可搜索的适配按键菜单；前缀停顿时不会自动弹出 which-key 提示。
 
-通过 VS Code 编辑接口应用的 AI 修改可以用 `u` 撤销、`Ctrl+r` 重做。AI 直接写磁盘的改动不保证进入编辑器撤销历史，此时用 AI 工具的撤销或 Git。
+撤销保持扩展默认：`u/Ctrl+r` 使用 Neovim，`Cmd+z/Cmd+Shift+z` 使用 VS Code，各自的历史没有统一。AI 修改优先使用对应工具的撤销；直接写磁盘的改动不保证进入编辑器撤销历史。

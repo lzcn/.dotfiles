@@ -7,6 +7,3 @@ vim.g.root_spec = {"cwd"}
 
 -- Use the system clipboard for all operations
 vim.opt.clipboard = "unnamedplus"
-
--- Wrap long text; LazyVim already moves j/k by display lines without a count.
-vim.opt.wrap = true

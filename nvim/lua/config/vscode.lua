@@ -31,15 +31,6 @@ for key, direction in pairs({ j = "down", k = "up", ["<Down>"] = "down", ["<Up>"
   end, { expr = true, desc = "Move by Display Line" })
 end
 
--- Share VS Code's undo history with editor commands and AI extension edits.
-for key, command in pairs({ u = "undo", ["<C-r>"] = "redo" }) do
-  vim.keymap.set("n", key, function()
-    for _ = 1, vim.v.count1 do
-      vscode.call(command)
-    end
-  end, { desc = command == "undo" and "Undo" or "Redo" })
-end
-
 for _, lhs in ipairs({ "<leader>ff", "<leader>fF" }) do
   action("n", lhs, "workbench.action.quickOpen", "Find Files")
 end
