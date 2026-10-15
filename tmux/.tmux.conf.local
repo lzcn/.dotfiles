@@ -364,9 +364,6 @@ tmux_conf_urlscan_options="--compact --dedupe"
 
 # this is the place to override or undo settings
 
-# New sessions inherit the client's current proxy state.
-set -ga update-environment 'http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY no_proxy NO_PROXY'
-
 # Oh my tmux adds padding only to the current transparent tab; use equal padding.
 # Use literal formats: theme variables are cleared before these overrides reload.
 setw -g window-status-format "  #I #W  " #!important
