@@ -92,13 +92,9 @@ if [[ -z ${TMUX:-} && -x "${HOMEBREW_PREFIX:-}/bin/brew" ]]; then
   _evalcache "$HOMEBREW_PREFIX/bin/brew" shellenv
 fi
 
-# Conda: use its standard shell integration and the configured startup environment.
-if [[ -r "${CONDA_ROOT:-}/etc/profile.d/conda.sh" ]]; then
-  source "$CONDA_ROOT/etc/profile.d/conda.sh"
-  [[ ${CONDA_DEFAULT_ENV:-} == "${CONDA_DEFAULT_START_ENV:-base}" ]] ||
-    conda activate "${CONDA_DEFAULT_START_ENV:-base}"
-  [[ -z ${CONDA_PREFIX:-} ]] || path=("$CONDA_PREFIX/bin" ${path:#"$CONDA_PREFIX/bin"})
-fi
+# Conda/Mamba: detect the installation and activate before the first command.
+Z_INIT_CONDA_ENV="${CONDA_DEFAULT_START_ENV:-base}"
+zinit light lzcn/zplugin-conda-init
 
 # Direnv: project environment from .envrc; enable with `direnv allow`.
 (( $+commands[direnv] )) && _evalcache direnv hook zsh
@@ -159,6 +155,9 @@ proxy() {
 }
 
 # --- Aliases ---
+
+# Refresh cached tool initialization.
+alias evalcache-clear='_evalcache_clear'
 
 # Rsync aliases.
 alias rsync-copy='rsync -avz --progress -h'
