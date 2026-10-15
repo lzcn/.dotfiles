@@ -185,7 +185,7 @@ Pyright 提供 Python 语言服务，类型检查关闭；Ruff 的 lint、Markdo
 - 本地查找和文件树使用 `cwd`；VS Code 使用工作区。
 - VS Code Markdown 预览用 `Shift+h/l` 切换前后标签，`Ctrl+h/j/k/l` 切换相邻编辑器组。
 - 本地文件树：`a` 新建（目录名以 `/` 结尾），`c/m` 复制／移动，`y` 复制路径，`o` 用系统程序打开。
-- VS Code Explorer：`yy/xx/p` 复制／剪切／粘贴文件，`yp/yP` 复制完整／相对路径，`dd` 删除，`a/A` 新建文件／目录，`o` 打开。`Space e` 进入后再按一次关闭；`Esc` 或 `Ctrl+l` 返回编辑器；`Space E` 定位当前文件。
+- VS Code Explorer 使用原生方向键、复制／粘贴和右键菜单；编辑区 `Space e` 打开 Explorer，`Space E` 定位当前文件，`Cmd+1` 返回第一个编辑器组。
 - 本地 `Space ?` 是 which-key，VS Code 是额外适配的操作菜单。`Space br` 关闭右侧文件；VS Code 的 `Space ue` 开关侧栏。
 - 本地补全用 `Ctrl+n/p` 或方向键选项；`Tab` 主要跳片段。两边 `Enter` 都是：选中的候选 → 行内建议 → 换行。
 - 默认手动格式化。Python 本地用 Ruff，VS Code 用 Black，行宽都是 120。sh/zsh 缩进 2 空格；Python 4 空格。
@@ -194,7 +194,7 @@ Pyright 提供 Python 语言服务，类型检查关闭；Ruff 的 lint、Markdo
 
 ## VS Code 补充配置
 
-安装 VS Code Neovim 扩展。共享 Lua 配置优先使用 LazyVim 官方 VS Code extra；下面补充 Neovim 启动设置，以及编辑器、Explorer、终端和预览中的 Vim 按键适配。
+安装 VS Code Neovim 扩展。共享 Lua 配置优先使用 LazyVim 官方 VS Code extra；下面补充编辑器、终端和预览中的 Vim 按键适配，Explorer 和列表使用 VS Code 原生操作。
 
 ### 新增 VS Code 适配
 
@@ -213,12 +213,8 @@ Pyright 提供 Python 语言服务，类型检查关闭；Ruff 的 lint、Markdo
 | `[d` / `]d` / `Space xx` | 前后诊断／Problems 面板 |
 | `Space gg` / `[h` / `]h` / `Space ghp` | 源代码管理侧栏／前后改动／预览改动 |
 | `Space uw` / `Space uz` / `Space ?` | 折行／专注模式／操作菜单 |
-| Explorer `yy/xx/p` / `dd` / `yp/yP` / `o` | 复制、剪切、粘贴／删除／复制完整或相对路径／打开 |
-| Explorer `Esc` / `Ctrl+l` / `Space e` | 返回编辑器／关闭侧栏 |
 | 插入模式 `Enter` | 接受选中候选或行内建议，否则换行 |
 | 终端 `Ctrl+/` | 返回编辑器 |
-
-Explorer 的 `p` 和 `a/A` 由 VS Code Neovim 扩展提供。
 
 VS Code 中 `Space ?` 打开可搜索的适配按键菜单；前缀停顿时不会自动弹出 which-key 提示。
 
