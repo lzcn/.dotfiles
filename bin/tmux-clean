@@ -58,7 +58,14 @@ def shell_names():
     return names
 
 
-def pane_idle(pid, command, processes, shells):
+def child_index(processes):
+    children = {}
+    for child, process in processes.items():
+        children.setdefault(process.parent, []).append(child)
+    return children
+
+
+def pane_idle(pid, command, processes, children, shells):
     root = processes.get(pid)
     if root is None or root.state.startswith(('Z', 'T')):
         return False
@@ -66,9 +73,6 @@ def pane_idle(pid, command, processes, shells):
         return False
     # Every live descendant protects the pane, including background jobs and
     # programs whose foreground title happens to resemble a shell.
-    children = {}
-    for child, process in processes.items():
-        children.setdefault(process.parent, []).append(child)
     pending = list(children.get(pid, []))
     seen = {pid}
     while pending:
@@ -82,7 +86,7 @@ def pane_idle(pid, command, processes, shells):
     return True
 
 
-def session_idle(session_id, processes, shells):
+def session_idle(session_id, processes, children, shells):
     metadata = capture(['tmux', 'display-message', '-p', '-t', session_id,
                         '#{session_attached}\t#{@keep}']).rstrip('\n').split('\t')
     if len(metadata) != 2 or metadata[0] != '0' or metadata[1] not in ('', '0', 'off', 'false'):
@@ -104,7 +108,7 @@ def session_idle(session_id, processes, shells):
             continue
         if not fields[0].isdigit():
             return False, 'unknown pane'
-        if not pane_idle(int(fields[0]), fields[1], processes, shells):
+        if not pane_idle(int(fields[0]), fields[1], processes, children, shells):
             return False, f'active or uninspectable pane ({fields[1]})'
     counts = []
     if len(panes) > dead:
@@ -136,10 +140,11 @@ def main():
             print('  No tmux sessions.'); return 0
         raise CommandError(result.stderr.strip())
     processes, shells = process_snapshot(), shell_names()
+    children = child_index(processes)
     candidates = []
     for line in result.stdout.splitlines():
         session_id, name = line.split('\t', 1)
-        idle, reason = session_idle(session_id, processes, shells)
+        idle, reason = session_idle(session_id, processes, children, shells)
         if idle:
             candidates.append((session_id, name, reason))
         elif args.verbose:
@@ -157,11 +162,16 @@ def main():
             print('  Cancelled.'); return 0
     if args.verbose:
         print()
+    # Recheck against one fresh snapshot taken after confirmation. Calling
+    # process_snapshot() per session rescans the whole process table and made
+    # cleanup scale badly on hosts with many processes.
+    processes = process_snapshot()
+    children = child_index(processes)
     deleted = kept = errors = 0
     for session_id, name, _ in candidates:
         try:
-            # Recheck attachment, all panes and processes after confirmation.
-            idle, reason = session_idle(session_id, process_snapshot(), shells)
+            # Attachment and panes are still re-read for every session.
+            idle, reason = session_idle(session_id, processes, children, shells)
             if not idle:
                 print(styled(f'  ! Kept {name} · {reason}', '33'))
                 kept += 1
