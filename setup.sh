@@ -137,6 +137,7 @@ setup_atuin() {
   section "Atuin"
   if command_exists atuin; then
     symlink "$HOME/.config/atuin/config.toml" "$DOTFILES/atuin/config.toml"
+    symlink "$HOME/.config/atuin/themes/catppuccin-mocha.toml" "$DOTFILES/atuin/themes/catppuccin-mocha.toml"
   else
     info 'atuin is not installed'
   fi

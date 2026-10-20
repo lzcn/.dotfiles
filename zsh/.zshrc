@@ -47,6 +47,18 @@ _comps[zinit]=_zinit
 zstyle ':completion:*' completer _complete
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%F{#6c7086}— %d —%f'
+
+# Completion colors are independent of the colored ls aliases below.
+zmodload zsh/complist
+if [[ -n ${LS_COLORS:-} ]]; then
+  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" \
+    'ma=38;2;205;214;244;48;2;49;50;68'
+else
+  zstyle ':completion:*' list-colors 'di=01;34' 'ln=01;36' 'ex=01;32' \
+    'ma=38;2;205;214;244;48;2;49;50;68'
+fi
 
 # --- Theme ---
 
@@ -61,7 +73,8 @@ zinit light romkatv/powerlevel10k
 zinit ice wait'0a' lucid
 zinit light hlissner/zsh-autopair
 
-# Autosuggestions: use the plugin's defaults; Tab clears history suggestions.
+# Autosuggestions: muted Mocha text; Tab clears history suggestions.
+typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#6c7086'
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 zinit ice wait'0c' lucid atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete)'
 zinit light zsh-users/zsh-autosuggestions
@@ -112,7 +125,14 @@ zinit snippet OMZP::extract
 
 # --- Key bindings ---
 
-# Fzf: Ctrl-T for files, Alt-C for directories.
+# Fzf: Mocha colors, with the query above the results.
+export FZF_DEFAULT_OPTS='--height=40% --layout=reverse --border=rounded --info=inline-right
+  --color=bg:#1e1e2e,fg:#cdd6f4,bg+:#313244,fg+:#cdd6f4
+  --color=hl:#89b4fa,hl+:#89b4fa,border:#6c7086,info:#a6adc8
+  --color=prompt:#89b4fa,pointer:#89b4fa,marker:#94e2d5,spinner:#94e2d5
+  --color=header:#cba6f7,preview-bg:#1e1e2e,preview-fg:#cdd6f4'
+
+# Ctrl-T for files, Alt-C for directories.
 if [[ -r ${HOMEBREW_PREFIX:-}/opt/fzf/shell/key-bindings.zsh ]]; then
   FZF_CTRL_R_COMMAND= source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
 fi

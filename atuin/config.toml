@@ -5,6 +5,11 @@ search_mode = "daemon-fuzzy"
 style = "compact"
 update_check = false
 inline_height = 15
+invert = true
+
+[theme]
+name = "catppuccin-mocha"
+
 [sync]
 records = true
 

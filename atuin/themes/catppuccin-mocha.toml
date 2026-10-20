@@ -1,0 +1,20 @@
+# Match Kitty, Powerlevel10k, and Fzf; the background comes from the terminal.
+[theme]
+name = "catppuccin-mocha"
+
+[colors]
+Base = "#cdd6f4"
+Title = "#89b4fa"
+Important = "#89b4fa"
+Guidance = "#6c7086"
+Annotation = "#a6adc8"
+Muted = "#6c7086"
+AlertInfo = "#94e2d5"
+AlertWarn = "#f9e2af"
+AlertError = "#f38ba8"
+SyntaxCommand = "#a6e3a1"
+SyntaxFlag = "#89b4fa"
+SyntaxString = "#f9e2af"
+SyntaxVariable = "#cba6f7"
+SyntaxOperator = "#94e2d5"
+SyntaxComment = "#6c7086"
