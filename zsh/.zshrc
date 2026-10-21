@@ -90,12 +90,7 @@ zinit light paulirish/git-open
 # Evalcache: reuse cached initialization scripts across shell sessions.
 zinit light mroth/evalcache
 
-# Multi-word history: Ctrl-X Ctrl-R; initialize Atuin from the local binary.
-zinit ice wait'0b' lucid atload'
-  if (( $+commands[atuin] )); then
-    _evalcache atuin init zsh
-    bindkey -M vicmd "^R" atuin-search-vicmd
-  fi'
+# Multi-word history: Ctrl-X Ctrl-R; load before Atuin.
 zinit light zdharma-continuum/history-search-multi-word
 
 # --- Tool initialization ---
@@ -108,6 +103,12 @@ fi
 # Conda/Mamba: detect the installation and activate before the first command.
 Z_INIT_CONDA_ENV="${CONDA_DEFAULT_START_ENV:-base}"
 zinit light lzcn/zplugin-conda-init
+
+# Atuin: standard history integration; read current settings at startup.
+if (( $+commands[atuin] )); then
+  eval "$(atuin init zsh)"
+  bindkey -M vicmd '^R' atuin-search-vicmd
+fi
 
 # Direnv: project environment from .envrc; enable with `direnv allow`.
 (( $+commands[direnv] )) && _evalcache direnv hook zsh
