@@ -7,3 +7,6 @@ vim.g.root_spec = {"cwd"}
 
 -- Use the system clipboard for all operations
 vim.opt.clipboard = "unnamedplus"
+
+-- Allow normal/visual horizontal motions to cross line boundaries.
+vim.opt.whichwrap:append("h,l,<,>")
