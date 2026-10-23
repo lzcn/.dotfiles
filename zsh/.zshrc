@@ -118,7 +118,9 @@ fi
 
 # --- Helpers ---
 
-# Keep these snippets: package detection and archive formats need more than aliases.
+# Keep these snippets: common aliases, package detection, and archive formats.
+zinit ice wait lucid
+zinit snippet OMZP::common-aliases
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 zinit ice wait lucid
@@ -175,16 +177,6 @@ proxy() {
   esac
 }
 
-# --- Safety ---
-
-# Ask before deleting files; `-f` does not bypass the confirmation.
-rm() {
-  local answer
-  read -r "answer?rm: $*? [y/N] " || return 1
-  [[ $answer == [yY]* ]] || { print 'Cancelled.'; return 1 }
-  command rm "$@"
-}
-
 # --- Aliases ---
 
 # Refresh cached tool initialization.
@@ -212,12 +204,6 @@ elif [[ $OSTYPE == darwin* ]]; then
 else
   alias ls='ls --color=auto'
 fi
-
-# Common listing aliases; they reuse the colored `ls` above.
-alias l='ls -CF'
-alias ll='ls -AlFh'
-alias la='ls -A'
-alias lt='ls -lAtFh'
 
 # Conda aliases
 alias sra='conda activate'
