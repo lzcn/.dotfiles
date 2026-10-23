@@ -203,6 +203,12 @@ else
   alias ls='ls --color=auto'
 fi
 
+# Common listing aliases; they reuse the colored `ls` above.
+alias l='ls -CF'
+alias ll='ls -AlFh'
+alias la='ls -A'
+alias lt='ls -lAtFh'
+
 # Conda aliases
 alias sra='conda activate'
 alias srd='conda deactivate'
