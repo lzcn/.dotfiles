@@ -175,6 +175,16 @@ proxy() {
   esac
 }
 
+# --- Safety ---
+
+# Ask before deleting files; `-f` does not bypass the confirmation.
+rm() {
+  local answer
+  read -r "answer?rm: $*? [y/N] " || return 1
+  [[ $answer == [yY]* ]] || { print 'Cancelled.'; return 1 }
+  command rm "$@"
+}
+
 # --- Aliases ---
 
 # Refresh cached tool initialization.
