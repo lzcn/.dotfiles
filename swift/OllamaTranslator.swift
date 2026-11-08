@@ -84,20 +84,10 @@ struct ModelDisplayInfo {
 }
 
 private func runTranslator() throws {
-    var config = try parseArguments()
+    let config = try parseArguments()
     try ensureOllamaInstalled()
     let models = try fetchModels()
-
-    if config.model == nil {
-        guard !models.isEmpty else {
-            throw CLIError.ollamaUnavailable("No models found. Run `ollama pull <model>` first.")
-        }
-        config.model = selectModel(from: models)
-    }
-
-    guard let chosenModel = config.model else {
-        throw CLIError.invalidValue("Could not determine which model to use.")
-    }
+    let chosenModel = try config.model ?? selectModel(from: models)
 
     let outputURL = try resolveOutputURL(inputURL: config.input, customOutput: config.output, targetLanguage: config.targetLanguage)
     let sourceText = try String(contentsOf: config.input, encoding: .utf8)
@@ -252,27 +242,17 @@ private func ensureOllamaInstalled() throws {
 private func fetchModels() throws -> [ModelDisplayInfo] {
     let jsonResult = try runProcess(executable: "/usr/bin/env", arguments: ["ollama", "list", "--json"])
     if jsonResult.status == 0 {
-        let lines = jsonResult.output.split(whereSeparator: \.isNewline).map(String.init)
-        var models: [ModelDisplayInfo] = []
         let decoder = JSONDecoder()
-        for line in lines where !line.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            guard let data = line.data(using: .utf8) else { continue }
-            if let modelLine = try? decoder.decode(OllamaModelLine.self, from: data) {
-                let sizeDescription: String
-                if let bytes = modelLine.size {
-                    sizeDescription = humanReadableSize(bytes: bytes)
-                } else {
-                    sizeDescription = "unknown size"
-                }
-                let parameter = modelLine.details?.parameter_size ?? ""
-                var desc = "\(sizeDescription)"
-                if !parameter.isEmpty {
-                    desc += " · \(parameter)"
-                }
-                models.append(ModelDisplayInfo(name: modelLine.name, description: desc))
+        return jsonResult.output.split(whereSeparator: \.isNewline).compactMap { line in
+            guard let model = try? decoder.decode(OllamaModelLine.self, from: Data(line.utf8)) else {
+                return nil
             }
+            let size = model.size.map { humanReadableSize(bytes: $0) } ?? "unknown size"
+            let description = [size, model.details?.parameter_size ?? ""]
+                .filter { !$0.isEmpty }
+                .joined(separator: " · ")
+            return ModelDisplayInfo(name: model.name, description: description)
         }
-        return models
     }
 
     let unknownFlag = jsonResult.error.localizedCaseInsensitiveContains("unknown flag")
@@ -294,26 +274,23 @@ private func parsePlainModelList(_ output: String) -> [ModelDisplayInfo] {
     if let first = lines.first, first.lowercased().hasPrefix("name") {
         lines.removeFirst()
     }
-    var models: [ModelDisplayInfo] = []
-    for line in lines {
-        let parts = line.split(omittingEmptySubsequences: true, whereSeparator: { $0.isWhitespace })
-        guard let name = parts.first else { continue }
+    return lines.compactMap { line in
+        let parts = line.split(whereSeparator: \.isWhitespace)
+        guard let name = parts.first else { return nil }
         let desc = parts.dropFirst().joined(separator: " ")
-        models.append(ModelDisplayInfo(name: String(name), description: desc.isEmpty ? "unknown size" : desc))
+        return ModelDisplayInfo(name: String(name), description: desc.isEmpty ? "unknown size" : desc)
     }
-    return models
 }
 
-private func selectModel(from models: [ModelDisplayInfo]) -> String {
-    guard isatty(STDIN_FILENO) == 1, isatty(STDOUT_FILENO) == 1 else {
-        if let fallback = models.first {
-            print("Model not specified and terminal is non-interactive, defaulting to \(fallback.name)")
-            return fallback.name
-        }
-        fatalError("No model available")
+private func selectModel(from models: [ModelDisplayInfo]) throws -> String {
+    guard let fallback = models.first else {
+        throw CLIError.ollamaUnavailable("No models found. Run `ollama pull <model>` first.")
     }
-    let menu = TerminalMenu(items: models)
-    return menu.interactiveSelection()
+    guard isatty(STDIN_FILENO) == 1, isatty(STDOUT_FILENO) == 1 else {
+        print("Model not specified and terminal is non-interactive, defaulting to \(fallback.name)")
+        return fallback.name
+    }
+    return TerminalMenu(items: models).interactiveSelection()
 }
 
 // MARK: - Translation flow
