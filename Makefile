@@ -18,7 +18,7 @@ install: ## Install dependencies, apply configuration, and check
 setup: ## Apply configuration; back up conflicts
 	@./setup.sh --yes
 
-update: ## Update configuration Git repos (use dots-update all for software/plugins)
+update: ## Update repos, Homebrew, and Zinit plugins (not Neovim)
 	@./bin/dots-update
 
 check: ## Check shell syntax, lint, and configuration

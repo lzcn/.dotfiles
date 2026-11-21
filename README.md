@@ -15,7 +15,8 @@ This prepares dependencies, clones the repo to `~/.dotfiles`, and applies the co
 ## Maintenance
 
 ```bash
-dots-update all # Update configs, tools, and plugins
+dots-update     # Update configs, Homebrew, and Zinit plugins (not Neovim)
+dots-update all # Also update Zsh snippets
 make setup      # Apply configuration
 make check      # Check configuration
 ```

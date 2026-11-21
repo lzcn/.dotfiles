@@ -5,8 +5,21 @@ setopt pipefail
 source "${0:A:h}/lib.sh"
 
 typeset -r dotfiles="${0:A:h:h}"
-typeset -r zinit_home="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+# Accept ZINIT_HOME either as the Zinit data directory or as the checkout itself.
+typeset zinit_home="${ZINIT_HOME:-${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git}"
+[[ -r $zinit_home/zinit.zsh || ! -r $zinit_home/zinit.git/zinit.zsh ]] || zinit_home+=/zinit.git
+typeset -r zinit_home
 typeset -aU targets
+typeset -aU config_repos=(
+  "$dotfiles"
+  "$HOME/.tmux"
+  "$HOME/.gitalias"
+  "$HOME/Library/Rime"
+  "${XDG_CONFIG_HOME:-$HOME/.config}/rime"
+  "${XDG_CONFIG_HOME:-$HOME/.config}/fcitx5/rime"
+  "$HOME/.local/share/fcitx5/rime"
+  "$HOME/.config/ibus/rime"
+)
 typeset -a failed_components
 typeset -i dry_run=0 successes=0 skipped=0 failures=0
 
@@ -15,26 +28,29 @@ usage() {
 Usage: dots-update [OPTIONS] [TARGET ...]
 
 Select what to update. Explicit targets REPLACE the default:
-  git           Configuration repos: dotfiles, tmux, Git aliases, Rime (default)
+  git           Configuration repos: dotfiles, tmux, Git aliases, Rime
   brew          Homebrew packages/apps (no greedy upgrade or cleanup)
   zinit         Zinit itself and its installed plugins
-  nvim          Neovim plugins
-  snippets      Installed Zsh snippets
-  all           update all
+  snippets      Installed Zsh snippets (not part of the default update)
+  all           update every target above, including snippets
+
+Neovim plugins are intentionally not updated here; use :Lazy update for those.
+Defaults to: git brew zinit
 
 Examples:
-  dots-update                 Update configuration repos only
+  dots-update                 Update configs, Homebrew, and Zinit
   dots-update brew            Update Homebrew only
-  dots-update git nvim        Update repos and Neovim
-  dots-update all             Update every installed component
+  dots-update git zinit       Update repos and Zinit
+  dots-update all             Update everything, including snippets
 
 Options:
-  --dry-run     Show the plan without updating anything
-  --proxy       Use configured PROXY_HOST/PROXY_HTTP_PORT/PROXY_SOCKS_PORT
-  --no-proxy    Clear proxy variables (default: inherit current environment)
-  -h, --help    Show help
+  -n, --dry-run  Show the plan without updating anything
+  --proxy        Use configured PROXY_HOST/PROXY_HTTP_PORT/PROXY_SOCKS_PORT
+  --no-proxy     Clear proxy variables (default: inherit current environment)
+  -h, --help     Show help
 
-Dirty repos, detached HEADs, missing upstreams/components are skipped.
+Repos with uncommitted tracked changes, detached HEADs, or missing upstreams
+are skipped, as are missing components.
 Updates use fast-forward only; local work is never stashed or discarded.
 Exit status: 0 = completed/skipped, 1 = update error, 2 = invalid arguments.
 Run make setup separately to apply configuration or compile Swift.
@@ -45,8 +61,8 @@ main() {
   local arg proxy_mode=inherit
   for arg in "$@"; do
     case "$arg" in
-      git|brew|zinit|nvim|snippets|all) targets+=("$arg") ;;
-      --dry-run) dry_run=1 ;;
+      git|brew|zinit|snippets|all) targets+=("$arg") ;;
+      -n|--dry-run) dry_run=1 ;;
       --proxy|--no-proxy)
         [[ $proxy_mode == inherit || $proxy_mode == "$arg" ]] || {
           fail "--proxy and --no-proxy cannot be combined"
@@ -64,13 +80,13 @@ main() {
         ;;
     esac
   done
-  (( ${#targets} )) || targets=(git)
+  (( ${#targets} )) || targets=(git brew zinit)
   if (( ${targets[(Ie)all]} )); then
     if (( ${#targets} != 1 )); then
       fail "Use all by itself"
       return 2
     fi
-    targets=(git brew zinit nvim snippets)
+    targets=(git brew zinit snippets)
   fi
   case $proxy_mode in
     --proxy)
@@ -88,7 +104,8 @@ main() {
   banner "Dotfiles · update"
   info "Targets: ${(j:, :)targets}"
   [[ $proxy_mode != --proxy ]] || info "Proxy: $http_proxy"
-  local target repo
+  local target repo label
+  local -i repo_count
   for target in "${targets[@]}"; do
     case $target in
       git)
@@ -96,10 +113,13 @@ main() {
           skip_update Git "git not installed"
           continue
         fi
-        for repo in "$dotfiles" "$HOME/.tmux" "$HOME/.gitalias" "$HOME/Library/Rime"; do
+        repo_count=0
+        for repo in "${config_repos[@]}"; do
           [[ -e "$repo/.git" ]] || continue
+          (( repo_count++ ))
           run_update "Git: ${repo:t}" update_repo "$repo"
         done
+        (( repo_count )) || skip_update Git "no configuration repos found"
         ;;
       brew)
         if (( $+commands[brew] )); then
@@ -109,17 +129,14 @@ main() {
         fi
         ;;
       zinit|snippets)
-        if [[ -r "$zinit_home/zinit.zsh" ]] && (( $+commands[zsh] )); then
-          run_update "$target" update_zinit "$target"
+        label=Snippets
+        [[ $target == zinit ]] && label=Zinit
+        if (( ! $+commands[zsh] )); then
+          skip_update "$label" "zsh not installed"
+        elif [[ ! -r "$zinit_home/zinit.zsh" ]]; then
+          skip_update "$label" "Zinit not installed"
         else
-          skip_update "$target" "Zinit or zsh not installed"
-        fi
-        ;;
-      nvim)
-        if (( $+commands[nvim] )); then
-          run_update Neovim update_nvim
-        else
-          skip_update Neovim "nvim not installed"
+          run_update "$label" update_zinit "$target"
         fi
         ;;
     esac
@@ -129,7 +146,7 @@ main() {
     return 1
   fi
   if (( dry_run )); then
-    finish "Plan complete; $skipped skipped"
+    finish "Plan complete: $successes would update; $skipped skipped"
   else
     finish "$successes completed; $skipped skipped"
   fi
@@ -177,39 +194,6 @@ update_homebrew() {
   execute brew update && execute brew upgrade --no-ask
 }
 
-update_nvim() {
-  if (( dry_run )); then
-    info "Would sync Neovim plugins"
-    return 0
-  fi
-  # Lazy's normal +qa exits successfully even when a plugin task failed.
-  local script='
-    local ok, err = pcall(function()
-      local config = require("lazy.core.config")
-      -- Task logging records failed process exits; raw headless output does not.
-      config.options.headless.process = false
-      require("lazy").sync({ wait = true, show = false })
-      local failed = {}
-      for _, plugins in ipairs({ config.plugins, config.to_clean }) do
-        for _, plugin in pairs(plugins) do
-          if require("lazy.core.plugin").has_errors(plugin) then
-            failed[#failed + 1] = plugin.name
-          end
-        end
-      end
-      if #failed > 0 then
-        table.sort(failed)
-        error("Plugin updates failed: " .. table.concat(failed, ", "))
-      end
-    end)
-    if not ok then
-      io.stderr:write(tostring(err) .. "\n")
-      vim.cmd("cquit 1")
-    end
-  '
-  execute nvim --headless --cmd 'let g:dots_update = v:true' "+lua $script" +qa
-}
-
 set_git_proxy() {
   # Command-scope config overrides stored http.proxy settings for this run.
   local -i count=${GIT_CONFIG_COUNT:-0}
@@ -219,7 +203,12 @@ set_git_proxy() {
 
 update_zinit() {
   if (( dry_run )); then
-    info "Would update $1 using $zinit_home"
+    if [[ $1 == zinit ]]; then
+      info "Would run: zinit self-update --no-pager"
+      info "Would run: zinit update --plugins --no-pager"
+    else
+      info "Would update installed snippets using $zinit_home"
+    fi
     return 0
   fi
   # Zinit can swallow failed fetch/pull statuses. Record transport failures
@@ -298,9 +287,10 @@ GIT
 
 update_repo() {
   local repo=$1 changes
-  changes=$(git -C "$repo" status --porcelain --untracked-files=normal) || return 1
+  # Untracked files are safe here: Git refuses to overwrite them on pull.
+  changes=$(git -C "$repo" status --porcelain --untracked-files=no) || return 1
   if [[ -n $changes ]]; then
-    info "skipped: local changes (commit or stash them when ready)"
+    info "skipped: uncommitted tracked changes (commit or stash them when ready)"
     return 3
   fi
   if ! git -C "$repo" symbolic-ref -q HEAD >/dev/null; then

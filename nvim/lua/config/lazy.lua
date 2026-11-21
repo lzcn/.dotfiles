@@ -26,9 +26,9 @@ require("lazy").setup({
   },
   install = { colorscheme = { "catppuccin", "tokyonight", "habamax" } },
   checker = {
-    enabled = not vim.g.dots_update, -- avoid a second update job during dots-update
+    enabled = true, -- automatically check for plugin updates
     notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+  },
   performance = {
     rtp = {
       disabled_plugins = {
